@@ -1,0 +1,78 @@
+<?php
+/*
+ * Copyright (c) 2012-2016 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
+declare(strict_types = 1);
+
+namespace Cli\Command;
+
+use Cli\HandlerFactory;
+use Cli\OAuthFactory;
+use Cli\Utils\Logger;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+/**
+ * Command definition for Feature Extractor Runner.
+ */
+class Runner extends Command {
+    /**
+     * Command configuration.
+     *
+     * @return void
+     */
+    protected function configure() {
+        $this
+            ->setName('feature:runner')
+            ->setDescription('idOS Feature - Runner')
+            ->addArgument(
+                'providerName',
+                InputArgument::REQUIRED,
+                'Provider name'
+            )
+            ->addArgument(
+                'dryRun',
+                InputArgument::OPTIONAL,
+                'On dry run mode, no data is sent to idOS API'
+            );
+    }
+
+    /**
+     * Command execution.
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $outpput
+     *
+     * @return void
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) {
+        $logger = new Logger();
+
+        $logger->debug('Initializing idOS Feature Handler Runner');
+
+        $factory = new HandlerFactory(
+            new OAuthFactory(),
+            [
+                'Linkedin' => 'Cli\\Handler\\LinkedIn',
+                'Paypal'   => 'Cli\\Handler\\PayPal'
+            ]
+        );
+        $provider = $factory->create(
+            $logger,
+            $input->getArgument('providerName'),
+            $input->getArgument('accessToken'),
+            $input->getArgument('tokenSecret') ?: '',
+            $input->getArgument('appKey') ?: '',
+            $input->getArgument('appSecret') ?: '',
+            $input->getArgument('apiVersion') ?: ''
+        );
+
+        $data = $provider->handle($input->getArgument('dryRun') ?: false);
+
+        $logger->debug('Runner completed');
+    }
+}
