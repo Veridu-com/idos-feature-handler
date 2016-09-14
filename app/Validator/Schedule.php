@@ -70,7 +70,7 @@ class Schedule implements ValidatorInterface {
      */
     public function assertKey($key) {
         Validator::regex('/[a-zA-Z0-9]+/')
-            ->length(1, 25)
+            ->length(1, 32)
             ->assert($key);
     }
 }

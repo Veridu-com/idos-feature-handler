@@ -89,6 +89,10 @@ class CloseFriends extends AbstractExtractor {
             }
         }
 
+        if (! count($idList)) {
+            return;
+        }
+
         // remove profile owner from friend list
         $profileId = $this->worker->parsedBuffer->waitData('profileId');
         if ((! empty($profileId)) && (isset($idList[$profileId]))) {

@@ -35,7 +35,7 @@ class Job extends AbstractCommand {
      *
      * @var string
      */
-    public $pubKey;
+    public $publicKey;
     /**
      * Provider name.
      *
@@ -59,8 +59,8 @@ class Job extends AbstractCommand {
             $this->taskId = $parameters['taskId'];
         }
 
-        if (isset($parameters['pubKey'])) {
-            $this->pubKey = $parameters['pubKey'];
+        if (isset($parameters['publicKey'])) {
+            $this->publicKey = $parameters['publicKey'];
         }
 
         if (isset($parameters['providerName'])) {
