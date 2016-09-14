@@ -91,7 +91,7 @@ class Schedule implements HandlerInterface {
             $this->validator->assertId($command->sourceId);
             $this->validator->assertId($command->taskId);
             $this->validator->assertName($command->providerName);
-            $this->validator->assertKey($command->pubKey);
+            $this->validator->assertKey($command->publicKey);
         } catch (\Respect\Validation\Exceptions\ExceptionInterface $exception) {
             $this->emitter->emit(new InvalidJob($command));
             throw new AppException(

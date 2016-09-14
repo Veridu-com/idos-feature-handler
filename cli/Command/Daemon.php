@@ -11,12 +11,11 @@ namespace Cli\Command;
 use Cli\Extractor\Handler;
 use Cli\Utils\Buffer;
 use Cli\Utils\Logger;
+use idOS\SDK;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-// use Veridu\idOS\SDK;
 
 /**
  * Command definition for Feature Extractor Daemon.
@@ -73,18 +72,11 @@ class Daemon extends Command {
         // 1 second I/O timeout
         $gearman->setTimeout(1000);
 
-        // idOS SDK Factory
-        $sdkFactory = new \stdClass();
-        // $sdkFactory = new SDK\Factory(
-        //     __HNDKEY__,
-        //     __HNDSEC__
-        // );
-
         $logger->debug('Registering Worker Function "feature"');
 
         $gearman->addFunction(
             'feature',
-            function (\GearmanJob $job) use ($logger, $sdkFactory) {
+            function (\GearmanJob $job) use ($logger) {
                 $logger->debug('Got a new job!');
                 $jobData = json_decode($job->workload(), true);
                 if ($jobData === null) {
@@ -96,8 +88,16 @@ class Daemon extends Command {
 
                 $handler = Handler::create($jobData['providerName']);
 
+                // idOS SDK
+                $auth = new \idOS\Auth\CredentialToken(
+                    $jobData['publicKey'],
+                    __HNDKEY__,
+                    __HNDSEC__
+                );
+                $sdk = \idOS\SDK::create($auth);
+
                 // $sdk
-                //     ->profiles
+                //     ->Profile($jobData['userName'])
                 //     ->processes
                 //     ->updateOne(
                 //         $jobData['userName'],
@@ -107,33 +107,16 @@ class Daemon extends Command {
                 //         ]
                 //     );
 
-                // $response = $sdk
-                //     ->profiles
-                //     ->raw
-                //     ->listAll(
-                //         $jobData['userName'],
-                //         [
-                //             'source:id' => $jobData['sourceId']
-                //         ]
-                //     );
-                // -or-
-                // $response = $sdk
-                //     ->profiles
-                //     ->raw
-                //     ->getOne(
-                //         $jobData['userName'],
-                //         $jobData['sourceId']
-                //     );
-                $response['data'] = [
-                    'profile' => [
-                        'id'         => '1234',
-                        'first_name' => 'Flavio',
-                        'last_name'  => 'Heleno',
-                        'gender'     => 'male',
-                        'email'      => 'flaviohbatista@gmail.com'
-                    ]
-                ];
-                $rawBuffer = new Buffer($response['data']);
+                $response = $sdk
+                    ->Profile($jobData['userName'])
+                    ->Source($jobData['sourceId'])
+                    ->Raw->listAll();
+
+                $rawBuffer = new Buffer();
+                foreach ($response['data'] as $item) {
+                    $rawBuffer->setData($item['collection'], $item['data']);
+                }
+
                 $parsedBuffer = new Buffer();
 
                 $handler->extract(
@@ -143,21 +126,12 @@ class Daemon extends Command {
 
                 $features = [];
                 foreach ($parsedBuffer->asArray() as $field => $value) {
-                    $features[$field] = $value;
+                    // $features[$field] = $value;
+                    $sdk
+                        ->Profile($jobData['userName'])
+                        ->Features
+                        ->createNew((int) $jobData['sourceId'], $field, $value, '');
                 }
-
-                $logger->debug(print_r($features, true));
-
-                // $sdk
-                //     ->profiles
-                //     ->features
-                //     ->createNew(
-                //         $jobData['userName'],
-                //         [
-                //             'source_id' => $jobData['sourceId'],
-                //             'features' => $features
-                //         ]
-                //     );
 
                 // $sdk
                 //     ->profiles
