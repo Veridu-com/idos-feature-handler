@@ -11,7 +11,7 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class CloseFriends extends AbstractExtractor {
-    private function extractAuthors(array $item, array &$idList, array &$nameList) {
+    private function extractAuthors($item, array &$idList, array &$nameList) {
         // checks for author presence
         if (isset($item['from']['id'])) {
             // if it's a new id add an entry for it
@@ -30,7 +30,7 @@ class CloseFriends extends AbstractExtractor {
         }
     }
 
-    private function extractReactions(array $item, array &$idList, array &$nameList) {
+    private function extractReactions($item, array &$idList, array &$nameList) {
         // checks for reaction presence
         if (isset($tag['id'])) {
             // if it's a new id add an entry for it
