@@ -112,7 +112,11 @@ class Daemon extends Command {
                     ->Source($jobData['sourceId'])
                     ->Raw->listAll();
 
-                $rawBuffer = new Buffer($response['data']);
+                $rawBuffer = new Buffer();
+                foreach ($response['data'] as $item) {
+                    $rawBuffer->setData($item['collection'], $item['data']);
+                }
+
                 $parsedBuffer = new Buffer();
 
                 $handler->extract(
