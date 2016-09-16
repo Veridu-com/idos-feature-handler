@@ -109,8 +109,7 @@ class Daemon extends Command {
 
                 $response = $sdk
                     ->Profile($jobData['userName'])
-                    ->Source($jobData['sourceId'])
-                    ->Raw->listAll();
+                    ->Raw->listAll(['source:id' => $jobData['sourceId']]);
 
                 $rawBuffer = new Buffer();
                 foreach ($response['data'] as $item) {
@@ -124,13 +123,15 @@ class Daemon extends Command {
                     $parsedBuffer
                 );
 
-                $features = [];
-                foreach ($parsedBuffer->asArray() as $field => $value) {
-                    // $features[$field] = $value;
-                    $sdk
-                        ->Profile($jobData['userName'])
-                        ->Features
-                        ->createNew((int) $jobData['sourceId'], $field, $value, '');
+                $featuresEndpoint = $sdk
+                    ->Profile($jobData['userName'])
+                    ->Features;
+                try {
+                    foreach ($parsedBuffer->asArray() as $field => $value) {
+                        $featuresEndpoint->createNew((int) $jobData['sourceId'], $field, $value);
+                    }
+                } catch (\Exception $exception) {
+                    echo $exception->getMessage(), PHP_EOL;
                 }
 
                 // $sdk
