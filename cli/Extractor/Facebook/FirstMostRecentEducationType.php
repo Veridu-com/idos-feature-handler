@@ -18,8 +18,9 @@ class FirstMostRecentEducationType extends AbstractExtractor {
 			return null;
 		}
 
-		if (empty($education[0]['type']))
+		if (empty($education[0]['type'])) {
 			return null;
+		}
 		
 		return $education[0]['type'];
 	}

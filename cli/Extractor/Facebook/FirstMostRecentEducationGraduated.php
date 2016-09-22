@@ -18,9 +18,10 @@ class FirstMostRecentEducationGraduated extends AbstractExtractor {
 			return null;
 		}
 
-		if (empty($education[0]['year']))
+		if (empty($education[0]['year'])) {
 			return null;
-		
+		}
+
 		return ($education[0]['year'] < date('Y'));
 	}
 }

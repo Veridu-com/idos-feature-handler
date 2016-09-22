@@ -20,9 +20,9 @@ abstract class AbstractExtractor extends \Thread {
     protected $execTime = 0.0;
 
     /**
-     * { var_description }
+     * If we are writing support data to be used by other threads
      *
-     * @var        boolean
+     * @var boolean
      */
     const SUPPORT_DATA = false;
 
@@ -49,7 +49,7 @@ abstract class AbstractExtractor extends \Thread {
         $topic = substr($topic, (strrpos($topic, '\\') + 1));
         $topic = lcfirst($topic);
 
-        if (self::SUPPORT_DATA) {
+        if (static::SUPPORT_DATA) {
             $this->worker->rawBuffer->setData('_' . $topic, $value);
         } else {
             $this->worker->parsedBuffer->setData($topic, $value);
