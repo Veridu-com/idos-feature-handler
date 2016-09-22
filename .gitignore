@@ -6,3 +6,5 @@ config/testing.php
 environment.php
 vendor/
 VeriduRuleset.xml
+phpunit.xml
+
