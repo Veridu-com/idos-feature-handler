@@ -20,6 +20,13 @@ abstract class AbstractExtractor extends \Thread {
     protected $execTime = 0.0;
 
     /**
+     * { var_description }
+     *
+     * @var        boolean
+     */
+    const SUPPORT_DATA = false;
+
+    /**
      * Returns Thread's execution time.
      *
      * @return float
@@ -41,7 +48,12 @@ abstract class AbstractExtractor extends \Thread {
         $topic = get_class($this);
         $topic = substr($topic, (strrpos($topic, '\\') + 1));
         $topic = lcfirst($topic);
-        $this->worker->parsedBuffer->setData($topic, $value);
+
+        if (self::SUPPORT_DATA) {
+            $this->worker->rawBuffer->setData('_' . $topic, $value);
+        } else {
+            $this->worker->parsedBuffer->setData($topic, $value);
+        }
     }
 
     /**
