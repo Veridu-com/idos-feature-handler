@@ -11,14 +11,14 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class AgeDistribution extends AbstractExtractor {
-	const SUPPORT_DATA = true;
+    const SUPPORT_DATA = true;
 
     public function execute() {
         //@FIXME
-    	//$friends = $this->worker->rawBuffer->waitData('_friends');
+        //$friends = $this->worker->rawBuffer->waitData('_friends');
         $friends = [];
-    	$years = [];
-        
+        $years   = [];
+
         if (empty($friends)) {
             return $years;
         }
@@ -40,5 +40,5 @@ class AgeDistribution extends AbstractExtractor {
         arsort($years);
 
         return $years;
-	}
+    }
 }

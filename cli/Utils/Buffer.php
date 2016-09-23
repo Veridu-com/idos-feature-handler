@@ -44,7 +44,9 @@ class Buffer extends \Threaded {
     final public function waitData(string $topic) {
         return $this->synchronized(
             function () use ($topic) {
-                while (! array_key_exists($topic, $this->data)) {
+                // pthreads will replace $this->data for an Object(Volatile), thus the
+                // use of property_exists instead of array_key_exists
+                while (! property_exists($this->data, $topic)) {
                     $this->wait();
                 }
 
@@ -66,8 +68,6 @@ class Buffer extends \Threaded {
         if (isset($this->data[$topic])) {
             return $this->data[$topic];
         }
-
-        return;
     }
 
     /**

@@ -11,25 +11,25 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class FullBirthDate extends AbstractExtractor {
-	const SUPPORT_DATA = true;
+    const SUPPORT_DATA = true;
 
     public function execute() {
-    	$profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->worker->rawBuffer->getData('profile');
 
-    	if (empty($profile['birthday'])) {
-    		return null;
-    	}
+        if (empty($profile['birthday'])) {
+            return;
+        }
 
-    	if (strpos($profile['birthday'], '/') === false) {
-    		return null;
-    	}
+        if (strpos($profile['birthday'], '/') === false) {
+            return;
+        }
 
-    	$date = explode('/', $profile['birthday']);
+        $date = explode('/', $profile['birthday']);
 
-    	return [
-    		'year' => isset($date[2]) ? (int) $date[2] : null,
-    		'month' => isset($date[1]) ? (int) $date[1] : null,
-    		'day' => isset($date[0]) ? (int) $date[0] : null
-    	];
-	}
+        return [
+            'year'  => isset($date[2]) ? (int) $date[2] : null,
+            'month' => isset($date[1]) ? (int) $date[1] : null,
+            'day'   => isset($date[0]) ? (int) $date[0] : null
+        ];
+    }
 }

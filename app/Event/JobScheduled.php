@@ -20,15 +20,23 @@ class JobScheduled extends AbstractEvent {
      * @var App\Command\Job
      */
     public $job;
+    /**
+     * Event related Gearman Task.
+     *
+     * @var string
+     */
+    public $task;
 
     /**
      * Class constructor.
      *
      * @param App\Command\Job $job
+     * @param string          $task
      *
      * @return void
      */
-    public function __construct(Job $job) {
-        $this->job = $job;
+    public function __construct(Job $job, string $task) {
+        $this->job  = $job;
+        $this->task = $task;
     }
 }

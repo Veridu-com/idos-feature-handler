@@ -12,18 +12,16 @@ use Cli\Extractor\AbstractExtractor;
 
 class FourthMostRecentWorkLocation extends AbstractExtractor {
     public function execute() {
-    	return null;
-    	return null;
-$work = $this->worker->rawBuffer->waitData('_work');
+        $work = $this->worker->rawBuffer->waitData('_work');
 
-		if (empty($work)) {
-			return null;
-		}
+        if (empty($work)) {
+            return;
+        }
 
-		if (empty($work[3]['location'])) {
-			return null;
-		}
-		
-		return empty($work[3]['location']);
-	}
+        if (empty($work[3]['location'])) {
+            return;
+        }
+
+        return empty($work[3]['location']);
+    }
 }
