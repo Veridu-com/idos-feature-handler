@@ -12,17 +12,16 @@ use Cli\Extractor\AbstractExtractor;
 
 class FirstMostRecentWorkHasProjects extends AbstractExtractor {
     public function execute() {
-    	return null;
-$work = $this->worker->rawBuffer->waitData('_work');
+        $work = $this->worker->rawBuffer->waitData('_work');
 
-		if (empty($work)) {
-			return null;
-		}
+        if (empty($work)) {
+            return;
+        }
 
-		if (empty($work[0]['has_projects'])) {
-			return null;
-		}
-		
-		return $work[0]['has_projects'];
-	}
+        if (empty($work[0]['has_projects'])) {
+            return;
+        }
+
+        return $work[0]['has_projects'];
+    }
 }

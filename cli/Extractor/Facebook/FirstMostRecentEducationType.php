@@ -12,16 +12,16 @@ use Cli\Extractor\AbstractExtractor;
 
 class FirstMostRecentEducationType extends AbstractExtractor {
     public function execute() {
-    	$education = $this->worker->rawBuffer->waitData('_education');
+        $education = $this->worker->rawBuffer->waitData('_education');
 
-		if (empty($education)) {
-			return null;
-		}
+        if (empty($education)) {
+            return;
+        }
 
-		if (empty($education[0]['type'])) {
-			return null;
-		}
-		
-		return $education[0]['type'];
-	}
+        if (empty($education[0]['type'])) {
+            return;
+        }
+
+        return $education[0]['type'];
+    }
 }

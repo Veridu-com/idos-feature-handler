@@ -12,19 +12,18 @@ use Cli\Extractor\AbstractExtractor;
 
 class IsStudentAge extends AbstractExtractor {
     public function execute() {
-    	return null;
-$birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
+        $birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
 
-		if ($birthDate === null) {
-			return null;
-		}
+        if ($birthDate === null) {
+            return;
+        }
 
-		if ($birthDate['year'] === null) {
-			return null;
-		}
+        if ($birthDate['year'] === null) {
+            return;
+        }
 
-		$age = date('Y') . $birthDate['year'];
+        $age = date('Y') . $birthDate['year'];
 
-		return ($age >= 10 && $age <= 25);		
-	}
+        return $age >= 10 && $age <= 25;
+    }
 }

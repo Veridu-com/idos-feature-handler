@@ -128,7 +128,11 @@ class Daemon extends Command {
                     ->Features;
                 try {
                     foreach ($parsedBuffer->asArray() as $field => $value) {
-                        $featuresEndpoint->createNew((int) $jobData['sourceId'], $field, $value);
+                        $featuresEndpoint->createNew(
+                            (int) $jobData['sourceId'],
+                            $field,
+                            $value
+                        );
                     }
                 } catch (\Exception $exception) {
                     echo $exception->getMessage(), PHP_EOL;

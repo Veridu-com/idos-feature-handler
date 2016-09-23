@@ -12,7 +12,6 @@ use Cli\Extractor\AbstractExtractor;
 
 class NumOfFriendsWorkingFirstMostRecentEducation extends AbstractExtractor {
     public function execute() {
-        return null;
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['education'])) {
@@ -20,7 +19,7 @@ class NumOfFriendsWorkingFirstMostRecentEducation extends AbstractExtractor {
         }
 
         $education = $this->worker->rawBuffer->waitData('_education');
-        
+
         if (empty($education[0]['id'])) {
             return 0;
         }
@@ -34,7 +33,7 @@ class NumOfFriendsWorkingFirstMostRecentEducation extends AbstractExtractor {
         }
 
         $count = 0;
-    	foreach ($friends as $friend) {
+        foreach ($friends as $friend) {
             if (empty($friend['work'])) {
                 continue;
             }
@@ -47,6 +46,6 @@ class NumOfFriendsWorkingFirstMostRecentEducation extends AbstractExtractor {
             }
         }
 
-    	return $count;
-	}
+        return $count;
+    }
 }
