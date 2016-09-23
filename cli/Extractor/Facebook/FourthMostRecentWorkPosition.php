@@ -12,6 +12,7 @@ use Cli\Extractor\AbstractExtractor;
 
 class FourthMostRecentWorkPosition extends AbstractExtractor {
     public function execute() {
+    	return null;
 		$work = $this->worker->rawBuffer->waitData('_work');
 
 		if (empty($work)) {
