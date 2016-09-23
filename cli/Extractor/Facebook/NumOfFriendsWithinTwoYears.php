@@ -12,26 +12,25 @@ use Cli\Extractor\AbstractExtractor;
 
 class NumOfFriendsWithinTwoYears extends AbstractExtractor {
     public function execute() {
-    	return null;
-$birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
+        $birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
 
-    	if (empty($birthDate)) {
-    		return 0;
-    	}
+        if (empty($birthDate)) {
+            return 0;
+        }
 
-    	$distribution = $this->worker->rawBuffer->waitData('_ageDistribution');
+        $distribution = $this->worker->rawBuffer->waitData('_ageDistribution');
 
-    	if (empty($distribution)) {
-    		return 0;
-    	}
+        if (empty($distribution)) {
+            return 0;
+        }
 
-    	$count = 0;
-    	foreach ($distribution as $year => $number) {
-    		if (abs($birthDate['year'] - $year) <= 2) {
-    			$count += $number;
-    		}
-    	}
+        $count = 0;
+        foreach ($distribution as $year => $number) {
+            if (abs($birthDate['year'] - $year) <= 2) {
+                $count += $number;
+            }
+        }
 
-    	return $count;		
-	}
+        return $count;
+    }
 }

@@ -12,17 +12,16 @@ use Cli\Extractor\AbstractExtractor;
 
 class FirstMostRecentWorkIsCurrent extends AbstractExtractor {
     public function execute() {
-    	return null;
-$work = $this->worker->rawBuffer->waitData('_work');
+        $work = $this->worker->rawBuffer->waitData('_work');
 
-		if (empty($work)) {
-			return null;
-		}
+        if (empty($work)) {
+            return;
+        }
 
-		if (empty($work[0])) {
-			return null;
-		}
-		
-		return empty($work[0]['end_date']);
-	}
+        if (empty($work[0])) {
+            return;
+        }
+
+        return empty($work[0]['end_date']);
+    }
 }

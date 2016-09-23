@@ -12,17 +12,16 @@ use Cli\Extractor\AbstractExtractor;
 
 class FourthMostRecentEmployer extends AbstractExtractor {
     public function execute() {
-    	return null;
-$work = $this->worker->rawBuffer->waitData('_work');
+        $work = $this->worker->rawBuffer->waitData('_work');
 
-		if (empty($work)) {
-			return null;
-		}
+        if (empty($work)) {
+            return;
+        }
 
-		if (empty($work[3]['employer'])) {
-			return null;
-		}
-		
-		return empty($work[3]['employer']);
-	}
+        if (empty($work[3]['employer'])) {
+            return;
+        }
+
+        return empty($work[3]['employer']);
+    }
 }
