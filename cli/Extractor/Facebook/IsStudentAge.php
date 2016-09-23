@@ -10,19 +10,21 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class FourthMostRecentWorkHasProjects extends AbstractExtractor {
+class IsStudentAge extends AbstractExtractor {
     public function execute() {
     	return null;
-$work = $this->worker->rawBuffer->waitData('_work');
+$birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
 
-		if (empty($work)) {
+		if ($birthDate === null) {
 			return null;
 		}
 
-		if (empty($work[3]['has_projects'])) {
+		if ($birthDate['year'] === null) {
 			return null;
 		}
-		
-		return empty($work[3]['has_projects']);
+
+		$age = date('Y') . $birthDate['year'];
+
+		return ($age >= 10 && $age <= 25);		
 	}
 }

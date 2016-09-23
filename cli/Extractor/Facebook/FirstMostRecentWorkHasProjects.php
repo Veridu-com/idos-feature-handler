@@ -12,7 +12,8 @@ use Cli\Extractor\AbstractExtractor;
 
 class FirstMostRecentWorkHasProjects extends AbstractExtractor {
     public function execute() {
-    	$work = $this->worker->rawBuffer->waitData('_work');
+    	return null;
+$work = $this->worker->rawBuffer->waitData('_work');
 
 		if (empty($work)) {
 			return null;

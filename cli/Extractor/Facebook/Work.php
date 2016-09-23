@@ -25,7 +25,7 @@ class Work extends AbstractExtractor {
 
 		$_work = [];
 
-		foreach ($profile['work'] as $work)
+		foreach ($profile['work'] as $work) {
 			if (isset($work['employer']['name'], $work['position']['name'], $work['start_date'])) {
 				$_work[] = [
 					'employer' => $work['employer']['name'],
@@ -36,8 +36,9 @@ class Work extends AbstractExtractor {
 					'end_date' => (empty($work['end_date']) ? null : $work['end_date'])
 				];
 			}
+		}
 
-		if (count($_work))
+		if (count($_work)) {
 			usort($_work, function ($a, $b) {
 				if ((empty($a['end_date'])) && (empty($b['end_date'])))
 					return ($b['start_date'] - $a['start_date']);
@@ -53,6 +54,7 @@ class Work extends AbstractExtractor {
 
 				return ($b['start_date'] - $a['start_date']);
 			});
+		}
 
 		return $_work;
 	}
