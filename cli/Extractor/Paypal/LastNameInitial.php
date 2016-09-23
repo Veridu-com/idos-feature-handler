@@ -14,10 +14,12 @@ class LastNameInitial extends \Thread {
      */
     public function execute() {
         $name = $this->worker->parsedBuffer->waitData('fullName');
-        if (is_null($name)) {
-            return;
+
+        if ($name === null) {
+            return null;
         }
 
+        //@FIXME
         return Utils::getInstance()->lastNameInitial($name);
     }
 }

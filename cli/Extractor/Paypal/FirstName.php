@@ -16,10 +16,12 @@ class FirstName extends \Thread {
      */
     public function execute() {
         $name = $this->worker->parsedBuffer->waitData('fullName');
+
         if (empty($name)) {
-            return;
+            return null;
         }
 
+        //@FIXME
         return Utils::getInstance()->firstName($name);
     }
 }

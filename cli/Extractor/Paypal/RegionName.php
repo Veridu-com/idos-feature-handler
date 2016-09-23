@@ -14,8 +14,9 @@ class RegionName extends \Thread {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
+
         if (empty($profile['address']['region'])) {
-            return;
+            return null;
         }
 
         return $profile['address']['region'];

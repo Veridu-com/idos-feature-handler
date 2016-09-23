@@ -14,10 +14,12 @@ class CountryName extends \Thread {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
+
         if (empty($profile['address']['country'])) {
-            return;
+            return null;
         }
 
+        //@FIXME
         return Utils::getInstance()->codeToCountry($profile['address']['country']);
     }
 }

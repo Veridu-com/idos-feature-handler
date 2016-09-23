@@ -14,10 +14,12 @@ class IsCommonName extends \Thread {
      */
     public function execute() {
         $name = $this->worker->parsedBuffer->waitData('firstName');
-        if (is_null($name)) {
+
+        if ($name === null) {
             return false;
         }
 
+        //@FIXME
         return Utils::getInstance()->isCommonName($name);
     }
 }

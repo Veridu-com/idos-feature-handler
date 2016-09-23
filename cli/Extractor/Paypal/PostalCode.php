@@ -14,8 +14,9 @@ class PostalCode extends \Thread {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
+
         if (empty($profile['address']['postal_code'])) {
-            return;
+            return null;
         }
 
         return preg_replace('/[^0-9A-Za-z]+/', '', $profile['address']['postal_code']);

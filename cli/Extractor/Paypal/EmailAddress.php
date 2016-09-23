@@ -16,8 +16,9 @@ class EmailAddress extends \Thread {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
+
         if (empty($profile['email']) || strpos($profile['email'], '@') === false) {
-            return;
+            return null;
         }
 
         return $profile['email'];

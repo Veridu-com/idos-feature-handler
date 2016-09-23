@@ -16,8 +16,9 @@ class FullName extends \Thread {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
+
         if (empty($profile['name'])) {
-            return;
+            return null;
         }
 
         return $profile['name'];

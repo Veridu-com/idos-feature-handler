@@ -14,10 +14,12 @@ class IsPepName extends \Thread {
      */
     public function execute() {
         $name = $this->worker->parsedBuffer->waitData('fullName');
-        if (is_null($name)) {
+
+        if ($name === null) {
             return false;
         }
 
+        //@FIXME
         return Utils::getInstance()->isPEPName($name);
     }
 }

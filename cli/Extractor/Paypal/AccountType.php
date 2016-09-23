@@ -14,8 +14,9 @@ class AccountType extends \Thread {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
+
         if (empty($profile['account_type'])) {
-            return;
+            return null;
         }
 
         return $profile['account_type'];
