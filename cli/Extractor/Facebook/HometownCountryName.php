@@ -15,20 +15,19 @@ class HometownCountryName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->waitData('profile');
-
+        $profile = $this->worker->rawBuffer->getData('profile');
         if (empty($profile['hometown']) || empty($profile['hometown']['name'])) {
-            return null;
+            return;
         }
 
         if (strpos($profile['hometown']['name'], ',') === false) {
             //@FIXME
             //return Utils::getInstance()->countryFromCity($profile['hometown']['name']);
-            return null;
+            return $profile['hometown']['name'];
         }
 
         $name = explode(',', $profile['hometown']['name']);
 
-        return $trim(array_pop($name));
+        return trim(array_pop($name));
     }
 }

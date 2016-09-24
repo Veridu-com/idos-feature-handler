@@ -11,19 +11,20 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class IsStudentAge extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
         $birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
 
-        if ($birthDate === null) {
+        if ((empty($birthDate)) || (empty($birthDate['year']))) {
             return;
         }
 
-        if ($birthDate['year'] === null) {
-            return;
-        }
+        $age = date('Y') - $birthDate['year'];
 
-        $age = date('Y') . $birthDate['year'];
-
+        //from 10 to 18 for mid/high school
+        //from 18 to 25 for college
         return $age >= 10 && $age <= 25;
     }
 }

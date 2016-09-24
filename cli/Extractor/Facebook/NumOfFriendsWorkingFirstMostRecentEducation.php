@@ -11,6 +11,9 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class NumOfFriendsWorkingFirstMostRecentEducation extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
 

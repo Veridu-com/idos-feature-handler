@@ -15,7 +15,7 @@ class LocationDistribution extends AbstractExtractor {
 
     public function execute() {
         $location = [
-            'city' => [],
+            'city'    => [],
             'country' => []
         ];
 
@@ -33,30 +33,29 @@ class LocationDistribution extends AbstractExtractor {
             }
 
             if (strpos($friend['location']['name'], ',') === false) {
-                $city = $friend['location']['name'];
+                $city    = $friend['location']['name'];
                 $country = null;
             } else {
-                $name = explode(',', $friend['location']['name']);
-                $city = trim($name[0]);
+                $name    = explode(',', $friend['location']['name']);
+                $city    = trim($name[0]);
                 $country = trim(array_pop($name));
             }
 
-            if (!empty($city)) {
-                if (!isset($location['city'][$city])) {
+            if (! empty($city)) {
+                if (! isset($location['city'][$city])) {
                     $location['city'][$city] = 0;
                 }
 
                 $location['city'][$city]++;
             }
 
-            if (!empty($country)) {
-                if (!isset($location['country'][$country])) {
+            if (! empty($country)) {
+                if (! isset($location['country'][$country])) {
                     $location['country'][$country] = 0;
                 }
 
                 $location['country'][$country]++;
             }
-
         }
 
         arsort($location['city']);

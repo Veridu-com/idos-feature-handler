@@ -18,13 +18,13 @@ class FourthMostRecentWorkPosition extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['positions'])) {
-            return null;
+            return;
         }
 
         $work = $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work[3]) || empty($work[3]['position'])) {
-            return null;
+            return;
         }
 
         return $work[3]['position'];

@@ -18,7 +18,7 @@ class FirstName extends \Thread {
         $name = $this->worker->parsedBuffer->waitData('fullName');
 
         if (empty($name)) {
-            return null;
+            return;
         }
 
         //@FIXME

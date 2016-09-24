@@ -18,13 +18,13 @@ class ThirdMostRecentWorkIsCurrent extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['positions'])) {
-            return null;
+            return;
         }
 
         $work = $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work[2])) {
-            return null;
+            return;
         }
 
         return empty($work[2]['end_date']);

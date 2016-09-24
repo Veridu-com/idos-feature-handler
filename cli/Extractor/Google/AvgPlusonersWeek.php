@@ -18,7 +18,7 @@ class AvgPlusonersWeek extends AbstractExtractor {
         $activities = $this->worker->rawBuffer->getData('activities');
 
         if (empty($activities)) {
-            return null;
+            return;
         }
 
         $plusoners = [];
@@ -40,12 +40,12 @@ class AvgPlusonersWeek extends AbstractExtractor {
             if (! isset($plusoners[date('Y', $ts)][date('n', $ts)])) {
                 $plusoners[date('Y', $ts)][date('n', $ts)] = 0;
             }
-            
+
             $plusoners[date('Y', $ts)][date('n', $ts)] += $activity['object']['plusoners']['totalItems'];
         }
 
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 

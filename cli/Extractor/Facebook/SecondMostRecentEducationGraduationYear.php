@@ -15,11 +15,11 @@ class SecondMostRecentEducationGraduationYear extends AbstractExtractor {
         $education = $this->worker->rawBuffer->waitData('_education');
 
         if (empty($education)) {
-            return null;
+            return;
         }
 
         if (empty($education[1]['year'])) {
-            return null;
+            return;
         }
 
         return $education[1]['year'];

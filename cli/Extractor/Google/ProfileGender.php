@@ -18,7 +18,7 @@ class ProfileGender extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['gender'])) {
-            return null;
+            return;
         }
 
         return strtolower($profile['gender']);

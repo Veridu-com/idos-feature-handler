@@ -16,9 +16,9 @@ class VerifiedProfile extends \Thread {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['verified_account'])) {
-            return null;
+            return;
         }
 
-        return ($profile['verified_account'] === 'true');
+        return $profile['verified_account'] === 'true';
     }
 }

@@ -18,13 +18,13 @@ class FirstMostRecentEducationType extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['educations']) || empty($profile['educations']['values'])) {
-            return null;
+            return;
         }
 
         $education = $this->worker->rawBuffer->waitData('_education');
 
         if (empty($education[0]) || empty($education[0]['type'])) {
-            return null;
+            return;
         }
 
         return $education[0]['type'];

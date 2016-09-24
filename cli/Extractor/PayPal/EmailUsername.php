@@ -16,7 +16,7 @@ class EmailUsername extends \Thread {
         $email = $this->worker->parsedBuffer->waitData('emailAddress');
 
         if (empty($email)) {
-            return null;
+            return;
         }
 
         $email = explode('@', $email);

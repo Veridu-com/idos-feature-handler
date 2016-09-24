@@ -16,7 +16,7 @@ class MiddleNameInitial extends \Thread {
         $name = $this->worker->parsedBuffer->waitData('fullName');
 
         if ($name === null) {
-            return null;
+            return;
         }
 
         //@FIXME

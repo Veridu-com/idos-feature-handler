@@ -61,13 +61,15 @@ class Education extends AbstractExtractor {
         }
 
         if (count($education)) {
-            usort($education, function ($a, $b) {
-                if ($b['start_year'] == $a['start_year']) {
-                    return ($b['end_year'] - $a['end_year']);
-                }
+            usort(
+                $education, function ($a, $b) {
+                    if ($b['start_year'] == $a['start_year']) {
+                        return ($b['end_year'] - $a['end_year']);
+                    }
                 
-                return ($b['start_year'] - $a['start_year']);
-            });
+                    return ($b['start_year'] - $a['start_year']);
+                }
+            );
         }
 
         return $education;

@@ -11,6 +11,9 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class NumOfFriendsWithinTwoYears extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
         $birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
 
@@ -19,7 +22,6 @@ class NumOfFriendsWithinTwoYears extends AbstractExtractor {
         }
 
         $distribution = $this->worker->rawBuffer->waitData('_ageDistribution');
-
         if (empty($distribution)) {
             return 0;
         }

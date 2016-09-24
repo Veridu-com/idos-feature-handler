@@ -16,13 +16,13 @@ class ProfileAge extends \Thread {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['account_creation_date'])) {
-            return null;
+            return;
         }
 
         $timestamp = strtotime($profile['account_creation_date']);
 
         if ($timestamp === false) {
-            return null;
+            return;
         }
 
         return $timestamp;

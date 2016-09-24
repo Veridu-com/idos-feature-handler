@@ -18,7 +18,7 @@ class AvgRepliesWeek extends AbstractExtractor {
         $activities = $this->worker->rawBuffer->getData('activities');
 
         if (empty($activities)) {
-            return null;
+            return;
         }
 
         $replies = [];
@@ -41,13 +41,13 @@ class AvgRepliesWeek extends AbstractExtractor {
                 if (! isset($replies[date('Y', $ts)][date('n', $ts)])) {
                     $replies[date('Y', $ts)][date('n', $ts)] = 0;
                 }
-                
+
                 $replies[date('Y', $ts)][date('n', $ts)] += $activity['object']['replies']['totalItems'];
             }
         }
 
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 

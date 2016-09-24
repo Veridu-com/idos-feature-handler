@@ -23,7 +23,7 @@ class NumFavorited extends AbstractExtractor {
 
         $count = 0;
         foreach ($statuses as $status) {
-            if (empty($status['favorited']) && empty($status['retweeted']) && !empty($status['favorite_count'])) {
+            if (empty($status['favorited']) && empty($status['retweeted']) && ! empty($status['favorite_count'])) {
                 $count++;
             }
         }

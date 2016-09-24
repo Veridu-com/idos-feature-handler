@@ -16,11 +16,11 @@ class ProfilePicture extends AbstractExtractor {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
-        $plus = $this->worker->rawBuffer->getData('plus');
+        $plus    = $this->worker->rawBuffer->getData('plus');
 
         if (empty($profile['picture'])) {
             if (empty($plus['image']['url'])) {
-                return null;
+                return;
             }
 
             return $plus['image']['url'];

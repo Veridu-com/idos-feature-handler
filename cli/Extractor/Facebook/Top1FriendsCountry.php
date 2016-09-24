@@ -16,13 +16,16 @@ class Top1FriendsCountry extends AbstractExtractor {
      */
     public function execute() {
         $distribution = $this->worker->rawBuffer->waitData('_locationDistribution');
-
         if (empty($distribution['country'])) {
-            return null;
+            return;
         }
 
-        $cities = array_keys($distribution['country']);
+        // $countries = array_keys($distribution['country']);
+        $countries = get_object_vars($distribution['country']);
+        if (empty($countries[0])) {
+            return;
+        }
 
-        return $cities[0];
+        return $countries[0];
     }
 }

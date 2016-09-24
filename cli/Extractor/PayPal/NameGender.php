@@ -16,7 +16,7 @@ class NameGender extends \Thread {
         $name = $this->worker->parsedBuffer->waitData('firstName');
 
         if ($name === null) {
-            return null;
+            return;
         }
 
         //@FIXME

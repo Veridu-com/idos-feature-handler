@@ -18,7 +18,7 @@ class AvgResharersWeek extends AbstractExtractor {
         $activities = $this->worker->rawBuffer->getData('activities');
 
         if (empty($activities)) {
-            return null;
+            return;
         }
 
         $resharers = [];
@@ -41,13 +41,13 @@ class AvgResharersWeek extends AbstractExtractor {
                 if (! isset($resharers[date('Y', $ts)][date('n', $ts)])) {
                     $resharers[date('Y', $ts)][date('n', $ts)] = 0;
                 }
-                
+
                 $resharers[date('Y', $ts)][date('n', $ts)] += $activity['object']['resharers']['totalItems'];
             }
         }
 
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 

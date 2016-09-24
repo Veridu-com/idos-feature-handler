@@ -74,6 +74,14 @@ class Daemon extends Command {
 
         $logger->debug('Registering Worker Function "feature"');
 
+        /*
+         * Payload content:
+         *  - userName
+         *  - sourceId
+         *  - taskId (=> processId)
+         *  - providerName
+         *  - publicKey
+         */
         $gearman->addFunction(
             'feature',
             function (\GearmanJob $job) use ($logger) {
@@ -128,7 +136,7 @@ class Daemon extends Command {
                     ->Features;
                 try {
                     foreach ($parsedBuffer->asArray() as $field => $value) {
-                        $featuresEndpoint->createNew(
+                        $featuresEndpoint->createOrUpdate(
                             (int) $jobData['sourceId'],
                             $field,
                             $value

@@ -16,7 +16,7 @@ class StreetAddress extends \Thread {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['address']['street_address'])) {
-            return null;
+            return;
         }
 
         return $profile['address']['street_address'];

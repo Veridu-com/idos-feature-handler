@@ -13,14 +13,13 @@ use Cli\Extractor\AbstractExtractor;
 class FullBirthDate extends AbstractExtractor {
     const SUPPORT_DATA = true;
 
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
 
-        if (empty($profile['birthday'])) {
-            return;
-        }
-
-        if (strpos($profile['birthday'], '/') === false) {
+        if ((empty($profile['birthday'])) || (strpos($profile['birthday'], '/') === false)) {
             return;
         }
 

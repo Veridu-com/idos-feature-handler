@@ -31,11 +31,11 @@ class Work extends AbstractExtractor {
             foreach ($profile['positions']['values'] as $work) {
                 if (isset($work['company']['name'], $work['title'], $work['startDate']['year'])) {
                     $work[] = [
-                        'employer' => $work['company']['name'],
-                        'position' => $work['title'],
-                        'location' => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
+                        'employer'   => $work['company']['name'],
+                        'position'   => $work['title'],
+                        'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
                         'start_date' => $work['startDate']['year'],
-                        'end_date' => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
+                        'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
                     ];
 
                     $seen[] = $work['id'];
@@ -45,13 +45,13 @@ class Work extends AbstractExtractor {
 
         if (! empty($profile['threeCurrentPositions']['values'])) {
             foreach ($profile['threeCurrentPositions']['values'] as $work) {
-                if (isset($work['company']['name'], $work['title'], $work['startDate']['year']) && !in_array($work['id'], $seen)) {
+                if (isset($work['company']['name'], $work['title'], $work['startDate']['year']) && ! in_array($work['id'], $seen)) {
                     $work[] = [
-                        'employer' => $work['company']['name'],
-                        'position' => $work['title'],
-                        'location' => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
+                        'employer'   => $work['company']['name'],
+                        'position'   => $work['title'],
+                        'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
                         'start_date' => $work['startDate']['year'],
-                        'end_date' => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
+                        'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
                     ];
 
                     $seen[] = $work['id'];
@@ -61,13 +61,13 @@ class Work extends AbstractExtractor {
 
         if (! empty($profile['threePastPositions']['values'])) {
             foreach ($profile['threePastPositions']['values'] as $work) {
-                if (isset($work['company']['name'], $work['title'], $work['startDate']['year']) && !in_array($work['id'], $seen)) {
+                if (isset($work['company']['name'], $work['title'], $work['startDate']['year']) && ! in_array($work['id'], $seen)) {
                     $work[] = [
-                        'employer' => $work['company']['name'],
-                        'position' => $work['title'],
-                        'location' => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
+                        'employer'   => $work['company']['name'],
+                        'position'   => $work['title'],
+                        'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
                         'start_date' => $work['startDate']['year'],
-                        'end_date' => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
+                        'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
                     ];
 
                     $seen[] = $work['id'];
@@ -76,25 +76,27 @@ class Work extends AbstractExtractor {
         }
 
         if (count($work)) {
-            usort($work, function ($a, $b) {
-                if (empty($a['end_date']) && empty($b['end_date'])) {
-                    return ($b['start_date'] - $a['start_date']);
-                }
+            usort(
+                $work, function ($a, $b) {
+                    if (empty($a['end_date']) && empty($b['end_date'])) {
+                        return $b['start_date'] - $a['start_date'];
+                    }
 
-                if (empty($a['end_date'])) {
-                    return -1;
-                }
+                    if (empty($a['end_date'])) {
+                        return -1;
+                    }
 
-                if (empty($b['end_date'])) {
-                    return 1;
-                }
+                    if (empty($b['end_date'])) {
+                        return 1;
+                    }
 
-                if ($a['start_date'] == $b['start_date']) {
-                    return ($b['end_date'] - $a['end_date']);
-                }
+                    if ($a['start_date'] == $b['start_date']) {
+                        return $b['end_date'] - $a['end_date'];
+                    }
 
-                return ($b['start_date'] - $a['start_date']);
-            });
+                    return $b['start_date'] - $a['start_date'];
+                }
+            );
         }
 
         return $work;

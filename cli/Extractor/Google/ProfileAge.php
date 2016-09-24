@@ -18,7 +18,7 @@ class ProfileAge extends AbstractExtractor {
         $activities = $this->worker->rawBuffer->getData('activities');
 
         if (empty($activities)) {
-            return null;
+            return;
         }
 
         $age = null;
