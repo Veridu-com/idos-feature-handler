@@ -30,24 +30,33 @@ class Context extends \Worker {
      * @var Cli\Utils\NameParser
      */
     public $nameParser;
+    /**
+     * Thread-safe PhoneParser instance.
+     *
+     * @var Cli\Utils\PhoneParser
+     */
+    public $phoneParser;
 
     /**
      * Class constructor.
      *
-     * @param Cli\Utils\Buffer     $rawBuffer
-     * @param Cli\Utils\Buffer     $parsedBuffer
-     * @param Cli\Utils\NameParser $nameParser
+     * @param Cli\Utils\Buffer      $rawBuffer
+     * @param Cli\Utils\Buffer      $parsedBuffer
+     * @param Cli\Utils\NameParser  $nameParser
+     * @param Cli\Utils\PhoneParser $phoneParser
      *
      * @return void
      */
     public function __construct(
         Buffer $rawBuffer,
         Buffer $parsedBuffer,
-        NameParser $nameParser
+        NameParser $nameParser,
+        PhoneParser $phoneParser
     ) {
         $this->rawBuffer    = $rawBuffer;
         $this->parsedBuffer = $parsedBuffer;
         $this->nameParser   = $nameParser;
+        $this->phoneParser  = $phoneParser;
     }
 
     /**
