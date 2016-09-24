@@ -10,6 +10,7 @@ namespace Cli\Extractor;
 
 use Cli\Utils\Buffer;
 use Cli\Utils\Context;
+use Cli\Utils\NameParser;
 
 class Handler {
     /**
@@ -75,7 +76,8 @@ class Handler {
             Context::class,
             [
                 $rawBuffer,
-                $parsedBuffer
+                $parsedBuffer,
+                new NameParser()
             ]
         );
 

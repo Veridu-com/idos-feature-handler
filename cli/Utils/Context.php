@@ -24,20 +24,53 @@ class Context extends \Worker {
      * @var Cli\Utils\Buffer
      */
     public $parsedBuffer;
+    /**
+     * Thread-safe NameParser instance.
+     *
+     * @var Cli\Utils\NameParser
+     */
+    public $nameParser;
 
     /**
      * Class constructor.
      *
-     * @param Cli\Utils\Buffer $rawBuffer
-     * @param Cli\Utils\Buffer $parsedBuffer
+     * @param Cli\Utils\Buffer     $rawBuffer
+     * @param Cli\Utils\Buffer     $parsedBuffer
+     * @param Cli\Utils\NameParser $nameParser
      *
      * @return void
      */
     public function __construct(
         Buffer $rawBuffer,
-        Buffer $parsedBuffer
+        Buffer $parsedBuffer,
+        NameParser $nameParser
     ) {
         $this->rawBuffer    = $rawBuffer;
         $this->parsedBuffer = $parsedBuffer;
+        $this->nameParser   = $nameParser;
+    }
+
+    /**
+     * Worker's start function.
+     *
+     * Required for autoloading to work.
+     *
+     * @param int $options
+     *
+     * @return bool
+     */
+    public function start(int $options = null) : bool {
+        return parent::start(\PTHREADS_INHERIT_NONE);
+    }
+
+    /**
+     * Worker's run function.
+     *
+     * Ensures autoloading works on thread's context.
+     *
+     * @return void
+     */
+    public function run() {
+        require_once __DIR__ . '/../../vendor/autoload.php';
     }
 }
