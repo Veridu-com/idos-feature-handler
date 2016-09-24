@@ -15,11 +15,11 @@ class FirstMostRecentWorkHasProjects extends AbstractExtractor {
         $work = $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work)) {
-            return;
+            return null;
         }
 
         if (empty($work[0]['has_projects'])) {
-            return;
+            return null;
         }
 
         return $work[0]['has_projects'];

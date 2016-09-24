@@ -15,11 +15,11 @@ class FourthMostRecentWorkIsCurrent extends AbstractExtractor {
         $work = $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work)) {
-            return;
+            return null;
         }
 
         if (empty($work[3])) {
-            return;
+            return null;
         }
 
         return empty($work[3]['end_date']);

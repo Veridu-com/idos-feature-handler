@@ -15,11 +15,11 @@ class FirstMostRecentEducationType extends AbstractExtractor {
         $education = $this->worker->rawBuffer->waitData('_education');
 
         if (empty($education)) {
-            return;
+            return null;
         }
 
         if (empty($education[0]['type'])) {
-            return;
+            return null;
         }
 
         return $education[0]['type'];
