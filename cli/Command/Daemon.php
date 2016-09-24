@@ -136,7 +136,7 @@ class Daemon extends Command {
                     ->Features;
                 try {
                     foreach ($parsedBuffer->asArray() as $field => $value) {
-                        $featuresEndpoint->createNew(
+                        $featuresEndpoint->createOrUpdate(
                             (int) $jobData['sourceId'],
                             $field,
                             $value

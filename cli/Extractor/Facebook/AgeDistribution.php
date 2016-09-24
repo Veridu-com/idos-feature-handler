@@ -13,16 +13,18 @@ use Cli\Extractor\AbstractExtractor;
 class AgeDistribution extends AbstractExtractor {
     const SUPPORT_DATA = true;
 
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
         //@FIXME
+        return [];
         //$friends = $this->worker->rawBuffer->waitData('_friends');
-        $friends = [];
-        $years   = [];
-
         if (empty($friends)) {
-            return $years;
+            return [];
         }
 
+        $years = [];
         foreach ($friends as $friend) {
             if (empty($friend['birthday'])) {
                 continue;

@@ -15,7 +15,7 @@ class Buffer extends \Threaded {
     /**
      * Internal data buffer.
      *
-     * @var array
+     * @var \Volatile
      */
     private $data;
 
@@ -27,7 +27,10 @@ class Buffer extends \Threaded {
      * @return void
      */
     public function __construct(array $data = []) {
-        $this->data = $data;
+        $this->data = new \Volatile();
+        foreach ($data as $key => $value) {
+            $this->data->$key = $value;
+        }
     }
 
     /**
@@ -50,7 +53,7 @@ class Buffer extends \Threaded {
                     $this->wait();
                 }
 
-                return $this->data[$topic];
+                return $this->data->$topic;
             }
         );
     }
@@ -65,8 +68,8 @@ class Buffer extends \Threaded {
      * @return mixed|null
      */
     final public function getData(string $topic) {
-        if (isset($this->data[$topic])) {
-            return $this->data[$topic];
+        if (property_exists($this->data, $topic)) {
+            return $this->data->$topic;
         }
     }
 
@@ -83,7 +86,7 @@ class Buffer extends \Threaded {
     final public function setData(string $topic, $value) {
         $this->synchronized(
             function () use ($topic, $value) {
-                $this->data[$topic] = $value;
+                $this->data->$topic = $value;
                 $this->notify();
             }
         );

@@ -11,6 +11,9 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class FifthMostRecentEmployer extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
         $work = $this->worker->rawBuffer->waitData('_work');
 
