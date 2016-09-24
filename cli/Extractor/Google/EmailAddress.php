@@ -18,7 +18,7 @@ class EmailAddress extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if ((empty($profile['email'])) || (strpos($profile['email'], '@') === false)) {
-            return null;
+            return;
         }
 
         return $profile['email'];

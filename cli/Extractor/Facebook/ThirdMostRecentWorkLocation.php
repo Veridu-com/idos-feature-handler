@@ -15,11 +15,11 @@ class ThirdMostRecentWorkLocation extends AbstractExtractor {
         $work = $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work)) {
-            return null;
+            return;
         }
 
         if (empty($work[2]['location'])) {
-            return null;
+            return;
         }
 
         return empty($work[2]['location']);

@@ -35,7 +35,7 @@ class Buffer extends \Threaded {
      *
      * This function will wait until $topic is set on the data buffer.
      * Warning: do *NOT* call this function on a $topic that might not get set
-     * or execution will hang forever.
+     * or thread execution will hang forever.
      *
      * @param string $topic
      *

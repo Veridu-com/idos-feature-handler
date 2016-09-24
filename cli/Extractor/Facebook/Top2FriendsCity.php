@@ -18,13 +18,13 @@ class Top2FriendsCity extends AbstractExtractor {
         $distribution = $this->worker->rawBuffer->waitData('_locationDistribution');
 
         if (empty($distribution['city'])) {
-            return null;
+            return;
         }
 
         $cities = array_keys($distribution['city']);
 
         if (empty($cities[1])) {
-            return null;
+            return;
         }
 
         return $cities[1];

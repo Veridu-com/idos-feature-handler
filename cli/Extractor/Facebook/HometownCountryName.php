@@ -18,13 +18,13 @@ class HometownCountryName extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->waitData('profile');
 
         if (empty($profile['hometown']) || empty($profile['hometown']['name'])) {
-            return null;
+            return;
         }
 
         if (strpos($profile['hometown']['name'], ',') === false) {
             //@FIXME
             //return Utils::getInstance()->countryFromCity($profile['hometown']['name']);
-            return null;
+            return;
         }
 
         $name = explode(',', $profile['hometown']['name']);

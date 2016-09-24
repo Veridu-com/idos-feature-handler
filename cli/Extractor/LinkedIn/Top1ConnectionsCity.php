@@ -18,7 +18,7 @@ class Top5ConnectionsCity extends AbstractExtractor {
         $distribution = $this->worker->rawBuffer->waitData('_locationDistribution');
 
         if (empty($distribution['city'])) {
-            return null;
+            return;
         }
 
         $countries = array_keys($distribution['city']);

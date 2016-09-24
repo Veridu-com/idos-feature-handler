@@ -18,7 +18,7 @@ class SecondMostRecentEmployer extends AbstractExtractor {
         $plus = $this->worker->rawBuffer->getData('plus');
 
         if (empty($plus['organizations'])) {
-            return null;
+            return;
         }
 
         //@FIXME
@@ -26,7 +26,7 @@ class SecondMostRecentEmployer extends AbstractExtractor {
         $work = [];
 
         if (empty($work) || empty($work[1]) || empty($work[1]['employer'])) {
-            return null;
+            return;
         }
 
         return $work[1]['employer'];

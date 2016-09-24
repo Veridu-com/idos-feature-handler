@@ -18,7 +18,7 @@ class Top1FriendsCountry extends AbstractExtractor {
         $distribution = $this->worker->rawBuffer->waitData('_locationDistribution');
 
         if (empty($distribution['country'])) {
-            return null;
+            return;
         }
 
         $cities = array_keys($distribution['country']);

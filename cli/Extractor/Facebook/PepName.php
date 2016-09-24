@@ -16,6 +16,6 @@ class PepName extends AbstractExtractor {
      */
     public function execute() {
         //@FIXME
-        return null;
+        return;
     }
 }

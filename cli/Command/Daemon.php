@@ -74,6 +74,14 @@ class Daemon extends Command {
 
         $logger->debug('Registering Worker Function "feature"');
 
+        /*
+         * Payload content:
+         *  - userName
+         *  - sourceId
+         *  - taskId (=> processId)
+         *  - providerName
+         *  - publicKey
+         */
         $gearman->addFunction(
             'feature',
             function (\GearmanJob $job) use ($logger) {

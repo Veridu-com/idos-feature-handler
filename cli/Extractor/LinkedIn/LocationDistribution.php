@@ -20,8 +20,8 @@ class LocationDistribution extends AbstractExtractor {
         $connections = $this->worker->rawBuffer->waitData('_connections');
 
         $location = [
-            'city' => [],
-            'region' => [],
+            'city'    => [],
+            'region'  => [],
             'country' => []
         ];
 
@@ -33,7 +33,6 @@ class LocationDistribution extends AbstractExtractor {
         $utils = Utils::getInstance();
         foreach ($connections as $connection) {
             if (! empty($connection['location']['name'])) {
-
                 if (strpos($connection['location']['name'], ',') === false) {
                     $city = trim(str_replace('Area', '', $connection['location']['name']));
                 }
@@ -64,7 +63,6 @@ class LocationDistribution extends AbstractExtractor {
                     $location['country'][$country]++;
                 }
             }
-
         }
 
         arsort($location['city']);

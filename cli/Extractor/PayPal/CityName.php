@@ -16,7 +16,7 @@ class CityName extends \Thread {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['address']['locality'])) {
-            return null;
+            return;
         }
 
         return $profile['address']['locality'];

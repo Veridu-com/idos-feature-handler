@@ -18,13 +18,13 @@ class ThirdMostRecentEducationGraduated extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['educations']) || empty($profile['educations']['values'])) {
-            return null;
+            return;
         }
 
         $education = $this->worker->rawBuffer->waitData('_education');
 
         if (empty($education[2]) || empty($education[2]['end_year'])) {
-            return null;
+            return;
         }
 
         return $education[2]['end_year'] < date('Y');

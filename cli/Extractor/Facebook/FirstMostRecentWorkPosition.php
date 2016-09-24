@@ -15,11 +15,11 @@ class FirstMostRecentWorkPosition extends AbstractExtractor {
         $work = $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work)) {
-            return null;
+            return;
         }
 
         if (empty($work[0]['position'])) {
-            return null;
+            return;
         }
 
         return empty($work[0]['position']);

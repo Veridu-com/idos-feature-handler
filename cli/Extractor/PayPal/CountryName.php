@@ -16,7 +16,7 @@ class CountryName extends \Thread {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['address']['country'])) {
-            return null;
+            return;
         }
 
         //@FIXME

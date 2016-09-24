@@ -23,7 +23,7 @@ class NumRetweeted extends AbstractExtractor {
 
         $count = 0;
         foreach ($statuses as $status) {
-            if (empty($status['favorited']) && empty($status['retweeted']) && !empty($status['retweet_count'])) {
+            if (empty($status['favorited']) && empty($status['retweeted']) && ! empty($status['retweet_count'])) {
                 $count++;
             }
         }

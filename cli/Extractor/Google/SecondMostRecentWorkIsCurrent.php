@@ -18,7 +18,7 @@ class SecondMostRecentWorkIsCurrent extends AbstractExtractor {
         $plus = $this->worker->rawBuffer->getData('plus');
 
         if (empty($plus['organizations'])) {
-            return null;
+            return;
         }
 
         //@FIXME
@@ -26,7 +26,7 @@ class SecondMostRecentWorkIsCurrent extends AbstractExtractor {
         $work = [];
 
         if (empty($work) || empty($work[1])) {
-            return null;
+            return;
         }
 
         return empty($work[1]['end_date']);
