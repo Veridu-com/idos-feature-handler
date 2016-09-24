@@ -10,18 +10,18 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class FirstMostRecentWorkPosition extends AbstractExtractor {
+class ThirdMostRecentEducationCourse extends AbstractExtractor {
     public function execute() {
-        $work = $this->worker->rawBuffer->waitData('_work');
+        $education = $this->worker->rawBuffer->waitData('_education');
 
-        if (empty($work)) {
+        if (empty($education)) {
             return null;
         }
 
-        if (empty($work[0]['position'])) {
+        if (empty($education[2]['course'])) {
             return null;
         }
 
-        return empty($work[0]['position']);
+        return $education[2]['course'];
     }
 }
