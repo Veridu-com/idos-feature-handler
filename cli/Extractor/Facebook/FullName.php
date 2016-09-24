@@ -17,7 +17,7 @@ class FullName extends AbstractExtractor {
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
         if ((empty($profile['first_name'])) || (empty($profile['last_name']))) {
-            return null;
+            return;
         }
 
         return sprintf('%s %s', trim($profile['first_name']), trim($profile['last_name']));
