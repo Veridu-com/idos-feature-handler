@@ -17,7 +17,7 @@ class MiddleNameInitial extends AbstractExtractor {
     public function execute() {
         $fullName = $this->worker->parsedBuffer->waitData('fullName');
         if (empty($fullName)) {
-            return null;
+            return;
         }
 
         return $this->worker->nameParser->middleNameInitial($fullName);

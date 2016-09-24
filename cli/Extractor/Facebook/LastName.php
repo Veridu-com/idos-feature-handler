@@ -17,7 +17,7 @@ class LastName extends AbstractExtractor {
     public function execute() {
         $fullName = $this->worker->parsedBuffer->waitData('fullName');
         if (empty($fullName)) {
-            return null;
+            return;
         }
 
         return $this->worker->nameParser->lastName($fullName);

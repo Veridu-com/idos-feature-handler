@@ -11,6 +11,7 @@ namespace Cli\Extractor;
 use Cli\Utils\Buffer;
 use Cli\Utils\Context;
 use Cli\Utils\NameParser;
+use Cli\Utils\PhoneParser;
 
 class Handler {
     /**
@@ -77,7 +78,8 @@ class Handler {
             [
                 $rawBuffer,
                 $parsedBuffer,
-                new NameParser()
+                new NameParser(),
+                new PhoneParser()
             ]
         );
 
