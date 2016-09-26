@@ -10,24 +10,24 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class NumOfEventsAttended extends AbstractExtractor {
+class NumOfGroupsAdministrating extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $events = $this->worker->rawBuffer->getData('events');
+        $groups = $this->worker->rawBuffer->getData('groups');
 
-        if (empty($events)) {
+        if (empty($groups)) {
             return 0;
         }
 
         $return = 0;
-        foreach ($events as $event) {
-            if (isset($event['rsvp_status']) && strtolower($event['rsvp_status']) === 'attending') {
+        foreach ($groups as $group) {
+            if (isset($group['administrator']) && $group['administrator']) {
                 $return++;
             }
         }
-
+        
         return $return;
     }
 }

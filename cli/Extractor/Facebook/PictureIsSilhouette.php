@@ -10,17 +10,18 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class NumOfEvents extends AbstractExtractor {
+class PictureIsSilhouette extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $events = $this->worker->rawBuffer->getData('events');
-
-        if (empty($events)) {
-            return 0;
+        $profile = $this->worker->rawBuffer->getData('profile');
+        
+        if (empty($profile['picture']['data']['is_silhouette'])) {
+            return false;
         }
 
-        return count($events);
+        return $profile['picture']['data']['is_silhouette'];
+
     }
 }
