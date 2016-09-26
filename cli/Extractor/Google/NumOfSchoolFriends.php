@@ -10,7 +10,7 @@ namespace Cli\Extractor\Google;
 
 use Cli\Extractor\AbstractExtractor;
 
-class SchoolFriends extends AbstractExtractor {
+class NumOfSchoolFriends extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
@@ -42,7 +42,7 @@ class SchoolFriends extends AbstractExtractor {
                 }
             }
         }
-        
+
         return count($colleagues);
     }
 }

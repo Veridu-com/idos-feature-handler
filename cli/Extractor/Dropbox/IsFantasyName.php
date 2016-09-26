@@ -6,23 +6,23 @@
 
 declare(strict_types = 1);
 
-namespace Cli\Extractor\Google;
+namespace Cli\Extractor\LinkedIn;
 
 use Cli\Extractor\AbstractExtractor;
 
-class IsCommonName extends AbstractExtractor {
+class IsFantasyName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $fullName = $this->worker->parsedBuffer->getData('fullName');
+        $fullName = $this->worker->parsedBuffer->waitData('fullName');
 
         if (empty($fullName)) {
             return;
         }
 
         //@FIXME
-        //return Utils::getInstance()->isCommonName();
+        //return Utils::getInstance()->isFantasyName($fullName);
         return;
     }
 }

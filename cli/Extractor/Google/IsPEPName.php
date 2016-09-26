@@ -10,17 +10,19 @@ namespace Cli\Extractor\Google;
 
 use Cli\Extractor\AbstractExtractor;
 
-class NumCircles extends AbstractExtractor {
+class IsPEPName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $circles = $this->worker->rawBuffer->getData('circles');
+        $fullName = $this->worker->parsedBuffer->getData('fullName');
 
-        if (empty($circles)) {
-            return 0;
+        if (empty($fullName)) {
+            return;
         }
 
-        return count($circles);
+        //@FIXME
+        //return Utils::getInstance()->isPepName();
+        return;
     }
 }

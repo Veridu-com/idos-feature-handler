@@ -10,7 +10,7 @@ namespace Cli\Extractor\LinkedIn;
 
 use Cli\Extractor\AbstractExtractor;
 
-class CelebrityName extends AbstractExtractor {
+class IsCelebrityName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */

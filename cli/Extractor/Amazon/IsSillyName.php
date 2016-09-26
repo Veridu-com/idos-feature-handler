@@ -10,7 +10,7 @@ namespace Cli\Extractor\Amazon;
 
 use Cli\Extractor\AbstractExtractor;
 
-class CommonName extends AbstractExtractor {
+class IsSillyName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */

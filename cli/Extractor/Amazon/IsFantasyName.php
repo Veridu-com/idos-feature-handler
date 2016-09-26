@@ -10,7 +10,7 @@ namespace Cli\Extractor\Amazon;
 
 use Cli\Extractor\AbstractExtractor;
 
-class PepName extends AbstractExtractor {
+class IsFantasyName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
@@ -22,7 +22,7 @@ class PepName extends AbstractExtractor {
         }
 
         //@FIXME
-        //return Utils::getInstance()->isCommonName($name);
+        //return Utils::getInstance()->isFantasyName($name);
         return;
     }
 }

@@ -6,23 +6,23 @@
 
 declare(strict_types = 1);
 
-namespace Cli\Extractor\LinkedIn;
+namespace Cli\Extractor\Amazon;
 
 use Cli\Extractor\AbstractExtractor;
 
-class SanctionedName extends AbstractExtractor {
+class IsACommonName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $fullName = $this->worker->parsedBuffer->waitData('fullName');
+        $firstName = $this->worker->parsedBuffer->waitData('firstName');
 
-        if (empty($fullName)) {
-            return;
+        if ($firstName === null) {
+            return false;
         }
 
         //@FIXME
-        //return Utils::getInstance()->isSanctionedName($fullName);
+        //return Utils::getInstance()->isCommonName($name);
         return;
     }
 }

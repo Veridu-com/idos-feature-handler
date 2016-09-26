@@ -10,19 +10,19 @@ namespace Cli\Extractor\LinkedIn;
 
 use Cli\Extractor\AbstractExtractor;
 
-class CommonName extends AbstractExtractor {
+class IsPEPName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $firstName = $this->worker->parsedBuffer->waitData('firstName');
+        $fullName = $this->worker->parsedBuffer->waitData('fullName');
 
-        if (empty($firstName)) {
+        if (empty($fullName)) {
             return;
         }
 
         //@FIXME
-        //return Utils::getInstance()->isCommonName($firstName);
+        //return Utils::getInstance()->isPepName($fullName);
         return;
     }
 }

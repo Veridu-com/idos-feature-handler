@@ -10,7 +10,7 @@ namespace Cli\Extractor\LinkedIn;
 
 use Cli\Extractor\AbstractExtractor;
 
-class FantasyName extends AbstractExtractor {
+class IsListedName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
@@ -22,7 +22,7 @@ class FantasyName extends AbstractExtractor {
         }
 
         //@FIXME
-        //return Utils::getInstance()->isFantasyName($fullName);
+        //return Utils::getInstance()->isListedName($fullName);
         return;
     }
 }
