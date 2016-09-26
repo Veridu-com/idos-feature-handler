@@ -10,27 +10,24 @@ namespace Cli\Extractor\Yahoo;
 
 use Cli\Extractor\AbstractExtractor;
 
-class HomeAddress extends AbstractExtractor {
-    const SUPPORT_DATA = true;
-
+class ProfileGender extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
 
-        if (empty($profile['addresses'])) {
+        if (empty($profile['gender'])) {
             return;
         }
 
-        $return = null;
-        foreach ($profile['addresses'] as $address) {
-            if ($address['type'] === 'HOME') {
-                $return = $address;
-                break;
-            }
+        switch (strtolower($profile['gender'])) {
+            case 'm':
+                return 'male';
+            case 'f':
+                return 'female';
+            default:
+                return 'other';
         }
-
-        return $return;
     }
 }
