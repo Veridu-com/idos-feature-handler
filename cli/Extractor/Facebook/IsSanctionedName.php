@@ -10,17 +10,19 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class NumOfEvents extends AbstractExtractor {
+class IsSanctionedName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $events = $this->worker->rawBuffer->getData('events');
+        $fullName = $this->worker->parsedBuffer->waitData('fullName');
 
-        if (empty($events)) {
-            return 0;
+        if (empty($fullName)) {
+            return;
         }
 
-        return count($events);
+        //@FIXME
+        //return Utils::getInstance()->isSanctionedName($fullName);
+        return;
     }
 }

@@ -15,31 +15,102 @@ class NumOfReceivedComments extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profileId = $this->worker->parsedBuffer->waitData('profileId');
+        $ids = [];
 
-        $total = 0;
-        foreach (['photos', 'posts', 'tagged'] as $topic) {
-            $data = $this->worker->rawBuffer->getData($topic);
-            if (empty($data)) {
-                continue;
-            }
-
-            foreach ($data as $item) {
-                if (isset($item['comments']['data'])) {
-                    foreach ($item['comments']['data'] as $comment) {
+        $links = $this->worker->rawBuffer->getData('links');
+        if (! empty($links)) {
+            foreach ($links as $like) {
+                if (isset($like['comments']['data'])) {
+                    foreach ($like['comments']['data'] as $comment) {
                         if (isset($comment['from']['id'])) {
-                            // dismiss comments from the profile owner
-                            if ($comment['from']['id'] === $profileId) {
-                                continue;
+                            if (! isset($ids[$comment['from']['id']])) {
+                                $ids[$comment['from']['id']] = 0;
                             }
 
-                            $total++;
+                            $ids[$comment['from']['id']]++;
                         }
                     }
                 }
             }
         }
+                        
+        $photos = $this->worker->rawBuffer->getData('photos');
+        if (! empty($data['photos'])) {
+            foreach ($data['photos'] as $photo) {
+                if (isset($photo['comments']['data'])) {
+                    foreach ($photo['comments']['data'] as $comment) {
+                        if (isset($comment['from']['id'])) {
+                            if (!isset($ids[$comment['from']['id']])) {
+                                $ids[$comment['from']['id']] = 0;
+                            }
 
-        return $total;
+                            $ids[$comment['from']['id']]++;
+                        }
+                    }
+                }
+            }
+        }
+                        
+
+        $posts = $this->worker->rawBuffer->getData('posts');
+        if (! empty($posts)) {
+            foreach ($posts as $post) {
+                if (isset($post['comments']['data'])) {
+                    foreach ($post['comments']['data'] as $comment) {
+                        if (isset($comment['from']['id'])) {
+                            if (! isset($ids[$comment['from']['id']])) {
+                                $ids[$comment['from']['id']] = 0;
+                            }
+
+                            $ids[$comment['from']['id']]++;
+                        }
+                    }
+                }
+            }
+        }
+                        
+
+        $statuses = $this->worker->rawBuffer->getData('statuses');
+        if (! empty($statuses)) {
+            foreach ($statuses as $status) {
+                if (isset($status['comments']['data'])) {
+                    foreach ($status['comments']['data'] as $comment) {
+                        if (isset($comment['from']['id'])) {
+                            if (!isset($ids[$comment['from']['id']])) {
+                                $ids[$comment['from']['id']] = 0;
+                            }
+
+                            $ids[$comment['from']['id']]++;
+                        }
+                    }
+                }
+            }
+        }
+                        
+
+        $tagged = $this->worker->rawBuffer->getData('tagged');
+        if (! empty($tagged)) {
+            foreach ($tagged as $tagged) {
+                if (isset($tagged['comments']['data'])) {
+                    foreach ($tagged['comments']['data'] as $comment) {
+                        if (isset($comment['from']['id'])) {
+                            if (!isset($ids[$comment['from']['id']])) {
+                                $ids[$comment['from']['id']] = 0;
+                            }
+
+                            $ids[$comment['from']['id']]++;
+                        }
+                    }
+                }
+            }
+        }
+                        
+
+        $profile = $this->worker->rawBuffer->getData('profile');
+        if (isset($profile['id']) && isset($ids[$profile['id']])) {
+            unset($ids[$profile['id']]);
+        }
+
+        return count($ids);
     }
 }

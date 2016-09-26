@@ -10,12 +10,17 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class CommonName extends AbstractExtractor {
+class NumOfLocations extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        //@FIXME
-        return;
+        $locations = $this->worker->rawBuffer->getData('locations');
+
+        if (empty($locations)) {
+            return 0;
+        }
+        
+        return count($locations);
     }
 }

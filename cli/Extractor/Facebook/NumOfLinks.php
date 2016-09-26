@@ -10,17 +10,17 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class NumOfEvents extends AbstractExtractor {
+class NumOfLinks extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $events = $this->worker->rawBuffer->getData('events');
+        $links = $this->worker->rawBuffer->getData('links');
 
-        if (empty($events)) {
+        if (empty($links)) {
             return 0;
         }
-
-        return count($events);
+        
+        return count($links);
     }
 }

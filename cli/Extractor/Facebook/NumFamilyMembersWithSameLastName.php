@@ -10,7 +10,7 @@ namespace Cli\Extractor\Facebook;
 
 use Cli\Extractor\AbstractExtractor;
 
-class NumOfFamilyMembers extends AbstractExtractor {
+class NumFamilyMembersWithSameLastName extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */
@@ -26,19 +26,18 @@ class NumOfFamilyMembers extends AbstractExtractor {
             return 0;
         }
 
-        //@FIXME check this
-        $utils = Utils::getInstance();
         $count = 0;
-        foreach ($family as $person) {
+        foreach ($family as $person) { 
             if (empty($person['last_name'])) {
                 continue;
             }
 
-            if ($lastName === $utils->lastName($person['last_name'])) {
+            //@FIXME
+            /*if ($lastName === Utils::getInstance()->lastName($person['last_name'])) {
                 $count++;
-            }
+            }*/
         }
-
+        
         return $count;
     }
 }
