@@ -28,6 +28,7 @@
         "davidgorges/human-name-parser": "^0.2",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.6",
+        "giggsey/libphonenumber-for-php": "^7.6",
         "justinrainbow/json-schema": "^2.0",
         "lcobucci/jwt": "^3.1",
         "league/event": "^2.1",
