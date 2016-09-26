@@ -6,19 +6,20 @@
 
 declare(strict_types = 1);
 
-namespace Cli\OAuth\PayPal;
+namespace Cli\OAuth\Personal;
 
-class FullName extends \Thread {
+class PhoneNumber extends \Thread {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $phone = $this->worker->rawBuffer->getData('phone');
 
-        if (empty($profile['name'])) {
+        if (empty($phone)) {
             return;
         }
 
-        return $profile['name'];
+        //@FIXME
+        //return Utils::getInstance()->phoneNumber($phone);
     }
 }

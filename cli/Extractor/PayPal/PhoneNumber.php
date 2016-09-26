@@ -8,17 +8,18 @@ declare(strict_types = 1);
 
 namespace Cli\OAuth\PayPal;
 
-class EmailAddress extends \Thread {
+class PhoneNumber extends \Thread {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->worker->rawBuffer->getData('phoneNumber');
 
-        if (empty($profile['email']) || strpos($profile['email'], '@') === false) {
+        if (empty($profile['phone_number'])) {
             return;
         }
 
-        return $profile['email'];
+        //@FIXME
+        //return Utils::getInstance()->phoneNumber($profile['phone_number']);
     }
 }

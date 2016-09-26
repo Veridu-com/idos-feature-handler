@@ -6,20 +6,20 @@
 
 declare(strict_types = 1);
 
-namespace Cli\OAuth\PayPal;
+namespace Cli\OAuth\Personal;
 
-class FirstName extends \Thread {
+class PhoneCountryCode extends \Thread {
     /**
      * {@inheritdoc}
      */
     public function execute() {
-        $name = $this->worker->parsedBuffer->waitData('fullName');
+        $phone = $this->worker->rawBuffer->getData('phone');
 
-        if (empty($name)) {
+        if (empty($phone)) {
             return;
         }
 
         //@FIXME
-        return Utils::getInstance()->firstName($name);
+        //return Utils::getInstance()->phoneCountryCode($phone);
     }
 }
