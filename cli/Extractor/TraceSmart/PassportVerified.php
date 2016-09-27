@@ -21,18 +21,19 @@ class PassportVerified extends AbstractExtractor {
             return false;
         }
 
-        if (empty($passport['Passport']['MRZValid']) ||
-            empty($passport['Passport']['DOBValid']) ||
-            empty($passport['Passport']['GenderValid']) ||
-            empty($passport['Passport']['ExpiryValid'])) {
+        if (empty($passport['Passport']['MRZValid'])
+            || empty($passport['Passport']['DOBValid'])
+            || empty($passport['Passport']['GenderValid'])
+            || empty($passport['Passport']['ExpiryValid'])
+        ) {
             return false;
         }
 
-        return (
+        return
             $passport['Passport']['MRZValid'] &&
             $passport['Passport']['DOBValid'] &&
             $passport['Passport']['GenderValid'] &&
             $passport['Passport']['ExpiryValid']
-        );
+        ;
     }
 }

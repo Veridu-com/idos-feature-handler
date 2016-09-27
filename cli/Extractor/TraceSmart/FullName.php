@@ -21,23 +21,27 @@ class FullName extends AbstractExtractor {
             return;
         }
 
-        if (! in_array($address['Address']['MatchType'], array('Full', 'Partial', 'Multiple'))) {
+        if (! in_array($address['Address']['MatchType'], ['Full', 'Partial', 'Multiple'])) {
             return;
         }
 
         if (empty($address['Address']['MiddleName'])) {
-            return ucwords(sprintf(
-                '%s %s',
-                strtolower(trim($address['Address']['Forename'])),
-                strtolower(trim($address['Address']['Surname']))
-            ));
+            return ucwords(
+                sprintf(
+                    '%s %s',
+                    strtolower(trim($address['Address']['Forename'])),
+                    strtolower(trim($address['Address']['Surname']))
+                )
+            );
         }
-        
-        return ucwords(sprintf(
-            '%s %s %s',
-            strtolower(trim($address['Address']['Forename'])),
-            strtolower(trim($address['Address']['MiddleName'])),
-            strtolower(trim($address['Address']['Surname']))
-        ));
+
+        return ucwords(
+            sprintf(
+                '%s %s %s',
+                strtolower(trim($address['Address']['Forename'])),
+                strtolower(trim($address['Address']['MiddleName'])),
+                strtolower(trim($address['Address']['Surname']))
+            )
+        );
     }
 }

@@ -16,7 +16,7 @@ class CurrentRegionName extends AbstractExtractor {
      */
     public function execute() {
         $city = $this->worker->parsedBuffer->waitData('currentCityName');
-        
+
         if ($city === null) {
             return;
         }

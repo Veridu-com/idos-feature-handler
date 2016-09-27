@@ -18,7 +18,7 @@ class CurrentCityName extends AbstractExtractor {
         $plus = $this->worker->rawBuffer->getData('plus');
 
         if (empty($plus['placesLived'])) {
-            return null;
+            return;
         }
 
         $i = 0;
@@ -36,10 +36,12 @@ class CurrentCityName extends AbstractExtractor {
             }
 
             $city = explode('-', $plus['placesLived'][$i]['value']);
+
             return trim($city[0]);
         }
-        
+
         $city = explode(',', $plus['placesLived'][$i]['value']);
+
         return trim($city[0]);
     }
 }

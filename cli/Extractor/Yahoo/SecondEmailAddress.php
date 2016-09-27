@@ -18,7 +18,7 @@ class SecondEmailAddress extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['emails'][1]['handle'])) {
-            return null;
+            return;
         }
 
         return $profile['emails'][1]['handle'];

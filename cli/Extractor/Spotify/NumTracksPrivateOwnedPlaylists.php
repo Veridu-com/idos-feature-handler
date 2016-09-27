@@ -15,12 +15,12 @@ class NumTracksPrivateOwnedPlaylists extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile   = $this->worker->rawBuffer->getData('profile');
         $playlists = $this->worker->rawBuffer->waitData('_playlists');
 
         $return = 0;
         foreach ($playlists as $playlist) {
-            if (!$playlist['public'] && !$playlist['collaborative'] && $playlist['owner'] === $profile['id']) {
+            if (! $playlist['public'] && ! $playlist['collaborative'] && $playlist['owner'] === $profile['id']) {
                 $return += $playlist['total_tracks'];
             }
         }

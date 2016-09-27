@@ -15,9 +15,9 @@ class StreetAddress extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $street = $this->worker->rawBuffer->getData('street');
+        $street  = $this->worker->rawBuffer->getData('street');
         $street1 = $this->worker->rawBuffer->getData('street1');
-        $number = $this->worker->rawBuffer->getData('number');
+        $number  = $this->worker->rawBuffer->getData('number');
 
         if (empty($street)) {
             if (empty($street1)) {
@@ -26,7 +26,7 @@ class StreetAddress extends AbstractExtractor {
 
             return $street1;
         }
-        
+
         if (empty($number)) {
             return $street;
         }

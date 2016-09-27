@@ -27,7 +27,7 @@ class NumOfStudentFriendsWithinTwoYearsAgeDifference extends AbstractExtractor {
         }
 
         $_friends = $this->worker->rawBuffer->waitData('_friends');
-        $return = 0;
+        $return   = 0;
         foreach ($_friends as $friend) {
             if (empty($friend['birthday']) || empty($friend['education'])) {
                 continue;
@@ -45,8 +45,8 @@ class NumOfStudentFriendsWithinTwoYearsAgeDifference extends AbstractExtractor {
                     }
                 }
             }
-        }   
-        
+        }
+
         return $return;
     }
 }

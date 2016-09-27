@@ -16,7 +16,7 @@ class PictureIsSilhouette extends AbstractExtractor {
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
-        
+
         if (empty($profile['picture']['data']['is_silhouette'])) {
             return false;
         }

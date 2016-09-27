@@ -20,7 +20,7 @@ class NumOfLinks extends AbstractExtractor {
         if (empty($links)) {
             return 0;
         }
-        
+
         return count($links);
     }
 }

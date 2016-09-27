@@ -20,7 +20,7 @@ class NumOfStatuses extends AbstractExtractor {
         if (empty($statuses)) {
             return 0;
         }
-        
+
         return count($statuses);
     }
 }

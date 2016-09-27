@@ -18,7 +18,7 @@ class CountryName extends AbstractExtractor {
         $profile = $this->worker->rawBuffer->getData('profile');
 
         if (empty($profile['country'])) {
-            return null;
+            return;
         }
 
         //@FIXME

@@ -29,9 +29,9 @@ class Dirs extends AbstractExtractor {
             foreach ($content['contents'] as $item) {
                 if ($item['is_dir']) {
                     $_dirs[] = [
-                        'path' => $item['path'],
+                        'path'             => $item['path'],
                         'shared_folder_id' => isset($item['shared_folder']['shared_folder_id']) ? $item['shared_folder']['shared_folder_id'] : null,
-                        'modified' => $item['modified']
+                        'modified'         => $item['modified']
                     ];
                 }
             }

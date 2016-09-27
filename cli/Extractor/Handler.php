@@ -31,7 +31,7 @@ class Handler {
      * [create description].
      *
      * @param string $providerName
-
+     
      * @return self
      */
     public static function create(string $providerName) : self {

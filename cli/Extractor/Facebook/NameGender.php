@@ -16,7 +16,7 @@ class NameGender extends AbstractExtractor {
      */
     public function execute() {
         $firstName = $this->worker->parsedBuffer->waitData('firstName');
-        
+
         if (empty($firstName)) {
             return;
         }

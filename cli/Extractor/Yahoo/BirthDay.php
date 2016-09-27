@@ -29,7 +29,7 @@ class BirthDay extends AbstractExtractor {
         if (isset($date[1])) {
             return intval($date[1]);
         }
-        
+
         return 0;
     }
 }

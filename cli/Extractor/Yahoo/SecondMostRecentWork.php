@@ -18,7 +18,7 @@ class SecondMostRecentWork extends AbstractExtractor {
         $work = $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work[1]['name'])) {
-            return null;
+            return;
         }
 
         return $work[1]['name'];

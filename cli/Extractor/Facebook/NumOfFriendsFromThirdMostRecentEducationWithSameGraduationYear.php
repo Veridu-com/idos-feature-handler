@@ -29,22 +29,23 @@ class NumOfFriendsFromThirdMostRecentEducationWithSameGraduationYear extends Abs
         }
 
         $_friends = $this->worker->rawBuffer->waitData('_friends');
-        $return = 0;
+        $return   = 0;
         foreach ($_friends as $friend) {
             if (empty($friend['education'])) {
                 continue;
             }
 
             foreach ($friend['education'] as $education) {
-                if (isset($education['school']['id'], $education['year']['name']) &&
-                    $education['school']['id'] === $_education[2]['id'] &&
-                    $education['year']['name'] == $_education[2]['year']) {
+                if (isset($education['school']['id'], $education['year']['name'])
+                    && $education['school']['id'] === $_education[2]['id']
+                    && $education['year']['name'] == $_education[2]['year']
+                ) {
                     $return++;
                     break;
                 }
             }
         }
-        
+
         return $return;
     }
 }

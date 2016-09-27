@@ -26,6 +26,7 @@ class BirthMonth extends AbstractExtractor {
         }
 
         $date = explode('/', $profile['birthdate']);
+
         return intval($date[0]);
     }
 }

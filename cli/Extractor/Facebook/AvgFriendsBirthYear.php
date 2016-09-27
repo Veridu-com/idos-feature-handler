@@ -22,7 +22,7 @@ class AvgFriendsBirthYear extends AbstractExtractor {
         }
 
         $years = array_keys($distribution);
-        
+
         return $years[0];
     }
 }

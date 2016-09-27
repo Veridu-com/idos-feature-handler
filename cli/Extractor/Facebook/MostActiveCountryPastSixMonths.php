@@ -16,8 +16,8 @@ class MostActiveCountryPastSixMonths extends AbstractExtractor {
      */
     public function execute() {
         $activity = [];
-        $now = time();
-        $limit = (6 * 2629743);
+        $now      = time();
+        $limit    = (6 * 2629743);
 
         foreach (['locations', 'links', 'photos', 'posts', 'statuses', 'tagged'] as $field) {
             $data = $this->worker->rawBuffer->getData($field);
@@ -49,7 +49,7 @@ class MostActiveCountryPastSixMonths extends AbstractExtractor {
         }
 
         if (empty($activity)) {
-            return null;
+            return;
         }
 
         arsort($activity);

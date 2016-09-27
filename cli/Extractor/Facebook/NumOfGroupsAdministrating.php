@@ -27,7 +27,7 @@ class NumOfGroupsAdministrating extends AbstractExtractor {
                 $return++;
             }
         }
-        
+
         return $return;
     }
 }

@@ -27,7 +27,7 @@ class NumFamilyMembersWithSameLastName extends AbstractExtractor {
         }
 
         $count = 0;
-        foreach ($family as $person) { 
+        foreach ($family as $person) {
             if (empty($person['last_name'])) {
                 continue;
             }
@@ -37,7 +37,7 @@ class NumFamilyMembersWithSameLastName extends AbstractExtractor {
                 $count++;
             }*/
         }
-        
+
         return $count;
     }
 }

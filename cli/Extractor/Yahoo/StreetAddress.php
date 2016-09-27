@@ -18,7 +18,7 @@ class StreetAddress extends AbstractExtractor {
         $homeAddress = $this->worker->rawBuffer->waitData('_homeAddress');
 
         if (empty($homeAddress) || empty($homeAddress['street'])) {
-            return null;
+            return;
         }
 
         return $homeAddress['street'];

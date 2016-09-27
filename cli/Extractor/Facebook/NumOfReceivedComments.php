@@ -33,14 +33,14 @@ class NumOfReceivedComments extends AbstractExtractor {
                 }
             }
         }
-                        
+
         $photos = $this->worker->rawBuffer->getData('photos');
         if (! empty($data['photos'])) {
             foreach ($data['photos'] as $photo) {
                 if (isset($photo['comments']['data'])) {
                     foreach ($photo['comments']['data'] as $comment) {
                         if (isset($comment['from']['id'])) {
-                            if (!isset($ids[$comment['from']['id']])) {
+                            if (! isset($ids[$comment['from']['id']])) {
                                 $ids[$comment['from']['id']] = 0;
                             }
 
@@ -50,7 +50,6 @@ class NumOfReceivedComments extends AbstractExtractor {
                 }
             }
         }
-                        
 
         $posts = $this->worker->rawBuffer->getData('posts');
         if (! empty($posts)) {
@@ -68,7 +67,6 @@ class NumOfReceivedComments extends AbstractExtractor {
                 }
             }
         }
-                        
 
         $statuses = $this->worker->rawBuffer->getData('statuses');
         if (! empty($statuses)) {
@@ -76,7 +74,7 @@ class NumOfReceivedComments extends AbstractExtractor {
                 if (isset($status['comments']['data'])) {
                     foreach ($status['comments']['data'] as $comment) {
                         if (isset($comment['from']['id'])) {
-                            if (!isset($ids[$comment['from']['id']])) {
+                            if (! isset($ids[$comment['from']['id']])) {
                                 $ids[$comment['from']['id']] = 0;
                             }
 
@@ -86,7 +84,6 @@ class NumOfReceivedComments extends AbstractExtractor {
                 }
             }
         }
-                        
 
         $tagged = $this->worker->rawBuffer->getData('tagged');
         if (! empty($tagged)) {
@@ -94,7 +91,7 @@ class NumOfReceivedComments extends AbstractExtractor {
                 if (isset($tagged['comments']['data'])) {
                     foreach ($tagged['comments']['data'] as $comment) {
                         if (isset($comment['from']['id'])) {
-                            if (!isset($ids[$comment['from']['id']])) {
+                            if (! isset($ids[$comment['from']['id']])) {
                                 $ids[$comment['from']['id']] = 0;
                             }
 
@@ -104,7 +101,6 @@ class NumOfReceivedComments extends AbstractExtractor {
                 }
             }
         }
-                        
 
         $profile = $this->worker->rawBuffer->getData('profile');
         if (isset($profile['id']) && isset($ids[$profile['id']])) {

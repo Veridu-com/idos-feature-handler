@@ -15,7 +15,7 @@ class NumOfCoworkers extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $plus = $this->worker->rawBuffer->getData('plus');
+        $plus    = $this->worker->rawBuffer->getData('plus');
         $circles = $this->worker->rawBuffer->getData('circles');
 
         if (empty($plus['organizations']) || empty($circles)) {
@@ -25,7 +25,7 @@ class NumOfCoworkers extends AbstractExtractor {
         $companies = [];
         $coworkers = [];
         foreach ($plus['organizations'] as $organization) {
-            if ($organization['type'] === 'work' && !empty($organization['name'])) {
+            if ($organization['type'] === 'work' && ! empty($organization['name'])) {
                 $companies[] = $organization['name'];
             }
         }
@@ -37,12 +37,12 @@ class NumOfCoworkers extends AbstractExtractor {
             }
 
             foreach ($circle['organizations'] as $organization) {
-                if ($organization['type'] === 'work' && !empty($organization['name']) && in_array($organization['name'], $companies)) {
+                if ($organization['type'] === 'work' && ! empty($organization['name']) && in_array($organization['name'], $companies)) {
                     $coworkers[$circle['id']] = true;
                 }
             }
         }
-        
+
         return count($coworkers);
     }
 }

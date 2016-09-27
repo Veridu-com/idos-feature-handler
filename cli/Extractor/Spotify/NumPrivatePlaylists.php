@@ -23,7 +23,7 @@ class NumPrivatePlaylists extends AbstractExtractor {
 
         $return = 0;
         foreach ($playlists as $playlist) {
-            if (!$playlist['public'] && !$playlist['collaborative']) {
+            if (! $playlist['public'] && ! $playlist['collaborative']) {
                 $return++;
             }
         }
