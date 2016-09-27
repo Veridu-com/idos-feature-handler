@@ -31,7 +31,7 @@ class Handler {
      * [create description].
      *
      * @param string $providerName
-     
+
      * @return self
      */
     public static function create(string $providerName) : self {
@@ -40,7 +40,7 @@ class Handler {
             throw new \RuntimeException(
                 sprintf(
                     'Invalid provider "%s".',
-                    $jobData['providerName']
+                    $providerName
                 )
             );
         }
