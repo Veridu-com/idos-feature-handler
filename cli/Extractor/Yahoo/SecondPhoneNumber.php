@@ -8,14 +8,14 @@ declare(strict_types = 1);
 
 namespace Cli\OAuth\PayPal;
 
-class PhoneNumber extends \Thread {
+class SecondPhoneNumber extends \Thread {
     /**
      * {@inheritdoc}
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
 
-        if (empty($profile['phone_number'])) {
+        if (empty($profile['phones'][1]) || empty($profile['phones'][1]['number'])) {
             return;
         }
 

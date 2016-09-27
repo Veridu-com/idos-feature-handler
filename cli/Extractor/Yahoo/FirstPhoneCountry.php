@@ -8,18 +8,18 @@ declare(strict_types = 1);
 
 namespace Cli\OAuth\PayPal;
 
-class PhoneNumber extends \Thread {
+class FirstPhoneCountry extends \Thread {
     /**
      * {@inheritdoc}
      */
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
 
-        if (empty($profile['phone_number'])) {
+        if (empty($profile['phones'][0]) || empty($profile['phones'][0]['number'])) {
             return;
         }
 
         //@FIXME
-        //return Utils::getInstance()->phoneNumber($profile['phone_number']);
+        //return Utils::getInstance()->phoneCountry($profile['phone_number']);
     }
 }
