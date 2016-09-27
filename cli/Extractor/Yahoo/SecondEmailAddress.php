@@ -10,7 +10,7 @@ namespace Cli\Extractor\Yahoo;
 
 use Cli\Extractor\AbstractExtractor;
 
-class FirstEmailAddress extends AbstractExtractor {
+class SecondEmailAddress extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */

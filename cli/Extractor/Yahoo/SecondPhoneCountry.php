@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Cli\OAuth\PayPal;
+namespace Cli\Extractor\Yahoo;
 
 class SecondPhoneCountry extends \Thread {
     /**

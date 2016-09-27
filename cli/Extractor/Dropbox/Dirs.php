@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Cli\Extractor\LinkedIn;
+namespace Cli\Extractor\Dropbox;
 
 use Cli\Extractor\AbstractExtractor;
 
@@ -17,6 +17,7 @@ class Dirs extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
+        return [];
         $contents = $this->worker->rawBuffer->getData('contents');
 
         if (empty($contents)) {

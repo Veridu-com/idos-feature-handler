@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Cli\Extractor\LinkedIn;
+namespace Cli\Extractor\Dropbox;
 
 use Cli\Extractor\AbstractExtractor;
 
