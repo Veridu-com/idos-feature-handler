@@ -55,7 +55,7 @@ class Education extends AbstractExtractor {
                     'start_year' => $education['startDate']['year'],
                     'end_year' => $education['endDate']['year'],
                     'type' => $type,
-                    'course' => isset($education['fieldOfStudy'] ? $education['fieldOfStudy'] : null)
+                    'course' => isset($education['fieldOfStudy']) ? $education['fieldOfStudy'] : null
                 ];
             }
         }

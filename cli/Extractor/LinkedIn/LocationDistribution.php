@@ -17,13 +17,15 @@ class LocationDistribution extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $connections = $this->worker->rawBuffer->waitData('_connections');
+        //$connections = $this->worker->rawBuffer->waitData('_connections');
 
         $location = [
             'city'    => [],
             'region'  => [],
             'country' => []
         ];
+
+        return $location;
 
         if (empty($connections)) {
             return $location;

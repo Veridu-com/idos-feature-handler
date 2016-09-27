@@ -6,11 +6,9 @@
 
 declare(strict_types = 1);
 
-namespace Cli\OAuth\PayPal;
+namespace Cli\Extractor\PayPal;
 
 class FullName extends \Thread {
-    const SUPPORT_DATA = true;
-
     /**
      * {@inheritdoc}
      */

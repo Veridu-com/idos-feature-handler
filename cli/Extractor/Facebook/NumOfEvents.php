@@ -16,6 +16,7 @@ class NumOfEvents extends AbstractExtractor {
      */
     public function execute() {
         $events = $this->worker->rawBuffer->getData('events');
+
         if (empty($events)) {
             return 0;
         }

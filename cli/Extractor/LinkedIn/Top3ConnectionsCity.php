@@ -10,7 +10,7 @@ namespace Cli\Extractor\LinkedIn;
 
 use Cli\Extractor\AbstractExtractor;
 
-class Top5ConnectionsCity extends AbstractExtractor {
+class Top3ConnectionsCity extends AbstractExtractor {
     /**
      * {@inheritdoc}
      */

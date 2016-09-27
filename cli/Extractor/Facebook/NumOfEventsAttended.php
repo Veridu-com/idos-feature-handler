@@ -16,19 +16,18 @@ class NumOfEventsAttended extends AbstractExtractor {
      */
     public function execute() {
         $events = $this->worker->rawBuffer->getData('events');
+
         if (empty($events)) {
             return 0;
         }
 
-        $total = 0;
+        $return = 0;
         foreach ($events as $event) {
-            if ((isset($event['rsvp_status']))
-                && (strtolower($event['rsvp_status']) === 'attending')
-            ) {
-                $total++;
+            if (isset($event['rsvp_status']) && strtolower($event['rsvp_status']) === 'attending') {
+                $return++;
             }
         }
 
-        return $total;
+        return $return;
     }
 }
