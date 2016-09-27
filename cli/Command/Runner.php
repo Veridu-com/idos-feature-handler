@@ -8,9 +8,10 @@ declare(strict_types = 1);
 
 namespace Cli\Command;
 
-use Cli\HandlerFactory;
-use Cli\OAuthFactory;
+use Cli\Extractor\Handler;
+use Cli\Utils\Buffer;
 use Cli\Utils\Logger;
+use idOS\SDK;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,6 +36,26 @@ class Runner extends Command {
                 'Provider name'
             )
             ->addArgument(
+                'userName',
+                InputArgument::REQUIRED,
+                'User name'
+            )
+            ->addArgument(
+                'sourceId',
+                InputArgument::REQUIRED,
+                'Source Id'
+            )
+            ->addArgument(
+                'processId',
+                InputArgument::REQUIRED,
+                'Process Id'
+            )
+            ->addArgument(
+                'publicKey',
+                InputArgument::REQUIRED,
+                'Public Key'
+            )
+            ->addArgument(
                 'dryRun',
                 InputArgument::OPTIONAL,
                 'On dry run mode, no data is sent to idOS API'
@@ -54,24 +75,70 @@ class Runner extends Command {
 
         $logger->debug('Initializing idOS Feature Handler Runner');
 
-        $factory = new HandlerFactory(
-            new OAuthFactory(),
-            [
-                'Linkedin' => 'Cli\\Handler\\LinkedIn',
-                'Paypal'   => 'Cli\\Handler\\PayPal'
-            ]
+        $handler = Handler::create($input->getArgument('providerName'));
+
+        // idOS SDK
+        $auth = new \idOS\Auth\CredentialToken(
+            $input->getArgument('publicKey'),
+            __HNDKEY__,
+            __HNDSEC__
         );
-        $provider = $factory->create(
-            $logger,
-            $input->getArgument('providerName'),
-            $input->getArgument('accessToken'),
-            $input->getArgument('tokenSecret') ?: '',
-            $input->getArgument('appKey') ?: '',
-            $input->getArgument('appSecret') ?: '',
-            $input->getArgument('apiVersion') ?: ''
+        $sdk = \idOS\SDK::create($auth);
+
+        // $sdk
+        //     ->Profile($jobData['userName'])
+        //     ->processes
+        //     ->updateOne(
+        //         $jobData['userName'],
+        //         $jobData['taskId'],
+        //         [
+        //             'status' => 'Extracting features'
+        //         ]
+        //     );
+
+        $response = $sdk
+            ->Profile($input->getArgument('userName'))
+            ->Raw->listAll(['source:id' => $input->getArgument('sourceId')]);
+
+        $rawBuffer = new Buffer();
+        foreach ($response['data'] as $item) {
+            $rawBuffer->setData($item['collection'], $item['data']);
+        }
+
+        $parsedBuffer = new Buffer();
+
+        $handler->extract(
+            $rawBuffer,
+            $parsedBuffer
         );
 
-        $data = $provider->handle($input->getArgument('dryRun') ?: false);
+        $featuresEndpoint = $sdk
+            ->Profile($input->getArgument('userName'))
+            ->Features;
+        try {
+            foreach ($parsedBuffer->asArray() as $field => $value) {
+                $featuresEndpoint->createOrUpdate(
+                    (int) $input->getArgument('sourceId'),
+                    $field,
+                    $value
+                );
+            }
+        } catch (\Exception $exception) {
+            echo $exception->getMessage(), PHP_EOL;
+        }
+
+        // $sdk
+        //     ->profiles
+        //     ->processes
+        //     ->updateOne(
+        //         $jobData['userName'],
+        //         $jobData['taskId'],
+        //         [
+        //             'status' => 'Done',
+        //             'running' => false
+        //         ]
+        //     );
+
 
         $logger->debug('Runner completed');
     }
