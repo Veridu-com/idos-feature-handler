@@ -30,7 +30,7 @@ class AvgFavoritedPerWeek extends AbstractExtractor {
             }
 
             if (!$status['favorited'] && !$status['retweeted'] && !empty($status['favorite_count'])) {
-                if (! isset($return[date('Y'), $ts])) {
+                if (! isset($return[date('Y', $ts)])) {
                     $return[date('Y', $ts)] = [];
                 }
 

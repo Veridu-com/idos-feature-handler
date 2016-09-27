@@ -29,7 +29,7 @@ class AvgTweetsPerWeek extends AbstractExtractor {
                 continue;
             }
 
-            if (! isset($return[date('Y'), $ts])) {
+            if (! isset($return[date('Y', $ts)])) {
                 $return[date('Y', $ts)] = [];
             }
 

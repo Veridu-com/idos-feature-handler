@@ -30,7 +30,7 @@ class AvgRetweetedPerWeek extends AbstractExtractor {
             }
 
             if (!$status['favorited'] && !$status['retweeted'] && !empty($status['retweet_count'])) {
-                if (! isset($return[date('Y'), $ts])) {
+                if (! isset($return[date('Y', $ts)])) {
                     $return[date('Y', $ts)] = [];
                 }
 
