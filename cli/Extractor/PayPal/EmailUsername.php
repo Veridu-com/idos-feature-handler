@@ -6,7 +6,7 @@
 
 declare(strict_types = 1);
 
-namespace Cli\OAuth\PayPal;
+namespace Cli\Extractor\PayPal;
 
 class EmailUsername extends \Thread {
     /**
