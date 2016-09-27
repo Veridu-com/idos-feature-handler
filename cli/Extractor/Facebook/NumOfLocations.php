@@ -20,7 +20,7 @@ class NumOfLocations extends AbstractExtractor {
         if (empty($locations)) {
             return 0;
         }
-        
+
         return count($locations);
     }
 }

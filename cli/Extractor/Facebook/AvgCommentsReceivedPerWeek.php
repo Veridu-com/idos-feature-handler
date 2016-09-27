@@ -18,9 +18,9 @@ class AvgCommentsReceivedPerWeek extends AbstractExtractor {
         $comments = [];
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
             $data = $this->worker->rawBuffer->getData($property);
-            if (!empty($data)) {
+            if (! empty($data)) {
                 foreach ($data as $item) {
-                    if (! empty($item['comments']['data'])) { 
+                    if (! empty($item['comments']['data'])) {
                         if (empty($item['created_time'])) {
                             $ts = strtotime($item['updated_time']);
                         } else {
@@ -35,7 +35,7 @@ class AvgCommentsReceivedPerWeek extends AbstractExtractor {
                             $comments[date('Y', $ts)] = [];
                         }
 
-                        if (!isset($comments[date('Y', $ts)][date('n', $ts)])) {
+                        if (! isset($comments[date('Y', $ts)][date('n', $ts)])) {
                             $comments[date('Y', $ts)][date('n', $ts)] = 0;
                         }
 
@@ -44,9 +44,9 @@ class AvgCommentsReceivedPerWeek extends AbstractExtractor {
                 }
             }
         }
-                    
+
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 
@@ -67,7 +67,7 @@ class AvgCommentsReceivedPerWeek extends AbstractExtractor {
         }
 
         ksort($comments);
-        
+
         return $comments;
     }
 }

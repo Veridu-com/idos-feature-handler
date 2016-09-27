@@ -29,7 +29,7 @@ class NumOfFriendsFromFirstMostRecentEducation extends AbstractExtractor {
         }
 
         $_friends = $this->worker->rawBuffer->waitData('_friends');
-        $return = 0;
+        $return   = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education'])) {
                 continue;
@@ -42,7 +42,7 @@ class NumOfFriendsFromFirstMostRecentEducation extends AbstractExtractor {
                 }
             }
         }
-                
+
         return $return;
     }
 }

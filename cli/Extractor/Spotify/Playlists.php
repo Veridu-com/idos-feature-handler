@@ -28,12 +28,12 @@ class Playlists extends AbstractExtractor {
         $_playlists = [];
         foreach ($playlists as $playlist)
             $_playlists[] = [
-                'id' => $playlist['id'],
-                'name' => $playlist['name'],
-                'owner' => $playlist['owner']['id'],
+                'id'            => $playlist['id'],
+                'name'          => $playlist['name'],
+                'owner'         => $playlist['owner']['id'],
                 'collaborative' => $playlist['collaborative'],
-                'public' => $playlist['public'],
-                'total_tracks' => $playlist['tracks']['total']
+                'public'        => $playlist['public'],
+                'total_tracks'  => $playlist['tracks']['total']
             ];
 
         return $_playlists;

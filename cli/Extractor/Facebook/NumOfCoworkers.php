@@ -31,7 +31,7 @@ class NumOfCoworkers extends AbstractExtractor {
         }
 
         $_friends = $this->worker->rawBuffer->waitData('_friends');
-        $return = 0;
+        $return   = 0;
         foreach ($_friends as $friend) {
             if (empty($friend['work'])) {
                 continue;
@@ -44,7 +44,7 @@ class NumOfCoworkers extends AbstractExtractor {
                 }
             }
         }
-        
+
         return $return;
     }
 }

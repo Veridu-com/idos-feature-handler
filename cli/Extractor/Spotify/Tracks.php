@@ -28,13 +28,13 @@ class Tracks extends AbstractExtractor {
         $_tracks = [];
         foreach ($tracks as $track) {
             $_tracks[] = [
-                'id' => $track['track']['id'],
-                'name' => $track['track']['name'],
+                'id'         => $track['track']['id'],
+                'name'       => $track['track']['name'],
                 'popularity' => $track['track']['popularity'],
-                'added_at' => $track['added_at'],
-                'added_by' => $track['added_by']['id'],
-                'is_local' => $track['is_local'],
-                'playlists' => $track['playlists']
+                'added_at'   => $track['added_at'],
+                'added_by'   => $track['added_by']['id'],
+                'is_local'   => $track['is_local'],
+                'playlists'  => $track['playlists']
             ];
         }
 

@@ -27,25 +27,27 @@ class Education extends AbstractExtractor {
         foreach ($profile['schools'] as $school) {
             if (isset($school['schoolName'], $school['schoolType'], $school['startDate'], $school['endDate'])) {
                 $education[] = [
-                    'name' => $school['schoolName'],
-                    'type' => $school['schoolType'],
-                    'city' => isset($school['city']) ? $school['city'] : null,
-                    'state' => isset($school['state']) ? $school['state'] : null,
-                    'country' => isset($school['country']) ? $school['country'] : null,
+                    'name'       => $school['schoolName'],
+                    'type'       => $school['schoolType'],
+                    'city'       => isset($school['city']) ? $school['city'] : null,
+                    'state'      => isset($school['state']) ? $school['state'] : null,
+                    'country'    => isset($school['country']) ? $school['country'] : null,
                     'start_date' => $school['startDate'],
-                    'end_date' => $school['endDate']
+                    'end_date'   => $school['endDate']
                 ];
             }
         }
 
         if (count($education)) {
-            usort($education, function ($a, $b) {
-                if ($b['start_date'] == $a['start_date']) {
-                    return ($b['end_date'] - $a['end_date']);
+            usort(
+                $education, function ($a, $b) {
+                    if ($b['start_date'] == $a['start_date']) {
+                        return $b['end_date'] - $a['end_date'];
+                    }
+
+                    return $b['start_date'] - $a['start_date'];
                 }
-                
-                return ($b['start_date'] - $a['start_date']);
-            });
+            );
         }
 
         return $education;

@@ -18,7 +18,7 @@ class AvgTweetsPerWeek extends AbstractExtractor {
         $statuses = $this->worker->rawBuffer->getData('statuses');
 
         if (empty($statuses)) {
-            return null;
+            return;
         }
 
         $return = [];
@@ -41,7 +41,7 @@ class AvgTweetsPerWeek extends AbstractExtractor {
         }
 
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 

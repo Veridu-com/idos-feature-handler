@@ -22,6 +22,7 @@ class ThirdEmailUsername extends AbstractExtractor {
         }
 
         $thirdEmailAddress = explode('@', $thirdEmailAddress);
+
         return $thirdEmailAddress[0];
     }
 }

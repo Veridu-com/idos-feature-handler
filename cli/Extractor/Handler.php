@@ -40,7 +40,7 @@ class Handler {
             throw new \RuntimeException(
                 sprintf(
                     'Invalid provider "%s".',
-                    $jobData['providerName']
+                    $providerName
                 )
             );
         }

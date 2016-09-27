@@ -22,6 +22,7 @@ class SecondEmailUsername extends AbstractExtractor {
         }
 
         $secondEmailAddress = explode('@', $secondEmailAddress);
+
         return $secondEmailAddress[0];
     }
 }

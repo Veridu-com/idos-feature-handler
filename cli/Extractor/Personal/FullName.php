@@ -16,7 +16,7 @@ class FullName extends AbstractExtractor {
      */
     public function execute() {
         $firstname = $this->worker->rawBuffer->getData('firstname');
-        $lastname = $this->worker->rawBuffer->getData('lastname');
+        $lastname  = $this->worker->rawBuffer->getData('lastname');
 
         if (empty($firstname) || empty($lastname)) {
             return;

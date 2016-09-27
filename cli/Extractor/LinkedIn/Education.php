@@ -51,11 +51,11 @@ class Education extends AbstractExtractor {
                 }
 
                 $education[] = [
-                    'name' => $education['schoolName'],
+                    'name'       => $education['schoolName'],
                     'start_year' => $education['startDate']['year'],
-                    'end_year' => $education['endDate']['year'],
-                    'type' => $type,
-                    'course' => isset($education['fieldOfStudy']) ? $education['fieldOfStudy'] : null
+                    'end_year'   => $education['endDate']['year'],
+                    'type'       => $type,
+                    'course'     => isset($education['fieldOfStudy']) ? $education['fieldOfStudy'] : null
                 ];
             }
         }
@@ -64,10 +64,10 @@ class Education extends AbstractExtractor {
             usort(
                 $education, function ($a, $b) {
                     if ($b['start_year'] == $a['start_year']) {
-                        return ($b['end_year'] - $a['end_year']);
+                        return $b['end_year'] - $a['end_year'];
                     }
-                
-                    return ($b['start_year'] - $a['start_year']);
+
+                    return $b['start_year'] - $a['start_year'];
                 }
             );
         }

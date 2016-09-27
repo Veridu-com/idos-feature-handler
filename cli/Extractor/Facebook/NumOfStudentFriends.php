@@ -21,9 +21,9 @@ class NumOfStudentFriends extends AbstractExtractor {
             return 0;
         }
 
-        $year = date('Y');
+        $year     = date('Y');
         $_friends = $this->worker->rawBuffer->waitData('_friends');
-        
+
         $return = 0;
         foreach ($_friends as $friend) {
             if (empty($friend['education'])) {
@@ -36,8 +36,8 @@ class NumOfStudentFriends extends AbstractExtractor {
                     break;
                 }
             }
-        }        
-        
+        }
+
         return $return;
     }
 }

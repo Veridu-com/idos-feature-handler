@@ -20,7 +20,7 @@ class AvgLikesPerWeek extends AbstractExtractor {
             $data = $this->worker->rawBuffer->getData($property);
             if (! empty($data)) {
                 foreach ($data as $item) {
-                    if (! empty($item['likes']['data'])) { 
+                    if (! empty($item['likes']['data'])) {
                         if (empty($item['created_time'])) {
                             $ts = strtotime($item['updated_time']);
                         } else {
@@ -44,9 +44,9 @@ class AvgLikesPerWeek extends AbstractExtractor {
                 }
             }
         }
-                    
+
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 
@@ -67,7 +67,7 @@ class AvgLikesPerWeek extends AbstractExtractor {
         }
 
         ksort($likes);
-        
+
         return $likes;
     }
 }

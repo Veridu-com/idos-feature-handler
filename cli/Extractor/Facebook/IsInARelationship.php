@@ -18,6 +18,6 @@ class IsInARelationship extends AbstractExtractor {
             return;
         }
 
-        return in_array($relationship, array('In a relationship', 'Engaged', 'Married', 'In a civil union', 'In a domestic partnership', 'In an open relationship', 'It\'s complicated'));
+        return in_array($relationship, ['In a relationship', 'Engaged', 'Married', 'In a civil union', 'In a domestic partnership', 'In an open relationship', 'It\'s complicated']);
     }
 }

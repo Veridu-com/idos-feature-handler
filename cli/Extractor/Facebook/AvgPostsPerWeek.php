@@ -19,7 +19,7 @@ class AvgPostsPerWeek extends AbstractExtractor {
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
             $data = $this->worker->rawBuffer->getData($property);
             if (! empty($data)) {
-                foreach ($data as $item) { 
+                foreach ($data as $item) {
                     if (empty($item['created_time'])) {
                         $ts = strtotime($item['updated_time']);
                     } else {
@@ -30,21 +30,21 @@ class AvgPostsPerWeek extends AbstractExtractor {
                         continue;
                     }
 
-                    if (!isset($posts[date('Y', $ts)])) {
+                    if (! isset($posts[date('Y', $ts)])) {
                         $posts[date('Y', $ts)] = [];
                     }
 
-                    if (!isset($posts[date('Y', $ts)][date('n', $ts)])) {
+                    if (! isset($posts[date('Y', $ts)][date('n', $ts)])) {
                         $posts[date('Y', $ts)][date('n', $ts)] = 0;
                     }
-                    
+
                     $posts[date('Y', $ts)][date('n', $ts)]++;
                 }
             }
         }
-                    
+
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 
@@ -65,7 +65,7 @@ class AvgPostsPerWeek extends AbstractExtractor {
         }
 
         ksort($likes);
-        
+
         return $likes;
     }
 }

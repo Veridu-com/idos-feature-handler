@@ -15,7 +15,7 @@ class NumTracksPublicOwnedPlaylists extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile   = $this->worker->rawBuffer->getData('profile');
         $playlists = $this->worker->rawBuffer->waitData('_playlists');
 
         $return = 0;

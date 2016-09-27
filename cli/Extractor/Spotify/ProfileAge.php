@@ -15,13 +15,13 @@ class ProfileAge extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $tracks = $this->worker->rawBuffer->waitData('_tracks');
+        $tracks         = $this->worker->rawBuffer->waitData('_tracks');
         $ownedPlaylists = $this->worker->rawBuffer->waitData('_ownedPlaylists');
 
         $age = null;
 
         if (empty($tracks)) {
-            return null;
+            return;
         }
 
         foreach ($tracks as $track) {
@@ -32,12 +32,11 @@ class ProfileAge extends AbstractExtractor {
             foreach ($track['playlists'] as $item) {
                 if (in_array($item, $owned_playlists)) {
                     $_age = strtotime($track['added_at']);
-                    $age = (($age === null) || ($_age < $age)) ? $_age : $age;
+                    $age  = (($age === null) || ($_age < $age)) ? $_age : $age;
                 }
             }
-                
         }
-        
+
         return $age;
     }
 }

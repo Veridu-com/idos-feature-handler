@@ -32,8 +32,8 @@ class Files extends AbstractExtractor {
                 }
 
                 $_files[] = [
-                    'path' => $item['path'],
-                    'bytes'=> $item['bytes'],
+                    'path'     => $item['path'],
+                    'bytes'    => $item['bytes'],
                     'modified' => $item['modified']
                 ];
             }

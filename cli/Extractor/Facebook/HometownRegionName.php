@@ -16,7 +16,7 @@ class HometownRegionName extends AbstractExtractor {
      */
     public function execute() {
         $city = $this->worker->parsedBuffer->waitData('hometownCityName');
-        
+
         if ($city === null) {
             return;
         }

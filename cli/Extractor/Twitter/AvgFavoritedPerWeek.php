@@ -18,7 +18,7 @@ class AvgFavoritedPerWeek extends AbstractExtractor {
         $statuses = $this->worker->rawBuffer->getData('statuses');
 
         if (empty($statuses)) {
-            return null;
+            return;
         }
 
         $return = [];
@@ -29,7 +29,7 @@ class AvgFavoritedPerWeek extends AbstractExtractor {
                 continue;
             }
 
-            if (!$status['favorited'] && !$status['retweeted'] && !empty($status['favorite_count'])) {
+            if (! $status['favorited'] && ! $status['retweeted'] && ! empty($status['favorite_count'])) {
                 if (! isset($return[date('Y', $ts)])) {
                     $return[date('Y', $ts)] = [];
                 }
@@ -43,7 +43,7 @@ class AvgFavoritedPerWeek extends AbstractExtractor {
         }
 
         $current = [
-            'year' => date('Y'),
+            'year'  => date('Y'),
             'month' => date('n')
         ];
 

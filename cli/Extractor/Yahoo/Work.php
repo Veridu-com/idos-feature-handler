@@ -19,37 +19,39 @@ class Work extends AbstractExtractor {
     public function execute() {
         $profile = $this->worker->rawBuffer->getData('profile');
 
-		if (empty($profile['works'])) {
-			return [];
-		}
+        if (empty($profile['works'])) {
+            return [];
+        }
 
-		$_work = [];
-		foreach ($profile['works'] as $work) {
-			if (isset($work['workName'], $work['title'], $work['startDate'], $work['endDate'])) {
-				$_work[] = [
-					'employer' => $work['workName'],
-					'position' => $work['title'],
-					'address' => isset($work['address']) ? $work['address'] : null,
-					'postal_code' => isset($work['postalCode']) ? $work['postalCode'] : null,
-					'city' => isset($work['city']) ? $work['city'] : null,
-					'state' => isset($work['state']) ? $work['state'] : null,
-					'country' => isset($work['country']) ? $work['country'] : null,
-					'start_date' => $work['startDate'],
-					'end_date' => $work['endDate']
-				];
-			}
-		}
+        $_work = [];
+        foreach ($profile['works'] as $work) {
+            if (isset($work['workName'], $work['title'], $work['startDate'], $work['endDate'])) {
+                $_work[] = [
+                    'employer'    => $work['workName'],
+                    'position'    => $work['title'],
+                    'address'     => isset($work['address']) ? $work['address'] : null,
+                    'postal_code' => isset($work['postalCode']) ? $work['postalCode'] : null,
+                    'city'        => isset($work['city']) ? $work['city'] : null,
+                    'state'       => isset($work['state']) ? $work['state'] : null,
+                    'country'     => isset($work['country']) ? $work['country'] : null,
+                    'start_date'  => $work['startDate'],
+                    'end_date'    => $work['endDate']
+                ];
+            }
+        }
 
-		if (count($_work)) {
-			usort($_work, function ($a, $b) {
-				if ($b['start_date'] == $a['start_date']) {
-					return ($b['end_date'] - $a['end_date']);
-				}
-				
-				return ($b['start_date'] - $a['start_date']);
-			});
-		}
+        if (count($_work)) {
+            usort(
+                $_work, function ($a, $b) {
+                    if ($b['start_date'] == $a['start_date']) {
+                        return $b['end_date'] - $a['end_date'];
+                    }
 
-		return $_work;
+                    return $b['start_date'] - $a['start_date'];
+                }
+            );
+        }
+
+        return $_work;
     }
 }

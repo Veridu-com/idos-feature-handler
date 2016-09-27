@@ -29,7 +29,7 @@ class ProfileGender extends AbstractExtractor {
             case 'f':
             case 'female':
                 return 'female';
-            
+
             default:
                 return 'other';
         }

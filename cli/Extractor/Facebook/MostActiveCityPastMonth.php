@@ -16,8 +16,8 @@ class MostActiveCityPastMonth extends AbstractExtractor {
      */
     public function execute() {
         $activity = [];
-        $now = time();
-        $limit = (1 * 2629743);
+        $now      = time();
+        $limit    = (1 * 2629743);
 
         foreach (['locations', 'links', 'photos', 'posts', 'statuses', 'tagged'] as $field) {
             $data = $this->worker->rawBuffer->getData($field);
@@ -49,7 +49,7 @@ class MostActiveCityPastMonth extends AbstractExtractor {
         }
 
         if (empty($activity)) {
-            return null;
+            return;
         }
 
         arsort($activity);

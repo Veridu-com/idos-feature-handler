@@ -27,7 +27,7 @@ class NumOfCheckinsAtSecondMostRecentEducationThisYear extends AbstractExtractor
             return 0;
         }
 
-        $year = date('Y');
+        $year   = date('Y');
         $return = 0;
 
         $locations = $this->worker->rawBuffer->getData('locations');
@@ -47,7 +47,7 @@ class NumOfCheckinsAtSecondMostRecentEducationThisYear extends AbstractExtractor
                 }
             }
         }
-        
+
         $links = $this->worker->rawBuffer->getData('links');
         if (! empty($links)) {
             foreach ($links as $link) {
@@ -66,7 +66,7 @@ class NumOfCheckinsAtSecondMostRecentEducationThisYear extends AbstractExtractor
             }
         }
 
-        $photos = $this->worker->rawBuffer->getData('photos');            
+        $photos = $this->worker->rawBuffer->getData('photos');
         if (! empty($photos)) {
             foreach ($photos as $photo) {
                 if (! isset($photo['created_time'], $photo['place']['id'])) {
@@ -101,11 +101,10 @@ class NumOfCheckinsAtSecondMostRecentEducationThisYear extends AbstractExtractor
                 }
             }
         }
-            
 
         $statuses = $this->worker->rawBuffer->getData('statuses');
         if (! empty($statuses)) {
-            foreach ($statuses as $status) { 
+            foreach ($statuses as $status) {
                 if (! isset($status['created_time'], $status['place']['id'])) {
                     continue;
                 }
@@ -120,11 +119,10 @@ class NumOfCheckinsAtSecondMostRecentEducationThisYear extends AbstractExtractor
                 }
             }
         }
-            
 
         $tagged = $this->worker->rawBuffer->getData('tagged');
         if (! empty($tagged)) {
-            foreach ($tagged as $tagged) { 
+            foreach ($tagged as $tagged) {
                 if (! isset($tagged['created_time'], $tagged['place']['id'])) {
                     continue;
                 }
@@ -139,7 +137,6 @@ class NumOfCheckinsAtSecondMostRecentEducationThisYear extends AbstractExtractor
                 }
             }
         }
-            
 
         return $return;
     }

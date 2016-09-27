@@ -26,6 +26,7 @@ class CityName extends AbstractExtractor {
         }
 
         $city = explode(',', $profile['location']['name']);
+
         return trim(str_replace('Area', '', $city[0]));
     }
 }

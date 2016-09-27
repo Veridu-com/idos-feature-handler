@@ -21,15 +21,15 @@ class DobVerified extends AbstractExtractor {
             return false;
         }
 
-        if (!empty($dob['DOB']['TracesmartDOB']) && $dob['DOB']['TracesmartDOB'] > 0) {
+        if (! empty($dob['DOB']['TracesmartDOB']) && $dob['DOB']['TracesmartDOB'] > 0) {
             return true;
         }
 
-        if (!empty($dob['DOB']['ExperianDOB']) && $dob['DOB']['ExperianDOB'] > 0) {
+        if (! empty($dob['DOB']['ExperianDOB']) && $dob['DOB']['ExperianDOB'] > 0) {
             return true;
         }
 
-        if (!empty($dob['DOB']['EquifaxDOB']) && $dob['DOB']['EquifaxDOB'] > 0) {
+        if (! empty($dob['DOB']['EquifaxDOB']) && $dob['DOB']['EquifaxDOB'] > 0) {
             return true;
         }
 
