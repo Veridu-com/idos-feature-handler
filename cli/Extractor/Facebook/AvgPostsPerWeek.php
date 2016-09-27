@@ -15,7 +15,7 @@ class AvgPostsPerWeek extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $limes = [];
+        $likes = [];
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
             $data = $this->worker->rawBuffer->getData($property);
             if (! empty($data)) {

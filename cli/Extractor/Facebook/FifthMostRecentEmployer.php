@@ -15,7 +15,7 @@ class FifthMostRecentEmployer extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $work = $this->worker->rawBuffer->waitData('_work');
+        $work = (array) $this->worker->rawBuffer->waitData('_work');
 
         if (empty($work)) {
             return;

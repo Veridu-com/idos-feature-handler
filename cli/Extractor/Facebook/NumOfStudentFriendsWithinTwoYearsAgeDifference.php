@@ -34,7 +34,7 @@ class NumOfStudentFriendsWithinTwoYearsAgeDifference extends AbstractExtractor {
             }
 
             if (preg_match('/^([0-9]2\/[0-9]2\/)?([0-9]4)$/', $friend['birthday'], $matches)) {
-                if (abs($birthYear - $matches[2]) > 2)
+                if (abs($birthYear - $matches[2]) > 2) {
                     continue;
                 }
 

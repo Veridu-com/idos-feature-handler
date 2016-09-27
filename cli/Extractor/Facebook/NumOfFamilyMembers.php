@@ -27,7 +27,8 @@ class NumOfFamilyMembers extends AbstractExtractor {
         }
 
         //@FIXME check this
-        $utils = Utils::getInstance();
+        //$utils = Utils::getInstance();
+        return 0;
         $count = 0;
         foreach ($family as $person) {
             if (empty($person['last_name'])) {
