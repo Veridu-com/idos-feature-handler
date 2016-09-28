@@ -15,7 +15,7 @@ class NumOfLinkedTwitterAccounts extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->worker->rawBuffer['profile'];
 
         if (empty($profile['twitterAccounts']) || empty($profile['twitterAccounts']['values'])) {
             return 0;

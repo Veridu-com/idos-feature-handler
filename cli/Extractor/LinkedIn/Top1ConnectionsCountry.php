@@ -15,13 +15,16 @@ class Top1ConnectionsCountry extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $distribution = $this->worker->rawBuffer->waitData('_locationDistribution');
+        $distribution = (array) $this->worker->rawBuffer['_locationDistribution'];
 
         if (empty($distribution['country'])) {
             return;
         }
 
-        $countries = array_keys($distribution['country']);
+        $countries = array_keys((array) $distribution['country']);
+        if (empty($countries[0])) {
+            return;
+        }
 
         return $countries[0];
     }

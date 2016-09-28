@@ -19,7 +19,7 @@ class Work extends AbstractExtractor {
     public function execute() {
         //@FIXME check use of _workLocation method
         return [];
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->worker->rawBuffer['profile'];
 
         if (empty($profile['positions']['values']) && empty($profile['threeCurrentPositions']['values']) && empty($profile['threePastPositions']['values'])) {
             return [];

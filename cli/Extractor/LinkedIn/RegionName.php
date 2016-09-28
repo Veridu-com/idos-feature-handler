@@ -15,7 +15,7 @@ class RegionName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $cityName = $this->worker->parsedBuffer->waitData('cityName');
+        $cityName = $this->worker->parsedBuffer['cityName'];
 
         if (empty($cityName)) {
             return;

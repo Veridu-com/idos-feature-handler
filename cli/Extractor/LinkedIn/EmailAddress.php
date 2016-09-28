@@ -15,7 +15,7 @@ class EmailAddress extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->worker->rawBuffer['profile'];
 
         if (empty($profile['emailAddress']) || strpos($profile['emailAddress'], '@') === false) {
             return;

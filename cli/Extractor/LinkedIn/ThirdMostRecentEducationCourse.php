@@ -15,13 +15,13 @@ class ThirdMostRecentEducationCourse extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->worker->rawBuffer['profile'];
 
         if (empty($profile['educations']) || empty($profile['educations']['values'])) {
             return;
         }
 
-        $education = $this->worker->rawBuffer->waitData('_education');
+        $education = (array) $this->worker->rawBuffer['_education'];
 
         if (empty($education[2]) || empty($education[2]['course'])) {
             return;
