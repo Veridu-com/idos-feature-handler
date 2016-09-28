@@ -20,7 +20,7 @@ class HometownRegionName extends AbstractExtractor {
             return '';
         }
 
-        //@FIXME
+        // FIXME
         //return Utils::getInstance()->regionFromCity()
         return '';
     }

@@ -25,7 +25,7 @@ class HometownCountryName extends AbstractExtractor {
         }
 
         if (strpos($profile['hometown']['name'], ',') === false) {
-            //@FIXME
+            // FIXME
             //return Utils::getInstance()->countryFromCity($profile['hometown']['name']);
             return $profile['hometown']['name'];
         }

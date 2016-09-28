@@ -25,7 +25,7 @@ class CurrentCountryName extends AbstractExtractor {
         }
 
         if (strpos($profile['location']['name'], ',') === false) {
-            //@FIXME
+            // FIXME
             //return Utils::getInstance()->countryFromCity()
             return '';
         }
