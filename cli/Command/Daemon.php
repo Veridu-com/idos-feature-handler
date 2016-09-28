@@ -74,6 +74,8 @@ class Daemon extends Command {
 
         $logger->debug('Registering Worker Function "feature"');
 
+        $test = true;
+
         /*
          * Payload content:
          *  - userName
@@ -84,7 +86,7 @@ class Daemon extends Command {
          */
         $gearman->addFunction(
             'feature',
-            function (\GearmanJob $job) use ($logger) {
+            function (\GearmanJob $job) use ($logger, $test) {
                 $logger->debug('Got a new job!');
                 $jobData = json_decode($job->workload(), true);
                 if ($jobData === null) {
@@ -94,8 +96,8 @@ class Daemon extends Command {
                     return;
                 }
 
-                $handler = Handler::create($jobData['providerName']);
-                $logger->debug(sprintf('Pool Size: %d', $handler->poolSize()));
+                $handlerClass = 'Cli\Extractor\\' . ucfirst($jobData['providerName']);
+                $handler = new $handlerClass();
 
                 // idOS SDK
                 $auth = new \idOS\Auth\CredentialToken(
@@ -105,32 +107,18 @@ class Daemon extends Command {
                 );
                 $sdk = \idOS\SDK::create($auth);
 
-                // $sdk
-                //     ->Profile($jobData['userName'])
-                //     ->processes
-                //     ->updateOne(
-                //         $jobData['userName'],
-                //         $jobData['taskId'],
-                //         [
-                //             'status' => 'Extracting features'
-                //         ]
-                //     );
-
                 $response = $sdk
                     ->Profile($jobData['userName'])
                     ->Raw->listAll(['source:id' => $jobData['sourceId']]);
 
-                $rawBuffer = new Buffer();
+                $rawBuffer = [];
                 foreach ($response['data'] as $item) {
                     $rawBuffer[$item['collection']] = $item['data'];
                 }
 
-                $parsedBuffer = new Buffer();
-
-                $handler->extract(
-                    $rawBuffer,
-                    $parsedBuffer
-                );
+                $parsedBuffer = $handler->analyze($rawBuffer);
+                //var_dump($parsedBuffer);
+                //exit;
 
                 $featuresEndpoint = $sdk
                     ->Profile($jobData['userName'])
