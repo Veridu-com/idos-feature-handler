@@ -11,17 +11,19 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class ThirdMostRecentWorkPosition extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
-        $work = (array) $this->worker->rawBuffer->waitData('_work');
-
+        $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[2]['position'])) {
-            return;
+            return '';
         }
 
-        return empty($work[2]['position']);
+        return $work[2]['position'];
     }
 }

@@ -15,22 +15,21 @@ class NumOfFriendsWorkingFirstMostRecentEducation extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        if (! isset($this->worker->rawBuffer['profile'])) {
+            return 0;
+        }
 
+        $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['education'])) {
             return 0;
         }
 
-        $education = $this->worker->rawBuffer->waitData('_education');
-
+        $education = $this->worker->rawBuffer['_education'];
         if (empty($education[0]['id'])) {
             return 0;
         }
 
-        //@FIXME
-        //$friends = $this->worker->rawBuffer->waitData('_friends');
-        $friends = [];
-
+        $friends = $this->worker->rawBuffer['friends'];
         if (empty($friends)) {
             return 0;
         }
@@ -41,9 +40,9 @@ class NumOfFriendsWorkingFirstMostRecentEducation extends AbstractExtractor {
                 continue;
             }
 
-            foreach($friend['work'] as $work) {
+            foreach ($friend['work'] as $work) {
                 if (isset($work['employer']['id']) && $work['employer']['id'] === $education[0]['id']) {
-                    $return++;
+                    $count++;
                     break;
                 }
             }

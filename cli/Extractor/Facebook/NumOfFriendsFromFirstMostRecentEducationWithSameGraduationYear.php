@@ -15,22 +15,23 @@ class NumOfFriendsFromFirstMostRecentEducationWithSameGraduationYear extends Abs
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
-        $friends = $this->worker->rawBuffer->getData('friends');
+        if (! isset($this->worker->rawBuffer['profile'], $this->worker->rawBuffer['friends'])) {
+            return 0;
+        }
 
+        $profile = $this->worker->rawBuffer['profile'];
+        $friends = $this->worker->rawBuffer['friends'];
         if (empty($profile['education']) || empty($friends)) {
             return 0;
         }
 
-        $_education = $this->worker->rawBuffer->waitData('_education');
-
+        $_education = $this->worker->rawBuffer['_education'];
         if (empty($_education[0]['id']) || empty($_education[0]['year'])) {
             return 0;
         }
 
-        $_friends = $this->worker->rawBuffer->waitData('_friends');
-        $return   = 0;
-        foreach ($_friends as $friend) {
+        $return = 0;
+        foreach ($friends as $friend) {
             if (empty($friend['education'])) {
                 continue;
             }

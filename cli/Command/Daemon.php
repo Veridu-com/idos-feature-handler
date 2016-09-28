@@ -95,6 +95,7 @@ class Daemon extends Command {
                 }
 
                 $handler = Handler::create($jobData['providerName']);
+                $logger->debug(sprintf('Pool Size: %d', $handler->poolSize()));
 
                 // idOS SDK
                 $auth = new \idOS\Auth\CredentialToken(
@@ -121,7 +122,7 @@ class Daemon extends Command {
 
                 $rawBuffer = new Buffer();
                 foreach ($response['data'] as $item) {
-                    $rawBuffer->setData($item['collection'], $item['data']);
+                    $rawBuffer[$item['collection']] = $item['data'];
                 }
 
                 $parsedBuffer = new Buffer();
@@ -135,7 +136,7 @@ class Daemon extends Command {
                     ->Profile($jobData['userName'])
                     ->Features;
                 try {
-                    foreach ($parsedBuffer->asArray() as $field => $value) {
+                    foreach ($parsedBuffer as $field => $value) {
                         $featuresEndpoint->createOrUpdate(
                             (int) $jobData['sourceId'],
                             $field,

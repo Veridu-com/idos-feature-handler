@@ -15,15 +15,19 @@ class CurrentCountryName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        if (! isset($this->worker->rawBuffer['profile'])) {
+            return '';
+        }
+
+        $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['location']['name'])) {
-            return;
+            return '';
         }
 
         if (strpos($profile['location']['name'], ',') === false) {
-            //@FIXME
+            // FIXME
             //return Utils::getInstance()->countryFromCity()
-            return;
+            return '';
         }
 
         $name = explode(',', $profile['location']['name']);

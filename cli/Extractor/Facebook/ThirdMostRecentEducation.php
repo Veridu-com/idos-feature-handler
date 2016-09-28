@@ -11,15 +11,17 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class ThirdMostRecentEducation extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
-        $education = $this->worker->rawBuffer->waitData('_education');
-
+        $education = $this->worker->rawBuffer['_education'];
         if (empty($education)) {
-            return;
+            return '';
         }
 
         if (empty($education[2]['name'])) {
-            return;
+            return '';
         }
 
         return $education[2]['name'];

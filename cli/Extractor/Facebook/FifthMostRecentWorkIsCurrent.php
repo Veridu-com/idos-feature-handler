@@ -11,15 +11,17 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class FifthMostRecentWorkIsCurrent extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
-        $work = (array) $this->worker->rawBuffer->waitData('_work');
-
+        $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[4])) {
-            return;
+            return '';
         }
 
         return empty($work[4]['end_date']);

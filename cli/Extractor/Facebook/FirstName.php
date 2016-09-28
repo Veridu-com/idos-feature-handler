@@ -15,9 +15,9 @@ class FirstName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $fullName = $this->worker->parsedBuffer->waitData('fullName');
+        $fullName = $this->worker->parsedBuffer['fullName'];
         if (empty($fullName)) {
-            return;
+            return '';
         }
 
         return $this->worker->nameParser->firstName($fullName);

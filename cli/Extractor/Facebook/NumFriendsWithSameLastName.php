@@ -15,18 +15,24 @@ class NumFriendsWithSameLastName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $lastName = strtolower($this->worker->parsedBuffer->waitData('lastName'));
-
-        if ($lastName === null) {
+        $lastName = $this->worker->parsedBuffer['lastName'];
+        if (empty($lastName)) {
             return 0;
         }
 
-        $count = 0;
-        //@FIXME
-        //$friends = Profile::facebookGraph($data['profile']['id']);
-        $friends = [];
+        if (! isset($this->worker->rawBuffer['friends'])) {
+            return 0;
+        }
+
+        $lastName = strtolower($lastName);
+        $friends  = $this->worker->rawBuffer['friends'];
+        $count    = 0;
         foreach ($friends as $friend) {
-            if ($lastName === Utils::getInstance()->lastName($friend)) {
+            if (empty($friend['last_name'])) {
+                continue;
+            }
+
+            if ($lastName === strtolower($this->worker->nameParser->lastName($friend['last_name']))) {
                 $count++;
             }
         }

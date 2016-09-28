@@ -15,14 +15,13 @@ class NameGender extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $firstName = $this->worker->parsedBuffer->waitData('firstName');
-
+        $firstName = $this->worker->parsedBuffer['firstName'];
         if (empty($firstName)) {
-            return;
+            return '';
         }
 
-        //@FIXME
+        // FIXME
         //return Utils::getInstance()->nameGender();
-        return;
+        return '';
     }
 }

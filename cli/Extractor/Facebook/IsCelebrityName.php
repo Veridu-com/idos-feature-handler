@@ -15,14 +15,13 @@ class IsCelebrityName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $fullName = $this->worker->parsedBuffer->waitData('fullName');
-
+        $fullName = $this->worker->parsedBuffer['fullName'];
         if (empty($fullName)) {
-            return;
+            return false;
         }
 
-        //@FIXME
+        // FIXME
         //return Utils::getInstance()->isCelebrityName($fullName);
-        return;
+        return false;
     }
 }

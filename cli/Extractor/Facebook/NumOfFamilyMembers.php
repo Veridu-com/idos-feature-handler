@@ -15,27 +15,27 @@ class NumOfFamilyMembers extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $family = $this->worker->rawBuffer->getData('family');
+        if (! isset($this->worker->rawBuffer['family'])) {
+            return 0;
+        }
 
+        $family = $this->worker->rawBuffer['family'];
         if (empty($family)) {
             return 0;
         }
 
-        $lastName = $this->worker->parsedBuffer->waitData('lastName');
+        $lastName = $this->worker->parsedBuffer['lastName'];
         if ($lastName === null) {
             return 0;
         }
 
-        //@FIXME check this
-        //$utils = Utils::getInstance();
-        return 0;
         $count = 0;
         foreach ($family as $person) {
             if (empty($person['last_name'])) {
                 continue;
             }
 
-            if ($lastName === $utils->lastName($person['last_name'])) {
+            if ($lastName === $this->worker->nameParser->lastName($person['last_name'])) {
                 $count++;
             }
         }

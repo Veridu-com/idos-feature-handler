@@ -17,9 +17,11 @@ class AgeDistribution extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        //@FIXME
-        return [];
-        //$friends = $this->worker->rawBuffer->waitData('_friends');
+        if (! isset($this->worker->rawBuffer['friends'])) {
+            return [];
+        }
+
+        $friends = $this->worker->rawBuffer['friends'];
         if (empty($friends)) {
             return [];
         }

@@ -15,7 +15,11 @@ class NumOfGroups extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $groups = $this->worker->rawBuffer->getData('groups');
+        if (! isset($this->worker->rawBuffer['groups'])) {
+            return 0;
+        }
+
+        $groups = $this->worker->rawBuffer['groups'];
         if (empty($groups)) {
             return 0;
         }

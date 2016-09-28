@@ -15,9 +15,17 @@ class NumOfFriends extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        if (! isset($this->worker->rawBuffer['profile'])) {
+            return 0;
+        }
+
+        $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['friends']['summary']['total_count'])) {
-            $friends = $this->worker->rawBuffer->getData('friends');
+            if (! isset($this->worker->rawBuffer['friends'])) {
+                return 0;
+            }
+
+            $friends = $this->worker->rawBuffer['friends'];
             if (empty($friends)) {
                 return 0;
             }

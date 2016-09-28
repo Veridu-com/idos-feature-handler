@@ -11,15 +11,17 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class SecondMostRecentEmployer extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
-        $work = (array) $this->worker->rawBuffer->waitData('_work');
-
+        $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[1]['employer'])) {
-            return;
+            return '';
         }
 
         return $work[1]['employer'];

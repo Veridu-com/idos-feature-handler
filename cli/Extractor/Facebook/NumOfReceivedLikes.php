@@ -15,11 +15,15 @@ class NumOfReceivedLikes extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profileId = $this->worker->parsedBuffer->waitData('profileId');
+        $profileId = $this->worker->parsedBuffer['profileId'];
 
         $total = 0;
         foreach (['photos', 'posts', 'tagged'] as $topic) {
-            $data = $this->worker->rawBuffer->getData($topic);
+            if (! isset($this->worker->rawBuffer[$topic])) {
+                continue;
+            }
+
+            $data = $this->worker->rawBuffer[$topic];
             if (empty($data)) {
                 continue;
             }

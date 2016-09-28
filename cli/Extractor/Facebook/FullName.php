@@ -15,9 +15,13 @@ class FullName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        if (! isset($this->worker->rawBuffer['profile'])) {
+            return '';
+        }
+
+        $profile = $this->worker->rawBuffer['profile'];
         if ((empty($profile['first_name'])) || (empty($profile['last_name']))) {
-            return;
+            return '';
         }
 
         return sprintf('%s %s', trim($profile['first_name']), trim($profile['last_name']));

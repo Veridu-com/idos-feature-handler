@@ -15,14 +15,13 @@ class CurrentRegionName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $city = $this->worker->parsedBuffer->waitData('currentCityName');
-
-        if ($city === null) {
-            return;
+        $city = $this->worker->parsedBuffer['currentCityName'];
+        if (empty($city)) {
+            return '';
         }
 
-        //@FIXME
+        // FIXME
         //return Utils::getInstance()->regionFromCity()
-        return;
+        return '';
     }
 }

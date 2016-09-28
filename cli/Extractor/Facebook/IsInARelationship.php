@@ -11,13 +11,30 @@ namespace Cli\Extractor\Facebook;
 use Cli\Extractor\AbstractExtractor;
 
 class IsInARelationship extends AbstractExtractor {
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
-        $relationship = $this->worker->rawBuffer->getData('relationshipStatus');
-
-        if (empty($relationship)) {
-            return;
+        if (! isset($this->worker->rawBuffer['profile'])) {
+            return '';
         }
 
-        return in_array($relationship, ['In a relationship', 'Engaged', 'Married', 'In a civil union', 'In a domestic partnership', 'In an open relationship', 'It\'s complicated']);
+        $profile = $this->worker->rawBuffer['profile'];
+        if (empty($profile['relationshipStatus'])) {
+            return '';
+        }
+
+        return in_array(
+            $profile['relationshipStatus'],
+            [
+                'In a relationship',
+                'Engaged',
+                'Married',
+                'In a civil union',
+                'In a domestic partnership',
+                'In an open relationship',
+                'It\'s complicated'
+            ]
+        );
     }
 }

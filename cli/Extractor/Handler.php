@@ -28,10 +28,10 @@ class Handler {
     private $threadList;
 
     /**
-     * [create description].
+     * Creates a new Handler instance.
      *
      * @param string $providerName
-     
+     *
      * @return self
      */
     public static function create(string $providerName) : self {
@@ -62,7 +62,7 @@ class Handler {
     }
 
     /**
-     * [extract description].
+     * Runs the feature extraction threads.
      *
      * @param Buffer $rawBuffer
      * @param Buffer $parsedBuffer
@@ -70,10 +70,8 @@ class Handler {
      * @return void
      */
     public function extract(Buffer $rawBuffer, Buffer $parsedBuffer) {
-        $poolSize = min(150, count($this->threadList));
-        echo 'poolSize = ', $poolSize, PHP_EOL;
         $threadPool = new \Pool(
-            $poolSize,
+            $this->poolSize(),
             Context::class,
             [
                 $rawBuffer,
@@ -88,5 +86,14 @@ class Handler {
         }
 
         $threadPool->shutdown();
+    }
+
+    /**
+     * Returns the number of threads.
+     *
+     * @return int
+     */
+    public function poolSize() : int {
+        return count($this->threadList);
     }
 }

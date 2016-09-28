@@ -15,14 +15,13 @@ class HometownRegionName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $city = $this->worker->parsedBuffer->waitData('hometownCityName');
-
-        if ($city === null) {
-            return;
+        $city = $this->worker->parsedBuffer['hometownCityName'];
+        if (empty($city)) {
+            return '';
         }
 
-        //@FIXME
+        // FIXME
         //return Utils::getInstance()->regionFromCity()
-        return;
+        return '';
     }
 }

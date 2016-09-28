@@ -15,9 +15,9 @@ class EmailDomain extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $email = $this->worker->parsedBuffer->waitData('emailAddress');
+        $email = $this->worker->parsedBuffer['emailAddress'];
         if (empty($email)) {
-            return;
+            return '';
         }
 
         $email = explode('@', $email);

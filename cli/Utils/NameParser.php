@@ -56,19 +56,19 @@ class NameParser extends \Threaded {
     public function academicTitle(string $name) {
         $name = $this->parseName($name);
 
-        return $name->getAcademicTitle();
+        return $name->getAcademicTitle() ?: '';
     }
 
     public function firstName($name) {
         $name = $this->parseName($name);
 
-        return $name->getFirstName();
+        return $name->getFirstName() ?: '';
     }
 
     public function firstNameInitial($name) {
         $firstName = $this->firstName($name);
         if (empty($firstName)) {
-            return;
+            return '';
         }
 
         return $firstName[0];
@@ -77,13 +77,13 @@ class NameParser extends \Threaded {
     public function middleName($name) {
         $name = $this->parseName($name);
 
-        return $name->getMiddleName();
+        return $name->getMiddleName() ?: '';
     }
 
     public function middleNameInitial($name) {
         $middleName = $this->middleName($name);
         if (empty($middleName)) {
-            return;
+            return '';
         }
 
         if (strpos($middleName, ' ') === false) {
@@ -102,13 +102,13 @@ class NameParser extends \Threaded {
     public function lastName($name) {
         $name = $this->parseName($name);
 
-        return $name->getLastName();
+        return $name->getLastName() ?: '';
     }
 
     public function lastNameInitial($name) {
         $lastName = $this->lastName($name);
         if (empty($lastName)) {
-            return;
+            return '';
         }
 
         return $lastName[0];

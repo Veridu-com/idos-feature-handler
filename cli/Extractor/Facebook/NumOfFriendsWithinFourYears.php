@@ -15,14 +15,12 @@ class NumOfFriendsWithinFourYears extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
-
+        $birthDate = $this->worker->rawBuffer['_fullBirthDate'];
         if (empty($birthDate)) {
             return 0;
         }
 
-        $distribution = $this->worker->rawBuffer->waitData('_ageDistribution');
-
+        $distribution = $this->worker->rawBuffer['_ageDistribution'];
         if (empty($distribution)) {
             return 0;
         }

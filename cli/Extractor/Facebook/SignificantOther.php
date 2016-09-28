@@ -15,9 +15,13 @@ class SignificantOther extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        if (! isset($this->worker->rawBuffer['profile'])) {
+            return '';
+        }
+
+        $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['significant_other']['name'])) {
-            return;
+            return '';
         }
 
         return $profile['significant_other']['name'];

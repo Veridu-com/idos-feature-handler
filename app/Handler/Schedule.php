@@ -89,7 +89,7 @@ class Schedule implements HandlerInterface {
             // Job validation
             $this->validator->assertUserName($command->userName);
             $this->validator->assertId($command->sourceId);
-            $this->validator->assertId($command->taskId);
+            $this->validator->assertId($command->processId);
             $this->validator->assertName($command->providerName);
             $this->validator->assertKey($command->publicKey);
         } catch (\Respect\Validation\Exceptions\ExceptionInterface $exception) {

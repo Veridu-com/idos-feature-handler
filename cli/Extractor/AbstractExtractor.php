@@ -13,18 +13,18 @@ namespace Cli\Extractor;
  */
 abstract class AbstractExtractor extends \Thread {
     /**
+     * Controls if the feature extracted is used as support data by other threads.
+     *
+     * @var bool
+     */
+    const SUPPORT_DATA = false;
+
+    /**
      * Execution time.
      *
      * @var float
      */
     protected $execTime = 0.0;
-
-    /**
-     * If we are writing support data to be used by other threads.
-     *
-     * @var bool
-     */
-    const SUPPORT_DATA = false;
 
     /**
      * Returns Thread's execution time.
@@ -48,14 +48,13 @@ abstract class AbstractExtractor extends \Thread {
         $topic = get_class($this);
         $topic = substr($topic, (strrpos($topic, '\\') + 1));
         $topic = lcfirst($topic);
-
         if (static::SUPPORT_DATA) {
-            $this->worker->rawBuffer->setData('_' . $topic, $value);
+            $this->worker->rawBuffer['_' . $topic] = $value;
 
             return;
         }
 
-        $this->worker->parsedBuffer->setData($topic, $value);
+        $this->worker->parsedBuffer[$topic] = $value;
     }
 
     /**
