@@ -8,6 +8,8 @@ declare(strict_types = 1);
 
 namespace Cli\Extractor;
 
+use Cli\Utils\Buffer;
+
 /**
  * Abstract Feature Extractor Thread implementation.
  */
@@ -20,11 +22,44 @@ abstract class AbstractExtractor extends \Thread {
     const SUPPORT_DATA = false;
 
     /**
+     * Thread-safe Buffer instance with Raw Data.
+     *
+     * @var Cli\Utils\Buffer
+     */
+    public $rawBuffer;
+    /**
+     * Thread-safe Buffer instance with Parsed Data.
+     *
+     * @var Cli\Utils\Buffer
+     */
+    public $parsedBuffer;
+
+    /**
+     * Thread-safe NameParser instance.
+     *
+     * @var Cli\Utils\NameParser
+     */
+    public $nameParser;
+    /**
+     * Thread-safe PhoneParser instance.
+     *
+     * @var Cli\Utils\PhoneParser
+     */
+    public $phoneParser;
+
+    /**
      * Execution time.
      *
      * @var float
      */
     protected $execTime = 0.0;
+
+    public function __construct(Buffer $rawBuffer, Buffer $parsedBuffer, $nameParser, $phoneParser) {
+        $this->rawBuffer = $rawBuffer;
+        $this->parsedBuffer = $parsedBuffer;
+        $this->nameParser = $nameParser;
+        $this->phoneParser = $phoneParser;
+    }
 
     /**
      * Returns Thread's execution time.
@@ -48,13 +83,14 @@ abstract class AbstractExtractor extends \Thread {
         $topic = get_class($this);
         $topic = substr($topic, (strrpos($topic, '\\') + 1));
         $topic = lcfirst($topic);
-        if (static::SUPPORT_DATA) {
-            $this->worker->rawBuffer['_' . $topic] = $value;
 
+        if (static::SUPPORT_DATA) {
+            $this->rawBuffer['_' . $topic] = $value;
+        
             return;
         }
 
-        $this->worker->parsedBuffer[$topic] = $value;
+        $this->parsedBuffer[$topic] = $value;
     }
 
     /**

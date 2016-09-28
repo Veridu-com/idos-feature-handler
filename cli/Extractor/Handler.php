@@ -70,19 +70,12 @@ class Handler {
      * @return void
      */
     public function extract(Buffer $rawBuffer, Buffer $parsedBuffer) {
-        $threadPool = new \Pool(
-            $this->poolSize(),
-            Context::class,
-            [
-                $rawBuffer,
-                $parsedBuffer,
-                new NameParser(),
-                new PhoneParser()
-            ]
-        );
-
+        $nameParser = new NameParser();
+        $phoneParser = new PhoneParser();
+        
+        $threadPool = new \Pool($this->poolSize());
         foreach ($this->threadList as $className) {
-            $threadPool->submit(new $className());
+            $threadPool->submit(new $className($rawBuffer, $parsedBuffer, $nameParser, $phoneParser));
         }
 
         $threadPool->shutdown();
