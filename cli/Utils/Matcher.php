@@ -8,7 +8,7 @@ final class Matcher {
     private static function interval_fix(&$item, $key) {
         if ($item > 1.0) {
             $item = 1.0;
-        } else if ($item < 0.0) {
+        } elseif ($item < 0.0) {
             $item = 0.0;
         } else {
             $item = round($item, 2);
@@ -18,19 +18,20 @@ final class Matcher {
     public static function cleanup($string) {
         $string = self::normalize_string($string);
         $string = self::remove_stopwords($string);
+
         return trim(preg_replace(
-            array(
+            [
                 '/\./',
                 '/,/',
                 '/ - /',
                 '/ +/'
-            ),
-            array(
+            ],
+            [
                 '',
                 '',
                 ' ',
                 ' '
-            ),
+            ],
             $string
         ));
     }
@@ -67,24 +68,24 @@ final class Matcher {
             return 1.0;
         }
 
-        $da = array();
+        $da = [];
         if (strpos($a, '/') === false) {
             $da['year'] = $a;
         } else {
-            $pieces = explode('/', $a);
-            $da['day'] = $pieces[0];
+            $pieces      = explode('/', $a);
+            $da['day']   = $pieces[0];
             $da['month'] = $pieces[1];
             if (isset($pieces[2])) {
                 $da['year'] = $pieces[2];
             }
         }
 
-        $db = array();
+        $db = [];
         if (strpos($b, '/') === false) {
             $db['year'] = $b;
         } else {
-            $pieces = explode('/', $b);
-            $db['day'] = $pieces[0];
+            $pieces      = explode('/', $b);
+            $db['day']   = $pieces[0];
             $db['month'] = $pieces[1];
             if (isset($pieces[2])) {
                 $db['year'] = $pieces[2];
@@ -92,7 +93,7 @@ final class Matcher {
         }
 
         $score = 0;
-        foreach (array('day', 'month', 'year') as $part) {
+        foreach (['day', 'month', 'year'] as $part) {
             if (isset($da[$part], $db[$part])) {
                 if ($da[$part] === $db[$part])
                     $score++;
@@ -107,7 +108,7 @@ final class Matcher {
             return self::compare_number($a, $b);
         }
 
-        if ((!is_string($a)) || (!is_string($b))) {
+        if ((! is_string($a)) || (! is_string($b))) {
             return 0.0;
         }
 
@@ -125,7 +126,7 @@ final class Matcher {
             return 1.0;
         }
 
-        if ((function_exists('stem')) &&  (stem($a) === stem($b))) {
+        if ((function_exists('stem')) && (stem($a) === stem($b))) {
             return 1.0;
         }
 
@@ -133,27 +134,27 @@ final class Matcher {
             return 0.0;
         }
 
-        $soundex = array(
+        $soundex = [
             'a' => soundex($a),
             'b' => soundex($b)
-        );
-        $metaphone = array(
+        ];
+        $metaphone = [
             'a' => metaphone($a),
             'b' => metaphone($b)
-        );
-        $dmetaphone = array(
+        ];
+        $dmetaphone = [
             'a' => double_metaphone($a),
             'b' => double_metaphone($b)
-        );
-        $levenshtein = array(
-            'plain' => (1.0 - (levenshtein($a, $b) / max(1, strlen(max($a, $b))))),
-            'soundex' => (1.0 - (levenshtein($soundex['a'], $soundex['b']) / max(1, strlen(max($soundex['a'], $soundex['b']))))),
-            'metaphone' => (1.0 - (levenshtein($metaphone['a'], $metaphone['b']) / max(1, strlen(max($metaphone['a'], $metaphone['b']))))),
+        ];
+        $levenshtein = [
+            'plain'      => (1.0 - (levenshtein($a, $b) / max(1, strlen(max($a, $b))))),
+            'soundex'    => (1.0 - (levenshtein($soundex['a'], $soundex['b']) / max(1, strlen(max($soundex['a'], $soundex['b']))))),
+            'metaphone'  => (1.0 - (levenshtein($metaphone['a'], $metaphone['b']) / max(1, strlen(max($metaphone['a'], $metaphone['b']))))),
             'dmetaphone' => max(
                 (1.0 - (levenshtein($dmetaphone['a'][0], $dmetaphone['b'][0]) / max(1, strlen(max($dmetaphone['a'][0], $dmetaphone['b'][0]))))),
                 (1.0 - (levenshtein($dmetaphone['a'][1], $dmetaphone['b'][1]) / max(1, strlen(max($dmetaphone['a'][1], $dmetaphone['b'][1])))))
             )
-        );
+        ];
         array_walk($levenshtein, 'self::interval_fix');
         similar_text($a, $b, $sp1);
         similar_text($b, $a, $sp2);
@@ -165,25 +166,26 @@ final class Matcher {
         similar_text($dmetaphone['b'][0], $dmetaphone['a'][0], $sd02);
         similar_text($dmetaphone['a'][1], $dmetaphone['b'][1], $sd11);
         similar_text($dmetaphone['b'][1], $dmetaphone['a'][1], $sd12);
-        $similar = array(
-            'plain' => (($sp1 + $sp2) / 2),
-            'soundex' => (($ss1 + $ss2) / 2),
-            'metaphone' => (($sm1 + $sm2) / 2),
+        $similar = [
+            'plain'      => (($sp1 + $sp2) / 2),
+            'soundex'    => (($ss1 + $ss2) / 2),
+            'metaphone'  => (($sm1 + $sm2) / 2),
             'dmetaphone' => max(
                 (($sd01 + $sd02) / 2),
                 (($sd11 + $sd12) / 2)
             )
-        );
+        ];
         array_walk($similar, 'self::interval_fix');
         $result = min($levenshtein['plain'], $similar['plain']);
         $result += min($levenshtein['soundex'], $similar['soundex']);
         $result += min($levenshtein['metaphone'], $similar['metaphone']);
         $result += min($levenshtein['dmetaphone'], $similar['dmetaphone']);
+
         return round(($result / 4), 2);
     }
 
     public static function compare_number($a, $b) {
-        if ((!is_numeric($a)) || (!is_numeric($b))) {
+        if ((! is_numeric($a)) || (! is_numeric($b))) {
             return 0.0;
         }
 
@@ -244,7 +246,7 @@ final class Matcher {
 
         if ((substr_compare($b, '+', 0, 1) == 0) || (substr_compare($b, '00', 0, 2) == 0)) {
             //$b begins with country code
-            if (!$hasCountryCode) {
+            if (! $hasCountryCode) {
                 //strips $b country code as $a doesn't have it
                 $b = substr($b, -strlen($a));
             }
@@ -260,22 +262,22 @@ final class Matcher {
     }
 
     public static function best($a, $b) {
-        $replace = array(
-            'from' => array(
+        $replace = [
+            'from' => [
                 '/\./',
                 '/, +/',
                 '/,$/',
                 '/,,+/',
                 '/ +/'
-            ),
-            'to' => array(
+            ],
+            'to' => [
                 '',
                 ',',
                 '',
                 ',',
                 ' '
-            )
-        );
+            ]
+        ];
         $a = trim(preg_replace($replace['from'], $replace['to'], self::cleanup($a)));
         $b = trim(preg_replace($replace['from'], $replace['to'], self::cleanup($b)));
 
@@ -285,13 +287,13 @@ final class Matcher {
 
         if (strpos($a, ',') !== false) {
             $a = explode(',', $a);
-        } else if (strpos($a, ' ') !== false) {
+        } elseif (strpos($a, ' ') !== false) {
             $a = explode(' ', $a);
         }
 
         if (strpos($b, ',') !== false) {
             $b = explode(',', $b);
-        } else if (strpos($b, ' ') !== false) {
+        } elseif (strpos($b, ' ') !== false) {
             $b = explode(' ', $b);
         }
 
@@ -309,10 +311,10 @@ final class Matcher {
             }
 
             if (count($a) > count($b)) {
-                return (count(array_intersect($b, $a)) / count($b));
+                return count(array_intersect($b, $a)) / count($b);
             }
 
-            return (count(array_intersect($a, $b)) / count($a));
+            return count(array_intersect($a, $b)) / count($a);
         }
 
         if (is_array($a)) {
@@ -346,11 +348,13 @@ final class Matcher {
 
             return $score;
         }
+
         return self::compare_string($a, $b);
     }
 
     public static function average($a, $b) {
         $matchScore = self::compare_string($a, $b) + self::best($a, $b);
+
         return round(($matchScore / 2), 2);
     }
 

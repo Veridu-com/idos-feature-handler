@@ -10,8 +10,8 @@ final class Profile {
     }
 
     public static function facebookGraph($data) {
-        $friends = array();
-        if (!empty($data['links']))
+        $friends = [];
+        if (! empty($data['links']))
             foreach ($data['links'] as $link) {
                 $friends[$link['from']['name']] = 0;
                 if (isset($link['tags']['data'])) {
@@ -31,7 +31,7 @@ final class Profile {
                 }
             }
 
-        if (!empty($data['photos']))
+        if (! empty($data['photos']))
             foreach ($data['photos'] as $photo) {
                 $friends[$photo['from']['name']] = 0;
                 if (isset($photo['tags']['data'])) {
@@ -51,7 +51,7 @@ final class Profile {
                 }
             }
 
-        if (!empty($data['posts']))
+        if (! empty($data['posts']))
             foreach ($data['posts'] as $post) {
                 if (isset($post['comments']['data'])) {
                     foreach ($post['comments']['data'] as $comment)
@@ -65,7 +65,7 @@ final class Profile {
                 }
             }
 
-        if (!empty($data['statuses']))
+        if (! empty($data['statuses']))
             foreach ($data['statuses'] as $status) {
                 $friends[$status['from']['name']] = 0;
                 if (isset($status['to']['data'])) {
@@ -84,7 +84,7 @@ final class Profile {
                 }
             }
 
-        if (!empty($data['tagged']))
+        if (! empty($data['tagged']))
             foreach ($data['tagged'] as $tagged) {
                 $friends[$tagged['from']['name']] = 0;
                 if (isset($tagged['to']['data']))
@@ -105,7 +105,7 @@ final class Profile {
         if (isset($data['profile']['first_name'], $data['profile']['last_name']))
             unset($friends["{$data['profile']['first_name']} {$data['profile']['last_name']}"]);
 
-        $return = array();
+        $return = [];
         foreach (array_keys($friends) as $friend)
             $return[] = Matcher::normalize_string($friend);
 
@@ -118,6 +118,7 @@ final class Profile {
                 continue;
             $return[] = Matcher::normalize_string("{$friend['first_name']} {$friend['last_name']}");
         }
+
         return array_unique($return);
     }
 
@@ -162,19 +163,20 @@ final class Profile {
     public static function googleGraph($data) {
         $circles = self::googleCircles($data);
         if (empty($circles))
-            return array();
+            return [];
 
-        $return = array();
+        $return = [];
         foreach ($circles as $circle) {
-            if (!empty($circle['displayName']))
+            if (! empty($circle['displayName']))
                 $return[] = Matcher::normalize_string($circle['displayName']);
-            else if (!empty($circle['name'])) {
+            elseif (! empty($circle['name'])) {
                 if (is_array($circle['name']))
                     $return[] = Matcher::normalize_string(implode(' ', $circle['name']));
                 else
                     $return[] = Matcher::normalize_string($circle['name']);
             }
         }
+
         return array_unique($return);
     }
 
@@ -208,6 +210,7 @@ final class Profile {
 
         if (isset($data['playlists']['_id']))
             unset($data['playlists']['_id']);
+
         return $data;
     }
 
@@ -217,6 +220,7 @@ final class Profile {
 
         if (isset($data['tracks']['_id']))
             unset($data['tracks']['_id']);
+
         return $data;
     }
 }

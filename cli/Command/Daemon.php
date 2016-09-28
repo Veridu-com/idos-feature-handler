@@ -9,7 +9,6 @@ declare(strict_types = 1);
 namespace Cli\Command;
 
 use Cli\Extractor\Handler;
-use Cli\Utils\Buffer;
 use Cli\Utils\Logger;
 use idOS\SDK;
 use Symfony\Component\Console\Command\Command;
@@ -74,8 +73,6 @@ class Daemon extends Command {
 
         $logger->debug('Registering Worker Function "feature"');
 
-        $test = true;
-
         /*
          * Payload content:
          *  - userName
@@ -107,6 +104,17 @@ class Daemon extends Command {
                 );
                 $sdk = \idOS\SDK::create($auth);
 
+                // $sdk
+                //     ->Profile($jobData['userName'])
+                //     ->processes
+                //     ->updateOne(
+                //         $jobData['userName'],
+                //         $jobData['taskId'],
+                //         [
+                //             'status' => 'Extracting features' Add a comment to this line
+                //         ]
+                //     );
+
                 $response = $sdk
                     ->Profile($jobData['userName'])
                     ->Raw->listAll(['source:id' => $jobData['sourceId']]);
@@ -117,8 +125,6 @@ class Daemon extends Command {
                 }
 
                 $parsedBuffer = $handler->analyze($rawBuffer);
-                //var_dump($parsedBuffer);
-                //exit;
 
                 $featuresEndpoint = $sdk
                     ->Profile($jobData['userName'])

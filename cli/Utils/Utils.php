@@ -4,11 +4,10 @@ declare(strict_types = 1);
 
 namespace Cli\Utils;
 
-use sampa\Core;
-use libphonenumber\PhoneNumberUtil;
-use HumanNameParser\Parser as NameParser;
-use HumanNameParser\Name;
 use Gender\Gender;
+use HumanNameParser\Name;
+use HumanNameParser\Parser as NameParser;
+use libphonenumber\PhoneNumberUtil;
 
 final class Utils {
     private $nameParser;
@@ -16,52 +15,53 @@ final class Utils {
     public static function getInstance() {
         static $instance = null;
         if (is_null($instance)) {
-            $instance = new static;
+            $instance = new static();
         }
 
         return $instance;
     }
 
     private function __construct() {
-        $this->nameParser = new NameParser;
+        $this->nameParser = new NameParser();
     }
 
     /* ADDRESS UTILITIES */
     private function addressParse($fullAddress) {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$fullAddress])) {
             return $cache[$fullAddress];
         }
 
         $escapedAddress = escapeshellarg($fullAddress);
-        $return = exec(sprintf('address-parser %s', $escapedAddress), $parsed, $returnValue);
+        $return         = exec(sprintf('address-parser %s', $escapedAddress), $parsed, $returnValue);
 
         if (($returnValue) || (empty($parsed))) {
             $components = preg_split('/[,-]/', $fullAddress);
-            $return = array(
-                'address1' => (isset($components[0]) ? trim($components[0]) : null),
-                'address2' => (isset($components[1]) ? trim($components[1]) : null),
-                'cityName' => (isset($components[2]) ? trim($components[2]) : null),
-                'regionName' => (isset($components[3]) ? trim($components[3]) : null),
-                'postalCode' => (isset($components[4]) ? trim($components[4]) : null),
+            $return     = [
+                'address1'    => (isset($components[0]) ? trim($components[0]) : null),
+                'address2'    => (isset($components[1]) ? trim($components[1]) : null),
+                'cityName'    => (isset($components[2]) ? trim($components[2]) : null),
+                'regionName'  => (isset($components[3]) ? trim($components[3]) : null),
+                'postalCode'  => (isset($components[4]) ? trim($components[4]) : null),
                 'countryName' => (isset($components[5]) ? trim($components[5]) : null)
-            );
+            ];
             $cache[$fullAddress] = $return;
+
             return $return;
         }
 
-        $components = array();
+        $components = [];
         foreach ($parsed as $item) {
-            $item = trim($item);
+            $item        = trim($item);
             $sepPosition = strpos($item, ':');
-            $label = substr($item, 0, $sepPosition);
-            $value = substr($item, $sepPosition + 1);
+            $label       = substr($item, 0, $sepPosition);
+            $value       = substr($item, $sepPosition + 1);
             if (! isset($components[$label])) {
                 $components[$label] = trim($value);
             }
         }
 
-        $return = array();
+        $return = [];
         if (isset($components['road'])) {
             if (isset($components['house_number'])) {
                 $return['address1'] = sprintf(
@@ -91,6 +91,7 @@ final class Utils {
         }
 
         $cache[$fullAddress] = $return;
+
         return $return;
     }
 
@@ -101,7 +102,7 @@ final class Utils {
             return $parsedAddress['cityName'];
         }
 
-        return null;
+        return;
     }
 
     public function countryName($fullAddress) {
@@ -111,7 +112,7 @@ final class Utils {
             return $parsedAddress['countryName'];
         }
 
-        return null;
+        return;
     }
 
     public function postalCode($fullAddress) {
@@ -121,7 +122,7 @@ final class Utils {
             return $parsedAddress['postalCode'];
         }
 
-        return null;
+        return;
     }
 
     public function regionName($fullAddress) {
@@ -131,7 +132,7 @@ final class Utils {
             return $parsedAddress['regionName'];
         }
 
-        return null;
+        return;
     }
 
     public function streetAddress1($fullAddress) {
@@ -141,7 +142,7 @@ final class Utils {
             return $parsedAddress['address1'];
         }
 
-        return null;
+        return;
     }
 
     public function streetAddress2($fullAddress) {
@@ -151,50 +152,51 @@ final class Utils {
             return $parsedAddress['address2'];
         }
 
-        return null;
+        return;
     }
 
     /* COUNTRY UTILITIES */
 
     public function postalCodeToCity($code) {
-        return null;
+        return;
     }
 
     public function postalCodeToRegion($code) {
-        return null;
+        return;
     }
 
     public function postalCodeToCountry($code) {
-        return null;
+        return;
     }
 
     public function codeToCountry($code) {
-        return null;
-        static $cache = array();
+        return;
+        static $cache = [];
         try {
             if (isset($cache[$code])) {
                 return $cache[$code];
             }
 
-            $this->sql->exec('SELECT "name" FROM "countries" WHERE "code" = :code', array('code' => strtoupper($code)));
+            $this->sql->exec('SELECT "name" FROM "countries" WHERE "code" = :code', ['code' => strtoupper($code)]);
             if ($this->sql->count() == 0) {
                 return $code;
             }
 
-            $res = $this->sql->next();
+            $res          = $this->sql->next();
             $cache[$code] = $res['name'];
+
             return $res['name'];
         } catch (\Exception $exception) {
-            return null;
+            return;
         }
     }
 
     public function regionFromCity($city) {
-        return null;
+        return;
     }
 
     public function countryFromCity($city) {
-        return null;
+        return;
         // Disabled Code (needs improved data source)
         // static $cache = array();
         // try {
@@ -220,14 +222,15 @@ final class Utils {
     private function checkList($name, $type) {
         return false;
         try {
-            $name = Matcher::normalize_string($name);
-            $values = array(
+            $name   = Matcher::normalize_string($name);
+            $values = [
                     'name' => $name,
-                    'len' => ceil(strlen($name) / 2),
+                    'len'  => ceil(strlen($name) / 2),
                     'type' => $type
-                );
+                ];
             $this->sql->exec('SELECT * FROM "known_names" WHERE "type" = :type AND ("name" = :name OR "soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len LIMIT 1', $values);
-            return ($this->sql->count() > 0);
+
+            return $this->sql->count() > 0;
         } catch (\Exception $exception) {
             return false;
         }
@@ -235,19 +238,20 @@ final class Utils {
 
     public function isListedName($name) {
         return false;
-        static $cache = array();
+        static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
             if (isset($cache[$name])) {
                 return $cache[$name];
             }
 
-            $values = array(
+            $values = [
                 'name' => $name,
-                'len' => ceil(strlen($name) / 2)
-            );
+                'len'  => ceil(strlen($name) / 2)
+            ];
             $this->sql->exec('SELECT * FROM "known_names" WHERE ("name" = :name OR "soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len LIMIT 1', $values);
             $cache[$name] = ($this->sql->count() > 0);
+
             return $cache[$name];
         } catch (\Exception $exception) {
             return false;
@@ -255,70 +259,76 @@ final class Utils {
     }
 
     public function isFantasyName($name) {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$name])) {
             return $cache[$name];
         }
 
         $cache[$name] = $this->checkList($name, 'fantasy');
+
         return $cache[$name];
     }
 
     public function isSanctionedName($name) {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$name])) {
             return $cache[$name];
         }
 
         $cache[$name] = $this->checkList($name, 'sanctioned');
+
         return $cache[$name];
     }
 
     public function isPEPName($name) {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$name])) {
             return $cache[$name];
         }
 
         $cache[$name] = $this->checkList($name, 'pep');
+
         return $cache[$name];
     }
 
     public function isCelebrityName($name) {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$name])) {
             return $cache[$name];
         }
 
         $cache[$name] = $this->checkList($name, 'celebrity');
+
         return $cache[$name];
     }
 
     public function isSillyName($name) {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$name])) {
             return $cache[$name];
         }
 
         $cache[$name] = $this->checkList($name, 'silly');
+
         return $cache[$name];
     }
 
     public function isCommonName($name) {
         return false;
-        static $cache = array();
+        static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
             if (isset($cache[$name])) {
                 return $cache[$name];
             }
 
-            $values = array(
+            $values = [
                 'name' => $name,
-                'len' => strlen($name) - 1
-            );
+                'len'  => strlen($name) - 1
+            ];
             $this->sql->exec('SELECT * FROM "names" WHERE ("soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len LIMIT 1', $values);
             $cache[$name] = ($this->sql->count() > 0);
+
             return $cache[$name];
         } catch (\Exception $exception) {
             return false;
@@ -326,15 +336,15 @@ final class Utils {
     }
 
     public function nameGender($name) {
-        return null;
-        static $cache = array();
+        return;
+        static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
             if (isset($cache[$name])) {
                 return $cache[$name];
             }
 
-            $gender = new Gender;
+            $gender = new Gender();
             switch ($gender->get($name)) {
                 case Gender::IS_FEMALE:
                 case Gender::IS_MOSTLY_FEMALE:
@@ -345,71 +355,72 @@ final class Utils {
                     $cache[$name] = 'male';
                     break;
                 default:
-                    $this->sql->exec('SELECT COUNT(*) AS "total", "gender" FROM "names" WHERE LOWER("name") = :name GROUP BY "gender" ORDER BY COUNT(*) DESC LIMIT 1', array('name' => $name));
+                    $this->sql->exec('SELECT COUNT(*) AS "total", "gender" FROM "names" WHERE LOWER("name") = :name GROUP BY "gender" ORDER BY COUNT(*) DESC LIMIT 1', ['name' => $name]);
                     if ($this->sql->count() > 0) {
                         $res = $this->sql->next();
                         if ($res['gender'] === 'm') {
                             $cache[$name] = 'male';
-                        } else if ($res['gender'] === 'f') {
+                        } elseif ($res['gender'] === 'f') {
                             $cache[$name] = 'female';
                         }
 
                         return $cache[$name];
                     }
-                    $values = array(
+                    $values = [
                         'name' => $name,
-                        'len' => (strlen($name) - 1)
-                    );
+                        'len'  => (strlen($name) - 1)
+                    ];
                     $this->sql->exec('SELECT COUNT(*) AS "total", "gender" FROM "names" WHERE ("soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len GROUP BY "gender" ORDER BY COUNT(*) DESC LIMIT 1', $values);
                     if ($this->sql->count() == 0) {
-                        return null;
+                        return;
                     }
 
                     $res = $this->sql->next();
                     if ($res['gender'] === 'm') {
                         $cache[$name] = 'male';
-                    } else if ($res['gender'] === 'f') {
+                    } elseif ($res['gender'] === 'f') {
                         $cache[$name] = 'female';
                     } else {
-                        return null;
+                        return;
                     }
             }
 
             return $cache[$name];
         } catch (\Exception $exception) {
-            return null;
+            return;
         }
     }
 
     public function nameCountry($name) {
-        return null;
-        static $cache = array();
+        return;
+        static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
             if (isset($cache[$name])) {
                 return $cache[$name];
             }
 
-            $values = array(
+            $values = [
                 'name' => $name,
-                'len' => (strlen($name) - 1)
-            );
+                'len'  => (strlen($name) - 1)
+            ];
             $this->sql->exec('SELECT COUNT(*), "country" FROM "names" WHERE ("soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len GROUP BY "country" ORDER BY COUNT(*) DESC LIMIT 1', $values);
             if ($this->sql->count() == 0) {
-                return null;
+                return;
             }
 
-            $res = $this->sql->next();
+            $res          = $this->sql->next();
             $cache[$name] = $res['country'];
+
             return $res['country'];
         } catch (\Exception $exception) {
-            return null;
+            return;
         }
     }
 
     public function titleGender($title) {
         $title = Matcher::normalize_string($title);
-        $male = array(
+        $male  = [
             'arqo',
             'baron',
             'bibo',
@@ -454,12 +465,12 @@ final class Utils {
             'sr d',
             'sr',
             'vossa santidade'
-        );
+        ];
         if (in_array($title, $male)) {
             return 'male';
         }
 
-        $female = array(
+        $female = [
             'arqa',
             'biba',
             'coma',
@@ -495,7 +506,7 @@ final class Utils {
             'sra',
             'srta',
             'veuve'
-        );
+        ];
         if (in_array($title, $female)) {
             return 'female';
         }
@@ -506,35 +517,37 @@ final class Utils {
     public function academicTitle($name) {
         $name = trim($name);
         if (empty($name)) {
-            return null;
+            return;
         }
 
         try {
             $name = $this->nameParser->parse($name);
+
             return $name->getAcademicTitle();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     public function firstName($name) {
         $name = trim($name);
         if (empty($name)) {
-            return null;
+            return;
         }
 
         try {
             $name = $this->nameParser->parse($name);
+
             return $name->getFirstName();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     public function firstNameInitial($name) {
         $firstName = $this->firstName($name);
         if (empty($firstName)) {
-            return null;
+            return;
         }
 
         return $firstName[0];
@@ -543,28 +556,29 @@ final class Utils {
     public function middleName($name) {
         $name = trim($name);
         if (empty($name)) {
-            return null;
+            return;
         }
 
         try {
             $name = $this->nameParser->parse($name);
+
             return $name->getMiddleName();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     public function middleNameInitial($name) {
         $middleName = $this->middleName($name);
         if (empty($middleName)) {
-            return null;
+            return;
         }
 
         if (strpos($middleName, ' ') === false) {
             return $middleName[0];
         }
 
-        $names = explode(' ', $middleName);
+        $names  = explode(' ', $middleName);
         $return = '';
         foreach ($names as $name) {
             $return .= $name[0];
@@ -576,21 +590,22 @@ final class Utils {
     public function lastName($name) {
         $name = trim($name);
         if (empty($name)) {
-            return null;
+            return;
         }
 
         try {
             $name = $this->nameParser->parse($name);
+
             return $name->getLastName();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     public function lastNameInitial($name) {
         $lastName = $this->lastName($name);
         if (empty($lastName)) {
-            return null;
+            return;
         }
 
         return $lastName[0];
@@ -602,29 +617,30 @@ final class Utils {
         try {
             $phone = preg_replace('/[^0-9+]/', '', $phone);
             if (empty($phone)) {
-                return null;
+                return;
             }
 
             return PhoneNumberUtil::getInstance()->parse($phone, $countryCode);
         } catch (\Exception $exception) {
-            return null;
+            return;
         }
     }
 
     public function phoneCountry($phone, $countryCode = null) {
         $phone = $this->phoneParse($phone, $countryCode);
         if (empty($phone)) {
-            return null;
+            return;
         }
 
         $code = PhoneNumberUtil::getInstance()->getRegionCodeForNumber($phone);
+
         return $this->codeToCountry($code);
     }
 
     public function phoneCountryCode($phone, $countryCode = null) {
         $phone = $this->phoneParse($phone, $countryCode);
         if (empty($phone)) {
-            return null;
+            return;
         }
 
         return '+' . $phone->getCountryCode();
@@ -633,7 +649,7 @@ final class Utils {
     public function phoneNumber($phone, $countryCode = null) {
         $phone = $this->phoneParse($phone, $countryCode);
         if (empty($phone)) {
-            return null;
+            return;
         }
 
         return $phone->getNationalNumber();
@@ -642,32 +658,32 @@ final class Utils {
     /* DATE UTILITIES */
 
     private function dateParse($date, $format = 'DMY') {
-        $regexBuilder = array();
-        $formatPosition = array();
-        $formatLen = strlen($format);
+        $regexBuilder   = [];
+        $formatPosition = [];
+        $formatLen      = strlen($format);
         for ($i = 0; $i < $formatLen; $i++) {
             switch ($format[$i]) {
                 case 'd':
                 case 'D':
                     $formatPosition[] = 'day';
-                    $regexBuilder[] = '([0-9]{1,2})';
+                    $regexBuilder[]   = '([0-9]{1,2})';
                     break;
                 case 'm':
                 case 'M':
                     $formatPosition[] = 'month';
-                    $regexBuilder[] = '([0-9]{1,2})';
+                    $regexBuilder[]   = '([0-9]{1,2})';
                     break;
                 case 'y':
                 case 'Y':
                     $formatPosition[] = 'year';
-                    $regexBuilder[] = '([0-9]{4})';
+                    $regexBuilder[]   = '([0-9]{4})';
                     break;
             }
         }
 
         $regex = sprintf('/%s/', implode('.', $regexBuilder));
         if (preg_match($regex, $date, $matches)) {
-            $map = array();
+            $map        = [];
             $matchCount = count($matches);
             for ($i = 1; $i < $matchCount; $i++) {
                 $map[$formatPosition[($i - 1)]] = $matches[$i];
@@ -676,13 +692,13 @@ final class Utils {
             return $map;
         }
 
-        return null;
+        return;
     }
 
     public function dayFromDate($date, $format = 'DMY') {
         $date = $this->dateParse($date, $format);
         if (empty($date)) {
-            return null;
+            return;
         }
 
         return $date['day'];
@@ -691,7 +707,7 @@ final class Utils {
     public function monthFromDate($date, $format = 'DMY') {
         $date = $this->dateParse($date, $format);
         if (empty($date)) {
-            return null;
+            return;
         }
 
         return $date['month'];
@@ -700,7 +716,7 @@ final class Utils {
     public function yearFromDate($date, $format = 'DMY') {
         $date = $this->dateParse($date, $format);
         if (empty($date)) {
-            return null;
+            return;
         }
 
         return $date['year'];
