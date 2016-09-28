@@ -13,7 +13,7 @@ class PhoneCountry extends \Thread {
      * {@inheritdoc}
      */
     public function execute() {
-        $phone = $this->worker->rawBuffer->getData('phone');
+        $phone = $this->rawBuffer->getData('phone');
 
         if (empty($phone)) {
             return;

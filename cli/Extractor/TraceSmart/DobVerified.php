@@ -15,7 +15,7 @@ class DobVerified extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $dob = $this->worker->rawBuffer->getData('dob');
+        $dob = $this->rawBuffer->getData('dob');
 
         if (empty($dob)) {
             return false;

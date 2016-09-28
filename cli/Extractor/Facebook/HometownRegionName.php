@@ -15,7 +15,7 @@ class HometownRegionName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $city = $this->worker->parsedBuffer['hometownCityName'];
+        $city = $this->parsedBuffer['hometownCityName'];
         if (empty($city)) {
             return '';
         }

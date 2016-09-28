@@ -17,11 +17,11 @@ class Education extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['profile'])) {
+        if (! isset($this->rawBuffer['profile'])) {
             return [];
         }
 
-        $profile = $this->worker->rawBuffer['profile'];
+        $profile = $this->rawBuffer['profile'];
         if (empty($profile['education'])) {
             return [];
         }

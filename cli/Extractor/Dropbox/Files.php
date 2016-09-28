@@ -18,7 +18,7 @@ class Files extends AbstractExtractor {
      */
     public function execute() {
         return [];
-        $contents = $this->worker->rawBuffer->getData('contents');
+        $contents = $this->rawBuffer->getData('contents');
 
         if (empty($contents)) {
             return [];

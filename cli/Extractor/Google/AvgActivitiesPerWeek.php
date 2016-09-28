@@ -15,7 +15,7 @@ class AvgActivitiesPerWeek extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $activities = $this->worker->rawBuffer->getData('activities');
+        $activities = $this->rawBuffer->getData('activities');
 
         if (empty($activities)) {
             return;

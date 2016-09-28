@@ -15,13 +15,13 @@ class ThirdMostCommonArtist extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $tracks = $this->worker->rawBuffer->getData('tracks');
+        $tracks = $this->rawBuffer->getData('tracks');
 
         if (empty($tracks)) {
             return;
         }
 
-        $artist = $this->worker->rawBuffer->waitData('_mostCommonArtist');
+        $artist = $this->rawBuffer->waitData('_mostCommonArtist');
         if (empty($artist[2])) {
             return;
         }

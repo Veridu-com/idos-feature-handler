@@ -17,11 +17,11 @@ class FullBirthDate extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['profile'])) {
+        if (! isset($this->rawBuffer['profile'])) {
             return 0;
         }
 
-        $profile = $this->worker->rawBuffer['profile'];
+        $profile = $this->rawBuffer['profile'];
         if ((empty($profile['birthday'])) || (strpos($profile['birthday'], '/') === false)) {
             return '';
         }

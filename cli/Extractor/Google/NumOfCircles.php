@@ -15,7 +15,7 @@ class NumOfCircles extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $circles = $this->worker->rawBuffer->getData('circles');
+        $circles = $this->rawBuffer->getData('circles');
 
         if (empty($circles)) {
             return 0;

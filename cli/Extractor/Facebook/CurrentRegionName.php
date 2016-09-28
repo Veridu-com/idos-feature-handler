@@ -15,7 +15,7 @@ class CurrentRegionName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $city = $this->worker->parsedBuffer['currentCityName'];
+        $city = $this->parsedBuffer['currentCityName'];
         if (empty($city)) {
             return '';
         }

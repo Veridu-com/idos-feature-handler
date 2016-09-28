@@ -17,7 +17,7 @@ class MostCommonArtist extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $tracks = $this->worker->rawBuffer->getData('tracks');
+        $tracks = $this->rawBuffer->getData('tracks');
 
         if (empty($tracks)) {
             return [];

@@ -15,11 +15,11 @@ class NumOfPhotos extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['photos'])) {
+        if (! isset($this->rawBuffer['photos'])) {
             return 0;
         }
 
-        $photos = $this->worker->rawBuffer['photos'];
+        $photos = $this->rawBuffer['photos'];
         if (empty($photos)) {
             return 0;
         }

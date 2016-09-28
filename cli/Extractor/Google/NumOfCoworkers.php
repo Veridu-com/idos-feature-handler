@@ -15,8 +15,8 @@ class NumOfCoworkers extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $plus    = $this->worker->rawBuffer->getData('plus');
-        $circles = $this->worker->rawBuffer->getData('circles');
+        $plus    = $this->rawBuffer->getData('plus');
+        $circles = $this->rawBuffer->getData('circles');
 
         if (empty($plus['organizations']) || empty($circles)) {
             return 0;
@@ -30,7 +30,7 @@ class NumOfCoworkers extends AbstractExtractor {
             }
         }
 
-        $_circles = $this->worker->rawBuffer->waitData('_circles');
+        $_circles = $this->rawBuffer->waitData('_circles');
         foreach ($_circles as $circle) {
             if (empty($circle['organizations'])) {
                 continue;

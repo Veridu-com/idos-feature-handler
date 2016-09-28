@@ -15,7 +15,7 @@ class ElectoralRoll extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $address = $this->worker->rawBuffer->getData('address');
+        $address = $this->rawBuffer->getData('address');
 
         if (empty($address)) {
             return false;

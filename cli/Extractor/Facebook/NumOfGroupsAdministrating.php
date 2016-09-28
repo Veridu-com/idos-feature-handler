@@ -15,11 +15,11 @@ class NumOfGroupsAdministrating extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['groups'])) {
+        if (! isset($this->rawBuffer['groups'])) {
             return 0;
         }
 
-        $groups = $this->worker->rawBuffer['groups'];
+        $groups = $this->rawBuffer['groups'];
         if (empty($groups)) {
             return 0;
         }

@@ -13,7 +13,7 @@ class FirstPhoneNumber extends \Thread {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->rawBuffer->getData('profile');
 
         if (empty($profile['phones'][0]) || empty($profile['phones'][0]['number'])) {
             return;

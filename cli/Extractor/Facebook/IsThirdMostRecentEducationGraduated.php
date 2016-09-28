@@ -15,7 +15,7 @@ class IsThirdMostRecentEducationGraduated extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $education = $this->worker->rawBuffer['_education'];
+        $education = $this->rawBuffer['_education'];
         if (empty($education)) {
             return '';
         }

@@ -13,7 +13,7 @@ class EmailUsername extends \Thread {
      * {@inheritdoc}
      */
     public function execute() {
-        $email = $this->worker->parsedBuffer->waitData('emailAddress');
+        $email = $this->parsedBuffer->waitData('emailAddress');
 
         if (empty($email)) {
             return;

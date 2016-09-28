@@ -15,7 +15,7 @@ class NameGender extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $firstName = $this->worker->parsedBuffer['firstName'];
+        $firstName = $this->parsedBuffer['firstName'];
 
         if (empty($firstName)) {
             return;

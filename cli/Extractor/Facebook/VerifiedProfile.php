@@ -15,11 +15,11 @@ class VerifiedProfile extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['profile'])) {
+        if (! isset($this->rawBuffer['profile'])) {
             return false;
         }
 
-        $profile = $this->worker->rawBuffer['profile'];
+        $profile = $this->rawBuffer['profile'];
         if (empty($profile['verified'])) {
             return false;
         }

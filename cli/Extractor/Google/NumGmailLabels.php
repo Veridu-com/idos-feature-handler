@@ -15,7 +15,7 @@ class NumGmailLabels extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $labels = $this->worker->rawBuffer->getData('labels');
+        $labels = $this->rawBuffer->getData('labels');
 
         if (empty($labels)) {
             return 0;

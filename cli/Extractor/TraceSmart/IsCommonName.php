@@ -15,7 +15,7 @@ class IsCommonName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $firstName = $this->worker->parsedBuffer->waitData('firstName');
+        $firstName = $this->parsedBuffer->waitData('firstName');
 
         if (empty($firstName)) {
             return;

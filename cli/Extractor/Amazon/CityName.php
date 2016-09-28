@@ -15,7 +15,7 @@ class CityName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $postalCode = $this->worker->parsedBuffer->waitData('postalCode');
+        $postalCode = $this->parsedBuffer->waitData('postalCode');
 
         if ($postalCode === null) {
             return;

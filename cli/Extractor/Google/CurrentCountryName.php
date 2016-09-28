@@ -15,7 +15,7 @@ class CurrentCountryName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $cityName = $this->worker->parsedBuffer->waitData('currentCityName');
+        $cityName = $this->parsedBuffer->waitData('currentCityName');
 
         if (empty($cityName)) {
             return;

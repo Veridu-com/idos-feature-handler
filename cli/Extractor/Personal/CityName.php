@@ -15,7 +15,7 @@ class CityName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $city = $this->worker->rawBuffer->getData('city');
+        $city = $this->rawBuffer->getData('city');
 
         if (empty($city)) {
             return;

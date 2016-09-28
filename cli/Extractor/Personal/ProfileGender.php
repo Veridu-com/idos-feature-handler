@@ -15,7 +15,7 @@ class ProfileGender extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $gender = $this->worker->rawBuffer->getData('gender');
+        $gender = $this->rawBuffer->getData('gender');
 
         if (empty($gender)) {
             return;

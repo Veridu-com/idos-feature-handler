@@ -15,7 +15,7 @@ class NumFiles extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $files = $this->worker->rawBuffer->getData('_files');
+        $files = $this->rawBuffer->getData('_files');
 
         if (empty($files)) {
             return 0;

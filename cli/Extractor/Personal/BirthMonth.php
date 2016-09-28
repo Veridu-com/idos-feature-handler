@@ -15,7 +15,7 @@ class BirthMonth extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $birthmonth = $this->worker->rawBuffer->getData('birthmonth');
+        $birthmonth = $this->rawBuffer->getData('birthmonth');
 
         if (empty($birthmonth)) {
             return 0;

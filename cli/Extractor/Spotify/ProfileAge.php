@@ -15,8 +15,8 @@ class ProfileAge extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $tracks         = $this->worker->rawBuffer->waitData('_tracks');
-        $ownedPlaylists = $this->worker->rawBuffer->waitData('_ownedPlaylists');
+        $tracks         = $this->rawBuffer->waitData('_tracks');
+        $ownedPlaylists = $this->rawBuffer->waitData('_ownedPlaylists');
 
         $age = null;
 

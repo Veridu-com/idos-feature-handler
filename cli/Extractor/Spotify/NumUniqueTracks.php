@@ -15,7 +15,7 @@ class NumUniqueTracks extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $tracks = $this->worker->rawBuffer->waitData('_tracks');
+        $tracks = $this->rawBuffer->waitData('_tracks');
 
         if (empty($tracks)) {
             return 0;

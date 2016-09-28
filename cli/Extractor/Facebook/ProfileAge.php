@@ -17,11 +17,11 @@ class ProfileAge extends AbstractExtractor {
     public function execute() {
         $age = null;
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
-            if (! isset($this->worker->rawBuffer[$property])) {
+            if (! isset($this->rawBuffer[$property])) {
                 continue;
             }
 
-            $data = $this->worker->rawBuffer[$property];
+            $data = $this->rawBuffer[$property];
             if (empty($data)) {
                 continue;
             }

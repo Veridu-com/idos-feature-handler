@@ -15,11 +15,11 @@ class NumOfPosts extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['posts'])) {
+        if (! isset($this->rawBuffer['posts'])) {
             return 0;
         }
 
-        $posts = $this->worker->rawBuffer['posts'];
+        $posts = $this->rawBuffer['posts'];
         if (empty($posts)) {
             return 0;
         }

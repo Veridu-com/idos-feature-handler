@@ -15,7 +15,7 @@ class RegionName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $state = $this->worker->rawBuffer->getData('state');
+        $state = $this->rawBuffer->getData('state');
 
         if (empty($state)) {
             return;

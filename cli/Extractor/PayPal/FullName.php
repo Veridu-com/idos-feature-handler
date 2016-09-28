@@ -13,7 +13,7 @@ class FullName extends \Thread {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->rawBuffer->getData('profile');
 
         if (empty($profile['name'])) {
             return;

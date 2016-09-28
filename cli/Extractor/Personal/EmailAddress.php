@@ -15,7 +15,7 @@ class EmailAddress extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $email = $this->worker->rawBuffer->getData('email');
+        $email = $this->rawBuffer->getData('email');
 
         //@FIXME
         if (empty($email)) {

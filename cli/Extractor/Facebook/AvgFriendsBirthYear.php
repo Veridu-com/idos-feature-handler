@@ -15,7 +15,7 @@ class AvgFriendsBirthYear extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $distribution = (array) $this->worker->rawBuffer['_ageDistribution'];
+        $distribution = (array) $this->rawBuffer['_ageDistribution'];
         if (empty($distribution)) {
             return 0;
         }

@@ -15,7 +15,7 @@ class ProfileAge extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->rawBuffer->getData('profile');
 
         $timestamp = strtotime($profile['created_at']);
         if ($timestamp === false) {

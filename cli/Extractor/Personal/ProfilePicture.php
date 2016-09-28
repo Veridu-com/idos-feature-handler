@@ -15,7 +15,7 @@ class ProfilePicture extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $picture = $this->worker->rawBuffer->getData('picture');
+        $picture = $this->rawBuffer->getData('picture');
 
         if (empty($picture)) === false) {
         //if (empty($picture) || Filter::validate($picture, Filter::URL) === false) {

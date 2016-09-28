@@ -15,7 +15,7 @@ class NumContacts extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $contacts = $this->worker->rawBuffer->getData('contacts');
+        $contacts = $this->rawBuffer->getData('contacts');
 
         if (empty($contacts)) {
             return 0;

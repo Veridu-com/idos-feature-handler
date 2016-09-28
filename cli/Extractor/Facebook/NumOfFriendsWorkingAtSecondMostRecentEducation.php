@@ -15,17 +15,17 @@ class NumOfFriendsWorkingAtSecondMostRecentEducation extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['profile'], $this->worker->rawBuffer['friends'])) {
+        if (! isset($this->rawBuffer['profile'], $this->rawBuffer['friends'])) {
             return 0;
         }
 
-        $profile = $this->worker->rawBuffer['profile'];
-        $friends = $this->worker->rawBuffer['friends'];
+        $profile = $this->rawBuffer['profile'];
+        $friends = $this->rawBuffer['friends'];
         if (empty($profile['education']) || empty($friends)) {
             return 0;
         }
 
-        $_education = $this->worker->rawBuffer['_education'];
+        $_education = $this->rawBuffer['_education'];
         if (empty($_education[1]['id'])) {
             return 0;
         }

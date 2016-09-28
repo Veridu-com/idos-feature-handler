@@ -15,7 +15,7 @@ class CountryName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $country = $this->worker->rawBuffer->getData('country');
+        $country = $this->rawBuffer->getData('country');
 
         if (empty($country)) {
             return;

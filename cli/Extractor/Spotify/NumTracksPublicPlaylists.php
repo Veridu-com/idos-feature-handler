@@ -15,7 +15,7 @@ class NumTracksPublicPlaylists extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $playlists = $this->worker->rawBuffer->waitData('_playlists');
+        $playlists = $this->rawBuffer->waitData('_playlists');
 
         $return = 0;
         foreach ($playlists as $playlist) {

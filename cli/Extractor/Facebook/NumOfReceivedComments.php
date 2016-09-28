@@ -17,8 +17,8 @@ class NumOfReceivedComments extends AbstractExtractor {
     public function execute() {
         $ids = [];
 
-        if (isset($this->worker->rawBuffer['links'])) {
-            $links = $this->worker->rawBuffer['links'];
+        if (isset($this->rawBuffer['links'])) {
+            $links = $this->rawBuffer['links'];
             if (! empty($links)) {
                 foreach ($links as $like) {
                     if (isset($like['comments']['data'])) {
@@ -36,8 +36,8 @@ class NumOfReceivedComments extends AbstractExtractor {
             }
         }
 
-        if (isset($this->worker->rawBuffer['photos'])) {
-            $photos = $this->worker->rawBuffer['photos'];
+        if (isset($this->rawBuffer['photos'])) {
+            $photos = $this->rawBuffer['photos'];
             if (! empty($data['photos'])) {
                 foreach ($data['photos'] as $photo) {
                     if (isset($photo['comments']['data'])) {
@@ -55,8 +55,8 @@ class NumOfReceivedComments extends AbstractExtractor {
             }
         }
 
-        if (isset($this->worker->rawBuffer['posts'])) {
-            $posts = $this->worker->rawBuffer['posts'];
+        if (isset($this->rawBuffer['posts'])) {
+            $posts = $this->rawBuffer['posts'];
             if (! empty($posts)) {
                 foreach ($posts as $post) {
                     if (isset($post['comments']['data'])) {
@@ -74,8 +74,8 @@ class NumOfReceivedComments extends AbstractExtractor {
             }
         }
 
-        if (isset($this->worker->rawBuffer['statuses'])) {
-            $statuses = $this->worker->rawBuffer['statuses'];
+        if (isset($this->rawBuffer['statuses'])) {
+            $statuses = $this->rawBuffer['statuses'];
             if (! empty($statuses)) {
                 foreach ($statuses as $status) {
                     if (isset($status['comments']['data'])) {
@@ -93,8 +93,8 @@ class NumOfReceivedComments extends AbstractExtractor {
             }
         }
 
-        if (isset($this->worker->rawBuffer['tagged'])) {
-            $tagged = $this->worker->rawBuffer['tagged'];
+        if (isset($this->rawBuffer['tagged'])) {
+            $tagged = $this->rawBuffer['tagged'];
             if (! empty($tagged)) {
                 foreach ($tagged as $tagged) {
                     if (isset($tagged['comments']['data'])) {
@@ -112,7 +112,7 @@ class NumOfReceivedComments extends AbstractExtractor {
             }
         }
 
-        $profileId = $this->worker->parsedBuffer['profileId'];
+        $profileId = $this->parsedBuffer['profileId'];
         unset($ids[$profileId]);
 
         return count($ids);

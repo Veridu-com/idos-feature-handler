@@ -15,7 +15,7 @@ class IsProfilePremium extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->parsedBuffer->getData('profile');
+        $profile = $this->parsedBuffer->getData('profile');
 
         return $profile['product'] === 'premium' ? true : false;
     }

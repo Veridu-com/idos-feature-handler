@@ -15,7 +15,7 @@ class NumOwnedPlaylists extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $playlists = $this->worker->rawBuffer->waitData('_ownedPlaylists');
+        $playlists = $this->rawBuffer->waitData('_ownedPlaylists');
 
         if (empty($playlists)) {
             return 0;

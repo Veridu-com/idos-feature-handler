@@ -15,16 +15,16 @@ class NumOfStudentFriendsWithinTwoYearsAgeDifference extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['friends'])) {
+        if (! isset($this->rawBuffer['friends'])) {
             return 0;
         }
 
-        $friends = $this->worker->rawBuffer['friends'];
+        $friends = $this->rawBuffer['friends'];
         if (empty($friends)) {
             return 0;
         }
 
-        $birthYear = $this->worker->parsedBuffer['birthYear'];
+        $birthYear = $this->parsedBuffer['birthYear'];
         if (empty($birthYear)) {
             return 0;
         }

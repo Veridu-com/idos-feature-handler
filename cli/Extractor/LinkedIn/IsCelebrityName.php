@@ -15,7 +15,7 @@ class IsCelebrityName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $fullName = $this->worker->parsedBuffer['fullName'];
+        $fullName = $this->parsedBuffer['fullName'];
 
         if (empty($fullName)) {
             return;

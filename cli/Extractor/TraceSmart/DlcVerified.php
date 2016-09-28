@@ -15,7 +15,7 @@ class DlcVerified extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $driving = $this->worker->rawBuffer->getData('driving');
+        $driving = $this->rawBuffer->getData('driving');
 
         if (empty($driving)) {
             return false;

@@ -17,7 +17,7 @@ class LocationDistribution extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        //$connections = (array) $this->worker->rawBuffer['_connections'];
+        //$connections = (array) $this->rawBuffer['_connections'];
 
         $location = [
             'city'    => [],

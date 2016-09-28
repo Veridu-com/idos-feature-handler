@@ -17,7 +17,7 @@ class Connections extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer['profile'];
+        $profile = $this->rawBuffer['profile'];
 
         //@FIXME
         //$connections = Profile::linkedinConnections($profile['id']);

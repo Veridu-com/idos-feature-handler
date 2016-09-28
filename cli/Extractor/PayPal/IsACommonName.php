@@ -13,7 +13,7 @@ class IsACommonName extends \Thread {
      * {@inheritdoc}
      */
     public function execute() {
-        $name = $this->worker->parsedBuffer->waitData('firstName');
+        $name = $this->parsedBuffer->waitData('firstName');
 
         if ($name === null) {
             return false;

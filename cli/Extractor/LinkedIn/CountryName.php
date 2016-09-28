@@ -15,7 +15,7 @@ class CountryName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer['profile'];
+        $profile = $this->rawBuffer['profile'];
 
         if (empty($profile['location']['country']['code'])) {
             return;

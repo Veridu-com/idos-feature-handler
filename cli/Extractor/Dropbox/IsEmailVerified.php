@@ -15,7 +15,7 @@ class IsEmailVerified extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
+        $profile = $this->rawBuffer->getData('profile');
 
         return isset($profile['email_veirified']) ? $profile['email_verified'] : false;
     }

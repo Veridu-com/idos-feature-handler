@@ -15,11 +15,11 @@ class NumOfTagged extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['tagged'])) {
+        if (! isset($this->rawBuffer['tagged'])) {
             return 0;
         }
 
-        $tagged = $this->worker->rawBuffer['tagged'];
+        $tagged = $this->rawBuffer['tagged'];
         if (empty($tagged)) {
             return 0;
         }

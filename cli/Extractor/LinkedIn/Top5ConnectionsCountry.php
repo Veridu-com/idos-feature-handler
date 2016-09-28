@@ -15,7 +15,7 @@ class Top5ConnectionsCountry extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $distribution = (array) $this->worker->rawBuffer['_locationDistribution'];
+        $distribution = (array) $this->rawBuffer['_locationDistribution'];
 
         if (empty($distribution['country'])) {
             return;

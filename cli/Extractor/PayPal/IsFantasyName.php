@@ -13,7 +13,7 @@ class IsFantasyName extends \Thread {
      * {@inheritdoc}
      */
     public function execute() {
-        $name = $this->worker->parsedBuffer->waitData('fullName');
+        $name = $this->parsedBuffer->waitData('fullName');
 
         if ($name === null) {
             return false;

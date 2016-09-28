@@ -15,7 +15,7 @@ class FirstEmailUsername extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $firstEmailAddress = $this->worker->parsedBuffer->waitData('firstEmailAddress');
+        $firstEmailAddress = $this->parsedBuffer->waitData('firstEmailAddress');
 
         if ($firstEmailAddress === null) {
             return;

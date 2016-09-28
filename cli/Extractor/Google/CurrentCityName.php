@@ -15,7 +15,7 @@ class CurrentCityName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $plus = $this->worker->rawBuffer->getData('plus');
+        $plus = $this->rawBuffer->getData('plus');
 
         if (empty($plus['placesLived'])) {
             return;

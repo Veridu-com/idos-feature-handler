@@ -15,7 +15,7 @@ class PassportVerified extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $passport = $this->worker->rawBuffer->getData('passport');
+        $passport = $this->rawBuffer->getData('passport');
 
         if (empty($passport)) {
             return false;

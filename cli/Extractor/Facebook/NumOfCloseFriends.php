@@ -57,11 +57,11 @@ class NumOfCloseFriends extends AbstractExtractor {
         $nameList = [];
 
         foreach (['photos', 'posts', 'tagged'] as $property) {
-            if (! isset($this->worker->rawBuffer[$property])) {
+            if (! isset($this->rawBuffer[$property])) {
                 continue;
             }
 
-            $data = $this->worker->rawBuffer[$property];
+            $data = $this->rawBuffer[$property];
             if (empty($data)) {
                 continue;
             }
@@ -98,7 +98,7 @@ class NumOfCloseFriends extends AbstractExtractor {
         }
 
         // remove profile owner from friend list
-        $profileId = $this->worker->parsedBuffer['profileId'];
+        $profileId = $this->parsedBuffer['profileId'];
         if ((! empty($profileId)) && (isset($idList[$profileId]))) {
             unset($idList[$profileId]);
         }

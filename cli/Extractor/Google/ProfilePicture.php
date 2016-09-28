@@ -15,8 +15,8 @@ class ProfilePicture extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer->getData('profile');
-        $plus    = $this->worker->rawBuffer->getData('plus');
+        $profile = $this->rawBuffer->getData('profile');
+        $plus    = $this->rawBuffer->getData('plus');
 
         if (empty($profile['picture'])) {
             if (empty($plus['image']['url'])) {

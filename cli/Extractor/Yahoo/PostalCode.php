@@ -15,7 +15,7 @@ class PostalCode extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $homeAddress = $this->worker->rawBuffer->waitData('_homeAddress');
+        $homeAddress = $this->rawBuffer->waitData('_homeAddress');
 
         if (empty($homeAddress) || empty($homeAddress['postalCode'])) {
             return;

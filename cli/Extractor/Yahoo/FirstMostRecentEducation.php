@@ -15,7 +15,7 @@ class FirstMostRecentEducation extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $education = $this->worker->rawBuffer->waitData('_education');
+        $education = $this->rawBuffer->waitData('_education');
 
         if (empty($education[0]['name'])) {
             return;

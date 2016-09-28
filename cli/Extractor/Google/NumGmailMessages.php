@@ -15,7 +15,7 @@ class NumGmailMessages extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profileGmail = $this->worker->rawBuffer->getData('profile_gmail');
+        $profileGmail = $this->rawBuffer->getData('profile_gmail');
 
         if (empty($profileGmail)) {
             return 0;

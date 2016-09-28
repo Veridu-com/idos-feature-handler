@@ -22,11 +22,11 @@ class LocationDistribution extends AbstractExtractor {
             'country' => []
         ];
 
-        if (! isset($this->worker->rawBuffer['friends'])) {
+        if (! isset($this->rawBuffer['friends'])) {
             return $location;
         }
 
-        $friends = $this->worker->rawBuffer['friends'];
+        $friends = $this->rawBuffer['friends'];
         if (empty($friends)) {
             return $location;
         }

@@ -15,11 +15,11 @@ class NumOfEventsAttended extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['events'])) {
+        if (! isset($this->rawBuffer['events'])) {
             return 0;
         }
 
-        $events = $this->worker->rawBuffer['events'];
+        $events = $this->rawBuffer['events'];
         if (empty($events)) {
             return 0;
         }

@@ -15,7 +15,7 @@ class IsListedName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $fullName = $this->worker->parsedBuffer->getData('fullName');
+        $fullName = $this->parsedBuffer->getData('fullName');
 
         if (empty($fullName)) {
             return;

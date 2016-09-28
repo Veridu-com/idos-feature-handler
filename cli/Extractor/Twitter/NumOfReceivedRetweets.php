@@ -15,7 +15,7 @@ class NumOfReceivedRetweets extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $statuses = $this->worker->rawBuffer->getData('statuses');
+        $statuses = $this->rawBuffer->getData('statuses');
 
         if (empty($statuses)) {
             return 0;

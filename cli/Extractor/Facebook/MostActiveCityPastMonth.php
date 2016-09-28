@@ -20,11 +20,11 @@ class MostActiveCityPastMonth extends AbstractExtractor {
         $limit    = (1 * 2629743);
 
         foreach (['locations', 'links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
-            if (! isset($this->worker->rawBuffer[$property])) {
+            if (! isset($this->rawBuffer[$property])) {
                 continue;
             }
 
-            $data = $this->worker->rawBuffer[$property];
+            $data = $this->rawBuffer[$property];
             if (empty($data)) {
                 continue;
             }

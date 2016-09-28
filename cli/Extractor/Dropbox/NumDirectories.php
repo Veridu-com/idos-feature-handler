@@ -15,7 +15,7 @@ class NumDirectories extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $dirs = $this->worker->rawBuffer->getData('_dirs');
+        $dirs = $this->rawBuffer->getData('_dirs');
 
         if (empty($dirs)) {
             return 0;

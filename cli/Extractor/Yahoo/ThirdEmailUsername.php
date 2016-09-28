@@ -15,7 +15,7 @@ class ThirdEmailUsername extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $thirdEmailAddress = $this->worker->parsedBuffer->waitData('thirdEmailAddress');
+        $thirdEmailAddress = $this->parsedBuffer->waitData('thirdEmailAddress');
 
         if ($thirdEmailAddress === null) {
             return;

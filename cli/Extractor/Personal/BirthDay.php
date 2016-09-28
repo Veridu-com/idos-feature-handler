@@ -15,7 +15,7 @@ class BirthDay extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $birthday = $this->worker->rawBuffer->getData('birthday');
+        $birthday = $this->rawBuffer->getData('birthday');
 
         if (empty($birthday)) {
             return 0;

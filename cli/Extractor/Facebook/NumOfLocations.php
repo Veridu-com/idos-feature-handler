@@ -15,11 +15,11 @@ class NumOfLocations extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['locations'])) {
+        if (! isset($this->rawBuffer['locations'])) {
             return 0;
         }
 
-        $locations = $this->worker->rawBuffer['locations'];
+        $locations = $this->rawBuffer['locations'];
         if (empty($locations)) {
             return 0;
         }

@@ -15,17 +15,17 @@ class NumFriendsWithSameLastName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $lastName = $this->worker->parsedBuffer['lastName'];
+        $lastName = $this->parsedBuffer['lastName'];
         if (empty($lastName)) {
             return 0;
         }
 
-        if (! isset($this->worker->rawBuffer['friends'])) {
+        if (! isset($this->rawBuffer['friends'])) {
             return 0;
         }
 
         $lastName = strtolower($lastName);
-        $friends  = $this->worker->rawBuffer['friends'];
+        $friends  = $this->rawBuffer['friends'];
         $count    = 0;
         foreach ($friends as $friend) {
             if (empty($friend['last_name'])) {

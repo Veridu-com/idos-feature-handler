@@ -15,7 +15,7 @@ class FifthMostRecentWorkPosition extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $work = (array) $this->worker->rawBuffer['_work'];
+        $work = (array) $this->rawBuffer['_work'];
         if (empty($work)) {
             return '';
         }

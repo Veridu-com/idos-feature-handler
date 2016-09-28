@@ -15,16 +15,16 @@ class NumFamilyMembersWithSameLastName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['family'])) {
+        if (! isset($this->rawBuffer['family'])) {
             return 0;
         }
 
-        $family = $this->worker->rawBuffer['family'];
+        $family = $this->rawBuffer['family'];
         if (empty($family)) {
             return 0;
         }
 
-        $lastName = $this->worker->parsedBuffer['lastName'];
+        $lastName = $this->parsedBuffer['lastName'];
         if (empty($lastName)) {
             return 0;
         }

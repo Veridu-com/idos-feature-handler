@@ -15,13 +15,13 @@ class FifthMostRecentWorkIsCurrent extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $profile = $this->worker->rawBuffer['profile'];
+        $profile = $this->rawBuffer['profile'];
 
         if (empty($profile['positions'])) {
             return;
         }
 
-        $work = (array) $this->worker->rawBuffer['_work'];
+        $work = (array) $this->rawBuffer['_work'];
 
         if (empty($work[4])) {
             return;

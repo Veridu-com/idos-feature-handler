@@ -15,12 +15,12 @@ class NumOfFriendsBirthWithinThreeYears extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $birthYear = $this->worker->parsedBuffer['birthYear'];
+        $birthYear = $this->parsedBuffer['birthYear'];
         if (empty($birthYear)) {
             return 0;
         }
 
-        $distribution = $this->worker->rawBuffer['_ageDistribution'];
+        $distribution = $this->rawBuffer['_ageDistribution'];
         if (empty($distribution)) {
             return 0;
         }

@@ -15,12 +15,12 @@ class NumOfCollegeFriends extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        if (! isset($this->worker->rawBuffer['profile'], $this->worker->rawBuffer['friends'])) {
+        if (! isset($this->rawBuffer['profile'], $this->rawBuffer['friends'])) {
             return 0;
         }
 
-        $profile = $this->worker->rawBuffer['profile'];
-        $friends = $this->worker->rawBuffer['friends'];
+        $profile = $this->rawBuffer['profile'];
+        $friends = $this->rawBuffer['friends'];
         if (empty($profile['education']) || empty($friends)) {
             return 0;
         }

@@ -15,7 +15,7 @@ class FirstMostRecentWork extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $work = $this->worker->rawBuffer->waitData('_work');
+        $work = $this->rawBuffer->waitData('_work');
 
         if (empty($work[0]['name'])) {
             return;
