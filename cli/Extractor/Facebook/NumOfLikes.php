@@ -15,7 +15,11 @@ class NumOfLikes extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $likes = $this->worker->rawBuffer->getData('likes');
+        if (! isset($this->worker->rawBuffer['likes'])) {
+            return 0;
+        }
+
+        $likes = $this->worker->rawBuffer['likes'];
         if (empty($likes)) {
             return 0;
         }

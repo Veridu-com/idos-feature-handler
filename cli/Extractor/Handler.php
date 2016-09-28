@@ -70,7 +70,7 @@ class Handler {
      * @return void
      */
     public function extract(Buffer $rawBuffer, Buffer $parsedBuffer) {
-        $poolSize = min(150, count($this->threadList));
+        $poolSize = count($this->threadList);
         echo 'poolSize = ', $poolSize, PHP_EOL;
         $threadPool = new \Pool(
             $poolSize,

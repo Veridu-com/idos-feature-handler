@@ -15,14 +15,17 @@ class NumFamilyMembersWithSameLastName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $family = $this->worker->rawBuffer->getData('family');
+        if (! isset($this->worker->rawBuffer['family'])) {
+            return 0;
+        }
 
+        $family = $this->worker->rawBuffer['family'];
         if (empty($family)) {
             return 0;
         }
 
-        $lastName = $this->worker->parsedBuffer->waitData('lastName');
-        if ($lastName === null) {
+        $lastName = $this->worker->parsedBuffer['lastName'];
+        if (empty($lastName)) {
             return 0;
         }
 
@@ -32,10 +35,9 @@ class NumFamilyMembersWithSameLastName extends AbstractExtractor {
                 continue;
             }
 
-            //@FIXME
-            /*if ($lastName === Utils::getInstance()->lastName($person['last_name'])) {
+            if ($lastName === $this->worker->nameParser->lastName($person['last_name'])) {
                 $count++;
-            }*/
+            }
         }
 
         return $count;

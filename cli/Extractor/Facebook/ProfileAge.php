@@ -17,22 +17,28 @@ class ProfileAge extends AbstractExtractor {
     public function execute() {
         $age = null;
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
-            $data = $this->worker->rawBuffer->getData($property);
-            if (! empty($data)) {
-                foreach ($data as $item) {
-                    if (empty($item['created_time'])) {
-                        $timestamp = strtotime($item['updated_time']);
-                    } else {
-                        $timestamp = strtotime($item['created_time']);
-                    }
+            if (! isset($this->worker->rawBuffer[$property])) {
+                continue;
+            }
 
-                    if ($timestamp === false) {
-                        continue;
-                    }
+            $data = $this->worker->rawBuffer[$property];
+            if (empty($data)) {
+                continue;
+            }
 
-                    if ($age === null || $timestamp < $age) {
-                        $age = $timestamp;
-                    }
+            foreach ($data as $item) {
+                if (empty($item['created_time'])) {
+                    $timestamp = strtotime($item['updated_time']);
+                } else {
+                    $timestamp = strtotime($item['created_time']);
+                }
+
+                if ($timestamp === false) {
+                    continue;
+                }
+
+                if ($age === null || $timestamp < $age) {
+                    $age = $timestamp;
                 }
             }
         }

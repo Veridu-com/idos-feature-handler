@@ -17,7 +17,11 @@ class NumOfProfilesCommented extends AbstractExtractor {
     public function execute() {
         $ids = [];
         foreach (['photos', 'posts', 'tagged'] as $topic) {
-            $data = $this->worker->rawBuffer->getData($topic);
+            if (! isset($this->worker->rawBuffer[$topic])) {
+                continue;
+            }
+
+            $data = $this->worker->rawBuffer[$topic];
             if (empty($data)) {
                 continue;
             }
@@ -33,7 +37,7 @@ class NumOfProfilesCommented extends AbstractExtractor {
             }
         }
 
-        $profileId = $this->worker->parsedBuffer->waitData('profileId');
+        $profileId = $this->worker->parsedBuffer['profileId'];
         unset($ids[$profileId]);
 
         return count($ids);

@@ -15,8 +15,11 @@ class NumOfLinks extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $links = $this->worker->rawBuffer->getData('links');
+        if (! isset($this->worker->rawBuffer['links'])) {
+            return 0;
+        }
 
+        $links = $this->worker->rawBuffer['links'];
         if (empty($links)) {
             return 0;
         }

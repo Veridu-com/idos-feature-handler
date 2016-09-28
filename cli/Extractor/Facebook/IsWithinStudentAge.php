@@ -15,8 +15,7 @@ class IsWithinStudentAge extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $birthDate = $this->worker->rawBuffer->waitData('_fullBirthDate');
-
+        $birthDate = $this->worker->rawBuffer['_fullBirthDate'];
         if ((empty($birthDate)) || (empty($birthDate['year']))) {
             return;
         }

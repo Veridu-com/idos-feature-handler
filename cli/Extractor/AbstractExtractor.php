@@ -48,14 +48,13 @@ abstract class AbstractExtractor extends \Thread {
         $topic = get_class($this);
         $topic = substr($topic, (strrpos($topic, '\\') + 1));
         $topic = lcfirst($topic);
-
         if (static::SUPPORT_DATA) {
-            $this->worker->rawBuffer->setData('_' . $topic, $value);
+            $this->worker->rawBuffer['_' . $topic] = $value;
 
             return;
         }
 
-        $this->worker->parsedBuffer->setData($topic, $value);
+        $this->worker->parsedBuffer[$topic] = $value;
     }
 
     /**

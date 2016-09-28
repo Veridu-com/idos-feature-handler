@@ -102,7 +102,7 @@ class Runner extends Command {
 
         $rawBuffer = new Buffer();
         foreach ($response['data'] as $item) {
-            $rawBuffer->setData($item['collection'], $item['data']);
+            $rawBuffer[$item['collection']] = $item['data'];
         }
 
         $parsedBuffer = new Buffer();
@@ -112,11 +112,24 @@ class Runner extends Command {
             $parsedBuffer
         );
 
+        $dryRun = $input->getArgument('dryRun');
+        if (empty($dryRun)) {
+            $dryRun = false;
+        }
+
+        if ($dryRun) {
+            foreach ($parsedBuffer as $field => $value) {
+                $logger->debug(sprintf('%s = %s', $field, $value));
+            }
+
+            return;
+        }
+
         $featuresEndpoint = $sdk
             ->Profile($input->getArgument('userName'))
             ->Features;
         try {
-            foreach ($parsedBuffer->asArray() as $field => $value) {
+            foreach ($parsedBuffer as $field => $value) {
                 $featuresEndpoint->createOrUpdate(
                     (int) $input->getArgument('sourceId'),
                     $field,
@@ -138,7 +151,6 @@ class Runner extends Command {
         //             'running' => false
         //         ]
         //     );
-
 
         $logger->debug('Runner completed');
     }

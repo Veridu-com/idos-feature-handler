@@ -13,16 +13,20 @@ use Cli\Extractor\AbstractExtractor;
 class LocationDistribution extends AbstractExtractor {
     const SUPPORT_DATA = true;
 
+    /**
+     * {@inheritdoc}
+     */
     public function execute() {
         $location = [
             'city'    => [],
             'country' => []
         ];
 
-        //@FIXME
-        //$friends = $this->worker->rawBuffer->waitData('_friends');
-        $friends = [];
+        if (! isset($this->worker->rawBuffer['friends'])) {
+            return $location;
+        }
 
+        $friends = $this->worker->rawBuffer['friends'];
         if (empty($friends)) {
             return $location;
         }

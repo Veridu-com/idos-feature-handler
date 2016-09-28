@@ -17,31 +17,39 @@ class AvgCommentsReceivedPerWeek extends AbstractExtractor {
     public function execute() {
         $comments = [];
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
-            $data = $this->worker->rawBuffer->getData($property);
-            if (! empty($data)) {
-                foreach ($data as $item) {
-                    if (! empty($item['comments']['data'])) {
-                        if (empty($item['created_time'])) {
-                            $ts = strtotime($item['updated_time']);
-                        } else {
-                            $ts = strtotime($item['created_time']);
-                        }
+            if (! isset($this->worker->rawBuffer[$property])) {
+                continue;
+            }
 
-                        if ($ts === false) {
-                            continue;
-                        }
+            $data = $this->worker->rawBuffer[$property];
+            if (empty($data)) {
+                continue;
+            }
 
-                        if (! isset($comments[date('Y', $ts)])) {
-                            $comments[date('Y', $ts)] = [];
-                        }
-
-                        if (! isset($comments[date('Y', $ts)][date('n', $ts)])) {
-                            $comments[date('Y', $ts)][date('n', $ts)] = 0;
-                        }
-
-                        $comments[date('Y', $ts)][date('n', $ts)] += count($item['comments']['data']);
-                    }
+            foreach ($data as $item) {
+                if (empty($item['comments']['data'])) {
+                    continue;
                 }
+
+                if (empty($item['created_time'])) {
+                    $ts = strtotime($item['updated_time']);
+                } else {
+                    $ts = strtotime($item['created_time']);
+                }
+
+                if ($ts === false) {
+                    continue;
+                }
+
+                if (! isset($comments[date('Y', $ts)])) {
+                    $comments[date('Y', $ts)] = [];
+                }
+
+                if (! isset($comments[date('Y', $ts)][date('n', $ts)])) {
+                    $comments[date('Y', $ts)][date('n', $ts)] = 0;
+                }
+
+                $comments[date('Y', $ts)][date('n', $ts)] += count($item['comments']['data']);
             }
         }
 

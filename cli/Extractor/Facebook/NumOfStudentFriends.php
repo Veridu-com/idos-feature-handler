@@ -15,17 +15,18 @@ class NumOfStudentFriends extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $friends = $this->worker->rawBuffer->getData('friends');
+        if (! isset($this->worker->rawBuffer['friends'])) {
+            return 0;
+        }
 
+        $friends = $this->worker->rawBuffer['friends'];
         if (empty($friends)) {
             return 0;
         }
 
-        $year     = date('Y');
-        $_friends = $this->worker->rawBuffer->waitData('_friends');
-
+        $year   = date('Y');
         $return = 0;
-        foreach ($_friends as $friend) {
+        foreach ($friends as $friend) {
             if (empty($friend['education'])) {
                 continue;
             }

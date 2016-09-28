@@ -15,8 +15,11 @@ class NumOfStatuses extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $statuses = $this->worker->rawBuffer->getData('statuses');
+        if (! isset($this->worker->rawBuffer['statuses'])) {
+            return 0;
+        }
 
+        $statuses = $this->worker->rawBuffer['statuses'];
         if (empty($statuses)) {
             return 0;
         }
