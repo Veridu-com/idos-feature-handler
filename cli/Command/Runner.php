@@ -101,7 +101,7 @@ class Runner extends Command {
             ->Profile($input->getArgument('userName'))
             ->Raw->listAll(['source:id' => $input->getArgument('sourceId')]);
 
-        $rawBuffer = new Buffer();
+        $rawBuffer = [];
         foreach ($response['data'] as $item) {
             $rawBuffer[$item['collection']] = $item['data'];
         }
