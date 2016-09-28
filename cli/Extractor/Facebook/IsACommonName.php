@@ -15,7 +15,7 @@ class IsACommonName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        //@FIXME
-        return '';
+        // FIXME
+        return false;
     }
 }

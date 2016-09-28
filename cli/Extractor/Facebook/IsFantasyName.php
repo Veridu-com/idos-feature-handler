@@ -17,11 +17,11 @@ class IsFantasyName extends AbstractExtractor {
     public function execute() {
         $fullName = $this->worker->parsedBuffer['fullName'];
         if (empty($fullName)) {
-            return '';
+            return false;
         }
 
-        //@FIXME
+        // FIXME
         //return Utils::getInstance()->isFantasyName($fullName);
-        return '';
+        return false;
     }
 }
