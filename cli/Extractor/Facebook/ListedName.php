@@ -16,6 +16,6 @@ class ListedName extends AbstractExtractor {
      */
     public function execute() {
         //@FIXME
-        return;
+        return '';
     }
 }

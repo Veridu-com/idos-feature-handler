@@ -23,7 +23,7 @@ class FullBirthDate extends AbstractExtractor {
 
         $profile = $this->worker->rawBuffer['profile'];
         if ((empty($profile['birthday'])) || (strpos($profile['birthday'], '/') === false)) {
-            return;
+            return '';
         }
 
         $date = explode('/', $profile['birthday']);

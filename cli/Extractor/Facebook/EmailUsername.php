@@ -17,7 +17,7 @@ class EmailUsername extends AbstractExtractor {
     public function execute() {
         $email = $this->worker->parsedBuffer['emailAddress'];
         if (empty($email)) {
-            return;
+            return '';
         }
 
         $email = explode('@', $email);

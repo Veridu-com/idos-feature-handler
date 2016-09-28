@@ -16,6 +16,6 @@ class IsACommonName extends AbstractExtractor {
      */
     public function execute() {
         //@FIXME
-        return;
+        return '';
     }
 }

@@ -52,7 +52,7 @@ class MostActiveCityPastYear extends AbstractExtractor {
         }
 
         if (empty($activity)) {
-            return;
+            return '';
         }
 
         arsort($activity);

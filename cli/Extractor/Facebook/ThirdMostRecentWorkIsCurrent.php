@@ -17,11 +17,11 @@ class ThirdMostRecentWorkIsCurrent extends AbstractExtractor {
     public function execute() {
         $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[2])) {
-            return;
+            return '';
         }
 
         return empty($work[2]['end_date']);

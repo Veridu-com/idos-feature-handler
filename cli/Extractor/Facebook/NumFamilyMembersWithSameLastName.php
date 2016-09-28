@@ -29,13 +29,14 @@ class NumFamilyMembersWithSameLastName extends AbstractExtractor {
             return 0;
         }
 
-        $count = 0;
+        $lastName = strtolower($lastName);
+        $count    = 0;
         foreach ($family as $person) {
             if (empty($person['last_name'])) {
                 continue;
             }
 
-            if ($lastName === $this->worker->nameParser->lastName($person['last_name'])) {
+            if ($lastName === strtolower($this->worker->nameParser->lastName($person['last_name']))) {
                 $count++;
             }
         }

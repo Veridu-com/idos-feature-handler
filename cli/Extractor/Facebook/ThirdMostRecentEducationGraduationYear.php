@@ -17,11 +17,11 @@ class ThirdMostRecentEducationGraduationYear extends AbstractExtractor {
     public function execute() {
         $education = $this->worker->rawBuffer['_education'];
         if (empty($education)) {
-            return;
+            return '';
         }
 
         if (empty($education[2]['year'])) {
-            return;
+            return '';
         }
 
         return $education[2]['year'];

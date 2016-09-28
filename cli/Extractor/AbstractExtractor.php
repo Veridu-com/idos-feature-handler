@@ -13,18 +13,18 @@ namespace Cli\Extractor;
  */
 abstract class AbstractExtractor extends \Thread {
     /**
+     * Controls if the feature extracted is used as support data by other threads.
+     *
+     * @var bool
+     */
+    const SUPPORT_DATA = false;
+
+    /**
      * Execution time.
      *
      * @var float
      */
     protected $execTime = 0.0;
-
-    /**
-     * If we are writing support data to be used by other threads.
-     *
-     * @var bool
-     */
-    const SUPPORT_DATA = false;
 
     /**
      * Returns Thread's execution time.

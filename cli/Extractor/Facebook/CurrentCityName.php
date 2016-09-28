@@ -16,12 +16,12 @@ class CurrentCityName extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['location']['name'])) {
-            return;
+            return '';
         }
 
         if (strpos($profile['location']['name'], ',') === false) {

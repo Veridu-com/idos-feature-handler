@@ -16,12 +16,12 @@ class ProfileGender extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['gender'])) {
-            return;
+            return '';
         }
 
         return $profile['gender'];

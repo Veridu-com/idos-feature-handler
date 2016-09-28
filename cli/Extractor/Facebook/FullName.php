@@ -16,12 +16,12 @@ class FullName extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if ((empty($profile['first_name'])) || (empty($profile['last_name']))) {
-            return;
+            return '';
         }
 
         return sprintf('%s %s', trim($profile['first_name']), trim($profile['last_name']));

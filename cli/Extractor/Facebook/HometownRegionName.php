@@ -17,11 +17,11 @@ class HometownRegionName extends AbstractExtractor {
     public function execute() {
         $city = $this->worker->parsedBuffer['hometownCityName'];
         if (empty($city)) {
-            return;
+            return '';
         }
 
         //@FIXME
         //return Utils::getInstance()->regionFromCity()
-        return;
+        return '';
     }
 }

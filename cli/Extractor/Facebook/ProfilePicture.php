@@ -16,12 +16,12 @@ class ProfilePicture extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['picture']['data']['url'])) {
-            return;
+            return '';
         }
 
         return $profile['picture']['data']['url'];

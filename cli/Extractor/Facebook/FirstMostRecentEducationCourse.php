@@ -17,11 +17,11 @@ class FirstMostRecentEducationCourse extends AbstractExtractor {
     public function execute() {
         $education = $this->worker->rawBuffer['_education'];
         if (empty($education)) {
-            return;
+            return '';
         }
 
         if (empty($education[0]['course'])) {
-            return;
+            return '';
         }
 
         return $education[0]['course'];

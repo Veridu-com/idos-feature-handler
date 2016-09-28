@@ -16,12 +16,12 @@ class ProfileId extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['id'])) {
-            return;
+            return '';
         }
 
         return $profile['id'];

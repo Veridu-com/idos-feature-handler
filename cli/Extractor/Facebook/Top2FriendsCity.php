@@ -15,15 +15,14 @@ class Top2FriendsCity extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        $distribution = $this->worker->rawBuffer['_locationDistribution'];
+        $distribution = (array) $this->worker->rawBuffer['_locationDistribution'];
         if (empty($distribution['city'])) {
-            return;
+            return '';
         }
 
-        $cities = array_keys($distribution['city']);
-        // $cities = get_object_vars($distribution['city']);
+        $cities = array_keys((array) $distribution['city']);
         if (empty($cities[1])) {
-            return;
+            return '';
         }
 
         return $cities[1];

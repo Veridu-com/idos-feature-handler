@@ -25,11 +25,11 @@ class Job extends AbstractCommand {
      */
     public $sourceId;
     /**
-     * Task Id.
+     * Process Id.
      *
      * @var int
      */
-    public $taskId;
+    public $processId;
     /**
      * Credential's Public Key.
      *
@@ -55,8 +55,8 @@ class Job extends AbstractCommand {
             $this->sourceId = $parameters['sourceId'];
         }
 
-        if (isset($parameters['taskId'])) {
-            $this->taskId = $parameters['taskId'];
+        if (isset($parameters['processId'])) {
+            $this->processId = $parameters['processId'];
         }
 
         if (isset($parameters['publicKey'])) {

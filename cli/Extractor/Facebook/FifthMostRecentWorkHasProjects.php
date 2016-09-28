@@ -17,11 +17,11 @@ class FifthMostRecentWorkHasProjects extends AbstractExtractor {
     public function execute() {
         $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[4]['has_projects'])) {
-            return;
+            return '';
         }
 
         return $work[4]['has_projects'];

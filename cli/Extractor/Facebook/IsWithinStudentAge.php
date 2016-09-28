@@ -17,7 +17,7 @@ class IsWithinStudentAge extends AbstractExtractor {
     public function execute() {
         $birthDate = $this->worker->rawBuffer['_fullBirthDate'];
         if ((empty($birthDate)) || (empty($birthDate['year']))) {
-            return;
+            return '';
         }
 
         $age = date('Y') - $birthDate['year'];

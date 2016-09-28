@@ -17,13 +17,13 @@ class FifthMostRecentWorkLocation extends AbstractExtractor {
     public function execute() {
         $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[4]['location'])) {
-            return;
+            return '';
         }
 
-        return empty($work[4]['location']);
+        return $work[4]['location'];
     }
 }

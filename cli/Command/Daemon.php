@@ -95,6 +95,7 @@ class Daemon extends Command {
                 }
 
                 $handler = Handler::create($jobData['providerName']);
+                $logger->debug(sprintf('Pool Size: %d', $handler->poolSize()));
 
                 // idOS SDK
                 $auth = new \idOS\Auth\CredentialToken(

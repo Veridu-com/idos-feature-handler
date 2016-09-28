@@ -94,7 +94,7 @@ class NumOfCloseFriends extends AbstractExtractor {
         }
 
         if (! count($idList)) {
-            return;
+            return '';
         }
 
         // remove profile owner from friend list

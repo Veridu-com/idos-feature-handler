@@ -17,11 +17,11 @@ class NameGender extends AbstractExtractor {
     public function execute() {
         $firstName = $this->worker->parsedBuffer['firstName'];
         if (empty($firstName)) {
-            return;
+            return '';
         }
 
         //@FIXME
         //return Utils::getInstance()->nameGender();
-        return;
+        return '';
     }
 }

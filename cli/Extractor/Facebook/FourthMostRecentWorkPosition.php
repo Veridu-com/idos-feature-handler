@@ -17,13 +17,13 @@ class FourthMostRecentWorkPosition extends AbstractExtractor {
     public function execute() {
         $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[3]['position'])) {
-            return;
+            return '';
         }
 
-        return empty($work[3]['position']);
+        return $work[3]['position'];
     }
 }

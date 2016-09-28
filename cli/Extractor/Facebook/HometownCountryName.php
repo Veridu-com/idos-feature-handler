@@ -16,12 +16,12 @@ class HometownCountryName extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['hometown']) || empty($profile['hometown']['name'])) {
-            return;
+            return '';
         }
 
         if (strpos($profile['hometown']['name'], ',') === false) {

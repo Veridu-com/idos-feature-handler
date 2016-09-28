@@ -17,7 +17,7 @@ class LastNameInitial extends AbstractExtractor {
     public function execute() {
         $fullName = $this->worker->parsedBuffer['fullName'];
         if (empty($fullName)) {
-            return;
+            return '';
         }
 
         return $this->worker->nameParser->lastNameInitial($fullName);

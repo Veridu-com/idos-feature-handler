@@ -52,7 +52,7 @@ class MostActiveCountryPastMonth extends AbstractExtractor {
         }
 
         if (empty($activity)) {
-            return;
+            return '';
         }
 
         arsort($activity);

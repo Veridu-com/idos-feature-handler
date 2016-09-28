@@ -15,7 +15,6 @@ class PepName extends AbstractExtractor {
      * {@inheritdoc}
      */
     public function execute() {
-        //@FIXME
-        return;
+        // FIXME
     }
 }

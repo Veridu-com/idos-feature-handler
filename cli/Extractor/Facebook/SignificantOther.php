@@ -16,12 +16,12 @@ class SignificantOther extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['significant_other']['name'])) {
-            return;
+            return '';
         }
 
         return $profile['significant_other']['name'];

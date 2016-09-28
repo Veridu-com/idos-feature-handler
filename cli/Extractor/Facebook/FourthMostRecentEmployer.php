@@ -17,11 +17,11 @@ class FourthMostRecentEmployer extends AbstractExtractor {
     public function execute() {
         $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[3]['employer'])) {
-            return;
+            return '';
         }
 
         return $work[3]['employer'];

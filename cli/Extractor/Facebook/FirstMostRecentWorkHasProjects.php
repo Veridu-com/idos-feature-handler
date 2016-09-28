@@ -17,11 +17,11 @@ class FirstMostRecentWorkHasProjects extends AbstractExtractor {
     public function execute() {
         $work = (array) $this->worker->rawBuffer['_work'];
         if (empty($work)) {
-            return;
+            return '';
         }
 
         if (empty($work[0]['has_projects'])) {
-            return;
+            return '';
         }
 
         return $work[0]['has_projects'];

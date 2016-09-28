@@ -76,6 +76,7 @@ class Runner extends Command {
         $logger->debug('Initializing idOS Feature Handler Runner');
 
         $handler = Handler::create($input->getArgument('providerName'));
+        $logger->debug(sprintf('Pool Size: %d', $handler->poolSize()));
 
         // idOS SDK
         $auth = new \idOS\Auth\CredentialToken(

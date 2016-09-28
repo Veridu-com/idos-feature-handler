@@ -55,12 +55,12 @@ class PhoneParser extends \Threaded {
     public function phoneCountryCode(string $phone, $countryCode = null) {
         $phone = $this->phoneParse($phone, $countryCode);
 
-        return '+' . $phone->getCountryCode();
+        return $phone->getCountryCode() ?: '';
     }
 
     public function phoneNumber(string $phone, $countryCode = null) {
         $phone = $this->phoneParse($phone, $countryCode);
 
-        return $phone->getNationalNumber();
+        return $phone->getNationalNumber() ?: '';
     }
 }

@@ -16,12 +16,12 @@ class IsInARelationship extends AbstractExtractor {
      */
     public function execute() {
         if (! isset($this->worker->rawBuffer['profile'])) {
-            return;
+            return '';
         }
 
         $profile = $this->worker->rawBuffer['profile'];
         if (empty($profile['relationshipStatus'])) {
-            return;
+            return '';
         }
 
         return in_array(
