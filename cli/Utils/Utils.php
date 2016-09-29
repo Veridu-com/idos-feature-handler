@@ -550,7 +550,7 @@ final class Utils {
             return;
         }
 
-        return $firstName[0];
+        return mb_substr($firstName, 0, 1);
     }
 
     public function middleName($name) {
@@ -575,13 +575,13 @@ final class Utils {
         }
 
         if (strpos($middleName, ' ') === false) {
-            return $middleName[0];
+            return mb_substr($middleName, 0, 1);
         }
 
         $names  = explode(' ', $middleName);
         $return = '';
         foreach ($names as $name) {
-            $return .= $name[0];
+            $return .= mb_substr($name, 0, 1);
         }
 
         return $return;
@@ -608,7 +608,7 @@ final class Utils {
             return;
         }
 
-        return $lastName[0];
+        return mb_substr($lastName, 0, 1);
     }
 
     /* PHONE UTILITIES */

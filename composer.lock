@@ -1537,12 +1537,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/flavioheleno/idos-sdk-php.git",
-                "reference": "9e59205f5faecd2921de9a7c84f2f8dea7dd3f76"
+                "reference": "effd7cdf3444783558b367cb0521ec15c5dfc280"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flavioheleno/idos-sdk-php/zipball/9e59205f5faecd2921de9a7c84f2f8dea7dd3f76",
-                "reference": "9e59205f5faecd2921de9a7c84f2f8dea7dd3f76",
+                "url": "https://api.github.com/repos/flavioheleno/idos-sdk-php/zipball/effd7cdf3444783558b367cb0521ec15c5dfc280",
+                "reference": "effd7cdf3444783558b367cb0521ec15c5dfc280",
                 "shasum": ""
             },
             "require": {
@@ -1599,7 +1599,7 @@
                 "source": "https://github.com/flavioheleno/idos-sdk-php/tree/master",
                 "issues": "https://github.com/flavioheleno/idos-sdk-php/issues"
             },
-            "time": "2016-09-29 12:48:55"
+            "time": "2016-09-29 17:13:28"
         }
     ],
     "packages-dev": [
