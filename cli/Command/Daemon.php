@@ -94,6 +94,14 @@ class Daemon extends Command {
                 }
 
                 $handlerClass = 'Cli\Extractor\\' . ucfirst($jobData['providerName']);
+
+                if (! class_exists($handlerClass)) {
+                    $logger->debug('Invalid Job Provider Name!');
+                    $job->sendComplete('invalid');
+
+                    return;
+                }
+
                 $handler = new $handlerClass();
 
                 // idOS SDK
@@ -153,7 +161,7 @@ class Daemon extends Command {
                 //     );
 
                 $logger->debug('Job done!');
-                $job->sendComplete('ok');
+                //$job->sendComplete('ok');
             }
         );
 

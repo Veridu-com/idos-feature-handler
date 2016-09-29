@@ -4,14 +4,74 @@ declare(strict_types = 1);
 
 namespace Cli\Extractor;
 
-use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
 final class Google extends AbstractExtractor {
+    private function googleCircles($data) {
+        //@FIXME
+        return [];
+        /*$mongo = new Mongo;
+        $circles = $mongo->selectCollection('google', 'circles')->findOne(array('id' => $profile_id));
+        if (empty($circles['list'])) {
+            $mongo->close();
+            return array();
+        }
+
+        $return = array();
+        $docs = $mongo->selectCollection('google', 'profile')->find(array(
+            'id' => array(
+                '$in' => $circles['list']
+            )
+        ));
+        foreach ($docs as $doc) {
+            unset($doc['_id']);
+            $key = array_search($doc['id'], $circles['list']);
+            if ($key !== false)
+                unset($circles['list'][$key]);
+            $return[] = $doc;
+        }
+        if (empty($circles['list']))
+            return $return;
+        $docs = $mongo->selectCollection('google', 'plus')->find(array(
+            'id' => array(
+                '$in' => array_values($circles['list'])
+            )
+        ));
+        foreach ($docs as $doc) {
+            unset($doc['_id']);
+            $return[] = $doc;
+        }
+        $mongo->close();
+        return $return;*/
+    }
+
+    public function googleGraph($data) {
+        //@FIXME
+        return [];
+
+        $circles = $this->googleCircles($data);
+        if (empty($circles))
+            return [];
+
+        $return = [];
+        foreach ($circles as $circle) {
+            if (! empty($circle['displayName']))
+                $return[] = Matcher::normalize_string($circle['displayName']);
+            elseif (! empty($circle['name'])) {
+                if (is_array($circle['name']))
+                    $return[] = Matcher::normalize_string(implode(' ', $circle['name']));
+                else
+                    $return[] = Matcher::normalize_string($circle['name']);
+            }
+        }
+
+        return array_unique($return);
+    }
+
     private function _circles(&$data) {
         if (isset($data['_circles']))
             return $data['_circles'];
-        $data['_circles'] = Profile::googleCircles($data);
+        $data['_circles'] = $this->googleCircles($data);
 
         return $data['_circles'];
     }
