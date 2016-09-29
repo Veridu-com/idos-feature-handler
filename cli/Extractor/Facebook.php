@@ -8,22 +8,86 @@ use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
 final class Facebook extends AbstractExtractor {
-    private function _friends(&$data) {
-        if (isset($data['_friends']))
-            return $data['_friends'];
+    private function _graph(array &$data) {
+        if (isset($data['_graph'])) {
+            return $data['_graph'];
+        }
 
-        $data['_friends'] = Profile::facebookFriends($data);
+        $graph = [];
+        foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property) {
+            if (empty($data[$property])) {
+                continue;
+            }
 
-        return $data['_friends'];
+            foreach ($data[$property] as $item) {
+                $graph[$item['from']['name']] = 0;
+                if (isset($item['tags']['data'])) {
+                    foreach ($item['tags']['data'] as $tag) {
+                        if (isset($tag['name'])) {
+                            $graph[$tag['name']] = 0;
+                        }
+                    }
+                }
+
+                if (isset($item['comments']['data'])) {
+                    foreach ($item['comments']['data'] as $comment) {
+                        if (isset($comment['from']['name'])) {
+                            $graph[$comment['from']['name']] = 0;
+                        }
+                    }
+                }
+
+                if (isset($item['likes']['data'])) {
+                    foreach ($item['likes']['data'] as $like) {
+                        if (isset($like['name'])) {
+                            $graph[$like['name']] = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isset($data['profile']['first_name'], $data['profile']['last_name'])) {
+            unset($graph["{$data['profile']['first_name']} {$data['profile']['last_name']}"]);
+        }
+
+        $return = [];
+        foreach (array_keys($graph) as $friend) {
+            $return[] = Matcher::normalize_string($friend);
+        }
+
+        if (empty($data['friends'])) {
+            return $return;
+        }
+
+        $friends = $data['friends'];
+        foreach ($friends as $friend) {
+            if ((empty($friend['first_name'])) && (empty($friend['last_name']))) {
+                continue;
+            }
+
+            $return[] = Matcher::normalize_string(
+                sprintf(
+                    '%s %s',
+                    trim($friend['first_name']),
+                    trim($friend['last_name'])
+                )
+            );
+        }
+
+        return array_unique($return);
     }
 
-    private function _age_distribution(&$data) {
+    private function _age_distribution(array &$data) {
         if (isset($data['_age_distribution']))
             return $data['_age_distribution'];
         $years   = [];
-        $friends = $this->_friends($data);
-        if (empty($friends))
+
+        if (empty($data['friends'])) {
             return $years;
+        }
+
+        $friends = $data['friends'];
         foreach ($friends as $friend) {
             if (empty($friend['birthday']))
                 continue;
@@ -39,7 +103,7 @@ final class Facebook extends AbstractExtractor {
         return $years;
     }
 
-    private function _location_distribution(&$data) {
+    private function _location_distribution(array &$data) {
         if (isset($data['_location_distribution']))
             return $data['_location_distribution'];
 
@@ -47,10 +111,12 @@ final class Facebook extends AbstractExtractor {
             'city'    => [],
             'country' => []
         ];
-        $friends = $this->_friends($data);
-        if (empty($friends))
-            return $location;
 
+        if (empty($data['friends'])) {
+            return $location;
+        }
+
+        $friends = $data['friends'];
         // $utils = Utils::getInstance();
         foreach ($friends as $friend) {
             if (empty($friend['location']['name']))
@@ -87,7 +153,7 @@ final class Facebook extends AbstractExtractor {
         return $location;
     }
 
-    private function _education(&$data) {
+    private function _education(array &$data) {
         if (isset($data['_education']))
             return $data['_education'];
 
@@ -115,7 +181,7 @@ final class Facebook extends AbstractExtractor {
         return $data['_education'];
     }
 
-    private function _work(&$data) {
+    private function _work(array &$data) {
         if (isset($data['_work']))
             return $data['_work'];
 
@@ -156,170 +222,170 @@ final class Facebook extends AbstractExtractor {
         return $data['_work'];
     }
 
-    private function profile_picture(&$data) {
+    private function profilePicture(array &$data) {
         if (empty($data['profile']['picture']['data']['url']))
             return;
 
         return $data['profile']['picture']['data']['url'];
     }
 
-    private function verified_profile(&$data) {
+    private function verifiedProfile(array &$data) {
         if (empty($data['profile']['verified']))
             return false;
 
         return $data['profile']['verified'];
     }
 
-    private function is_common_name(&$data) {
-        $name = $this->first_name($data);
-        if (is_null($name))
+    private function isACommonName(array &$data) {
+        $name = $this->firstName($data);
+        if ($name === null)
             return false;
 
         return Utils::getInstance()->isCommonName($name);
     }
 
-    private function is_listed_name(&$data) {
-        $name = $this->full_name($data);
-        if (is_null($name))
+    private function isListedName(array &$data) {
+        $name = $this->fullName($data);
+        if ($name === null)
             return false;
 
         return Utils::getInstance()->isListedName($name);
     }
 
-    private function is_fantasy_name(&$data) {
-        $name = $this->full_name($data);
-        if (is_null($name))
+    private function isFantasyName(array &$data) {
+        $name = $this->fullName($data);
+        if ($name === null)
             return false;
 
         return Utils::getInstance()->isFantasyName($name);
     }
 
-    private function is_sanctioned_name(&$data) {
-        $name = $this->full_name($data);
-        if (is_null($name))
+    private function isSanctionedName(array &$data) {
+        $name = $this->fullName($data);
+        if ($name === null)
             return false;
 
         return Utils::getInstance()->isSanctionedName($name);
     }
 
-    private function is_pep_name(&$data) {
-        $name = $this->full_name($data);
-        if (is_null($name))
+    private function isPEPName(array &$data) {
+        $name = $this->fullName($data);
+        if ($name === null)
             return false;
 
         return Utils::getInstance()->isPEPName($name);
     }
 
-    private function is_celebrity_name(&$data) {
-        $name = $this->full_name($data);
-        if (is_null($name))
+    private function isCelebrityName(array &$data) {
+        $name = $this->fullName($data);
+        if ($name === null)
             return false;
 
         return Utils::getInstance()->isCelebrityName($name);
     }
 
-    private function is_silly_name(&$data) {
-        $name = $this->full_name($data);
-        if (is_null($name))
+    private function isSillyName(array &$data) {
+        $name = $this->fullName($data);
+        if ($name === null)
             return false;
 
         return Utils::getInstance()->isSillyName($name);
     }
 
-    private function name_gender(&$data) {
-        $name = $this->first_name($data);
-        if (is_null($name))
+    private function nameGender(array &$data) {
+        $name = $this->firstName($data);
+        if ($name === null)
             return;
 
         return Utils::getInstance()->nameGender($name);
     }
 
-    private function full_name(&$data) {
+    private function fullName(array &$data) {
         if ((empty($data['profile']['first_name'])) || (empty($data['profile']['last_name'])))
             return;
 
         return sprintf('%s %s', trim($data['profile']['first_name']), trim($data['profile']['last_name']));
     }
 
-    private function first_name(&$data) {
-        $name = $this->full_name($data);
+    private function firstName(array &$data) {
+        $name = $this->fullName($data);
         if (empty($name))
             return;
 
         return Utils::getInstance()->firstName($name);
     }
 
-    private function first_name_initial(&$data) {
-        $name = $this->full_name($data);
+    private function firstNameInitial(array &$data) {
+        $name = $this->fullName($data);
         if (empty($name))
             return;
 
         return Utils::getInstance()->firstNameInitial($name);
     }
 
-    private function middle_name(&$data) {
-        $name = $this->full_name($data);
+    private function middleName(array &$data) {
+        $name = $this->fullName($data);
         if (empty($name))
             return;
 
         return Utils::getInstance()->middleName($name);
     }
 
-    private function middle_name_initial(&$data) {
-        $name = $this->full_name($data);
+    private function middleNameInitial(array &$data) {
+        $name = $this->fullName($data);
         if (empty($name))
             return;
 
         return Utils::getInstance()->middleNameInitial($name);
     }
 
-    private function last_name(&$data) {
-        $name = $this->full_name($data);
+    private function lastName(array &$data) {
+        $name = $this->fullName($data);
         if (empty($name))
             return;
 
         return Utils::getInstance()->lastName($name);
     }
 
-    private function last_name_initial(&$data) {
-        $name = $this->full_name($data);
+    private function lastNameInitial(array &$data) {
+        $name = $this->fullName($data);
         if (empty($name))
             return;
 
         return Utils::getInstance()->lastNameInitial($name);
     }
 
-    private function profile_gender(&$data) {
+    private function profile_gender(array &$data) {
         if (empty($data['profile']['gender']))
             return;
 
         return strtolower($data['profile']['gender']);
     }
 
-    private function email_address(&$data) {
+    private function emailAddress(array &$data) {
         if ((empty($data['profile']['email'])) || (strpos($data['profile']['email'], '@') === false))
             return;
 
         return $data['profile']['email'];
     }
 
-    private function email_username(&$data) {
-        $email = $this->email_address($data);
-        if (is_null($email))
+    private function emailUsername(array &$data) {
+        $email = $this->emailAddress($data);
+        if ($email === null)
             return;
         $email = explode('@', $email);
 
         return $email[0];
     }
 
-    private function picture_is_silhouette(&$data) {
+    private function pictureIsSilhouette(array &$data) {
         if (empty($data['profile']['picture']['data']['is_silhouette']))
             return false;
 
         return $data['profile']['picture']['data']['is_silhouette'];
     }
 
-    private function hometown_city_name(&$data) {
+    private function hometownCityName(array &$data) {
         if (empty($data['profile']['hometown']['name']))
             return;
         if (strpos($data['profile']['hometown']['name'], ',') === false)
@@ -329,15 +395,15 @@ final class Facebook extends AbstractExtractor {
         return $name[0];
     }
 
-    private function hometown_region_name(&$data) {
-        $city = $this->hometown_city_name($data);
-        if (is_null($city))
+    private function hometownRegionName(array &$data) {
+        $city = $this->hometownCityName($data);
+        if ($city === null)
             return;
 
         return Utils::getInstance()->regionFromCity($city);
     }
 
-    private function hometown_country_name(&$data) {
+    private function hometownCountryName(array &$data) {
         if (empty($data['profile']['hometown']['name']))
             return;
         if (strpos($data['profile']['hometown']['name'], ',') === false)
@@ -348,7 +414,7 @@ final class Facebook extends AbstractExtractor {
         return trim(array_pop($name));
     }
 
-    private function current_city_name(&$data) {
+    private function currentCityName(array &$data) {
         if (empty($data['profile']['location']['name']))
             return;
         if (strpos($data['profile']['location']['name'], ',') === false)
@@ -358,15 +424,15 @@ final class Facebook extends AbstractExtractor {
         return $name[0];
     }
 
-    private function current_region_name(&$data) {
-        $city = $this->current_city_name($data);
-        if (is_null($city))
+    private function currentRegionName(array &$data) {
+        $city = $this->currentCityName($data);
+        if ($city === null)
             return;
 
         return Utils::getInstance()->regionFromCity($city);
     }
 
-    private function current_country_name(&$data) {
+    private function currentCountryName(array &$data) {
         if (empty($data['profile']['location']['name']))
             return;
         if (strpos($data['profile']['location']['name'], ',') === false)
@@ -377,12 +443,12 @@ final class Facebook extends AbstractExtractor {
         return trim(array_pop($name));
     }
 
-    private function num_family_members_same_last_name(&$data) {
+    private function numFamilyMembersWithSameLastName(array &$data) {
         if (empty($data['family']))
             return 0;
 
-        $lastName = $this->last_name($data);
-        if (is_null($lastName))
+        $lastName = $this->lastName($data);
+        if ($lastName === null)
             return 0;
 
         $utils = Utils::getInstance();
@@ -397,22 +463,38 @@ final class Facebook extends AbstractExtractor {
         return $count;
     }
 
-    private function num_friends_same_last_name(&$data) {
-        $lastName = strtolower($this->last_name($data));
-        if (is_null($lastName))
+    private function numFriendsWithSameLastName(array &$data) {
+        $lastName = $this->lastName($data);
+        if ($lastName === null)
             return 0;
 
+        if (empty($data['friends'])) {
+            return 0;
+        }
+
+        $friends = $data['friends'];
+        $lastName = strtolower($lastName);
         $utils   = Utils::getInstance();
         $count   = 0;
-        $friends = Profile::facebookGraph($data);
-        foreach ($friends as $friend)
-            if ($lastName === $utils->lastName($friend))
+        foreach ($friends as $friend) {
+            if (empty($friend['last_name'])) {
+                continue;
+            }
+
+            $friendLastName = $utils->lastName($friend['last_name']);
+            if (empty($friendLastName)) {
+                continue;
+            }
+
+            if ($lastName === strtolower($friendLastName)) {
                 $count++;
+            }
+        }
 
         return $count;
     }
 
-    private function top1_friends_city(&$data) {
+    private function top1FriendsCity(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -421,7 +503,7 @@ final class Facebook extends AbstractExtractor {
         return $cities[0];
     }
 
-    private function top1_friends_country(&$data) {
+    private function top1FriendsCountry(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -430,7 +512,7 @@ final class Facebook extends AbstractExtractor {
         return $countries[0];
     }
 
-    private function top2_friends_city(&$data) {
+    private function top2FriendsCity(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -441,7 +523,7 @@ final class Facebook extends AbstractExtractor {
         return $cities[1];
     }
 
-    private function top2_friends_country(&$data) {
+    private function top2FriendsCountry(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -452,7 +534,7 @@ final class Facebook extends AbstractExtractor {
         return $countries[1];
     }
 
-    private function top3_friends_city(&$data) {
+    private function top3FriendsCity(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -463,7 +545,7 @@ final class Facebook extends AbstractExtractor {
         return $cities[2];
     }
 
-    private function top3_friends_country(&$data) {
+    private function top3FriendsCountry(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -474,7 +556,7 @@ final class Facebook extends AbstractExtractor {
         return $countries[2];
     }
 
-    private function top4_friends_city(&$data) {
+    private function top4FriendsCity(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -485,7 +567,7 @@ final class Facebook extends AbstractExtractor {
         return $cities[3];
     }
 
-    private function top4_friends_country(&$data) {
+    private function top4FriendsCountry(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -496,7 +578,7 @@ final class Facebook extends AbstractExtractor {
         return $countries[3];
     }
 
-    private function top5_friends_city(&$data) {
+    private function top5FriendsCity(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -507,7 +589,7 @@ final class Facebook extends AbstractExtractor {
         return $cities[4];
     }
 
-    private function top5_friends_country(&$data) {
+    private function top5FriendsCountry(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -518,7 +600,7 @@ final class Facebook extends AbstractExtractor {
         return $countries[4];
     }
 
-    private function most_active_city(&$data, $months) {
+    private function mostActiveCity(&$data, $months) {
         $activity = [];
         $now      = time();
         $limit    = ($months * 2629743);
@@ -546,7 +628,7 @@ final class Facebook extends AbstractExtractor {
         return $activity[0];
     }
 
-    private function most_active_country(&$data, $months) {
+    private function mostActiveCountry(&$data, $months) {
         $activity = [];
         $now      = time();
         $limit    = ($months * 2629743);
@@ -574,7 +656,7 @@ final class Facebook extends AbstractExtractor {
         return $activity[0];
     }
 
-    private function avg_friends_birth_year(&$data) {
+    private function avgFriendsBirthYear(array &$data) {
         $distribution = $this->_age_distribution($data);
         if (empty($distribution))
             return 0;
@@ -583,7 +665,7 @@ final class Facebook extends AbstractExtractor {
         return $years[0];
     }
 
-    private function num_friends_within_oneyear(&$data) {
+    private function numOfFriendsWithinOneYyear(array &$data) {
         $birth = $this->birth($data, 2);
         if (empty($birth))
             return 0;
@@ -600,7 +682,7 @@ final class Facebook extends AbstractExtractor {
         return $count;
     }
 
-    private function num_friends_within_twoyears(&$data) {
+    private function numOfFriendsWithinTwoYears(array &$data) {
         $birth = $this->birth($data, 2);
         if (empty($birth))
             return 0;
@@ -617,7 +699,7 @@ final class Facebook extends AbstractExtractor {
         return $count;
     }
 
-    private function num_friends_within_threeyears(&$data) {
+    private function numOfFriendsWithinThreeYears(array &$data) {
         $birth = $this->birth($data, 2);
         if (empty($birth))
             return 0;
@@ -634,7 +716,7 @@ final class Facebook extends AbstractExtractor {
         return $count;
     }
 
-    private function num_friends_within_fouryears(&$data) {
+    private function numOfFriendsWithinFourYears(array &$data) {
         $birth = $this->birth($data, 2);
         if (empty($birth))
             return 0;
@@ -651,7 +733,7 @@ final class Facebook extends AbstractExtractor {
         return $count;
     }
 
-    private function num_friends_within_fiveyears(&$data) {
+    private function numOfFriendsWithinFiveYears(array &$data) {
         $birth = $this->birth($data, 2);
         if (empty($birth))
             return 0;
@@ -668,7 +750,7 @@ final class Facebook extends AbstractExtractor {
         return $count;
     }
 
-    private function avg_posts_week(&$data) {
+    private function avgPostsPerWeek(array &$data) {
         $posts = [];
         foreach (['links', 'photos', 'posts', 'statuses'] as $property)
             if (! empty($data[$property]))
@@ -705,7 +787,7 @@ final class Facebook extends AbstractExtractor {
         return $posts;
     }
 
-    private function avg_comments_week(&$data) {
+    private function avgCommentsReceivedPerWeek(array &$data) {
         $comments = [];
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property)
             if (! empty($data[$property]))
@@ -743,7 +825,7 @@ final class Facebook extends AbstractExtractor {
         return $comments;
     }
 
-    private function avg_likes_week(&$data) {
+    private function avgLikesPerWeek(array &$data) {
         $likes = [];
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property)
             if (! empty($data[$property]))
@@ -781,7 +863,7 @@ final class Facebook extends AbstractExtractor {
         return $likes;
     }
 
-    private function num_comments_received(&$data) {
+    private function numCommentsReceived(array &$data) {
         $ids = [];
         if (! empty($data['links']))
             foreach ($data['links'] as $like)
@@ -839,7 +921,7 @@ final class Facebook extends AbstractExtractor {
         return count($ids);
     }
 
-    private function num_likes_received(&$data) {
+    private function numLikesReceived(array &$data) {
         $ids = [];
         if (! empty($data['links']))
             foreach ($data['links'] as $link)
@@ -897,14 +979,14 @@ final class Facebook extends AbstractExtractor {
         return count($ids);
     }
 
-    private function num_family_members(&$data) {
+    private function numFamilyMembers(array &$data) {
         if (empty($data['family']))
             return 0;
 
         return count($data['family']);
     }
 
-    private function num_friends(&$data) {
+    private function numFriends(array &$data) {
         if (empty($data['profile']['friends']['summary']['total_count'])) {
             if (empty($data['friends']))
                 return 0;
@@ -915,7 +997,7 @@ final class Facebook extends AbstractExtractor {
         return $data['profile']['friends']['summary']['total_count'];
     }
 
-    private function close_friends(&$data) {
+    private function closeFriends(array &$data) {
         $close = [];
         if (! empty($data['links']))
             foreach ($data['links'] as $link) {
@@ -1056,7 +1138,7 @@ final class Facebook extends AbstractExtractor {
         return count($close);
     }
 
-    private function school_friends(&$data) {
+    private function schoolFriends(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1065,7 +1147,7 @@ final class Facebook extends AbstractExtractor {
             if ((isset($education['school']['id'], $education['type'])) && ($education['type'] === 'High School'))
                 $educations[] = $education['school']['id'];
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1078,7 +1160,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function college_friends(&$data) {
+    private function collegeFriends(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1087,7 +1169,7 @@ final class Facebook extends AbstractExtractor {
             if ((isset($education['school']['id'], $education['type'])) && ($education['type'] === 'College'))
                 $educations[] = $education['school']['id'];
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1100,7 +1182,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_coworkers(&$data) {
+    private function numCoworkers(array &$data) {
         if ((empty($data['profile']['work'])) || (empty($data['friends'])))
             return 0;
 
@@ -1110,7 +1192,7 @@ final class Facebook extends AbstractExtractor {
             if (isset($company['employer']['id']))
                 $companies[] = $company['employer']['id'];
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['work']))
@@ -1125,14 +1207,14 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_events(&$data) {
+    private function numEvents(array &$data) {
         if (empty($data['events']))
             return 0;
 
         return count($data['events']);
     }
 
-    private function num_events_attended(&$data) {
+    private function numEventsAttended(array &$data) {
         if (empty($data['events']))
             return 0;
         $return = 0;
@@ -1143,14 +1225,14 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_groups(&$data) {
+    private function numGroups(array &$data) {
         if (empty($data['groups']))
             return 0;
 
         return count($data['groups']);
     }
 
-    private function num_groups_administrating(&$data) {
+    private function numGroupsAdministrating(array &$data) {
         if (empty($data['groups']))
             return 0;
         $return = 0;
@@ -1161,56 +1243,56 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_likes(&$data) {
+    private function numLikes(array &$data) {
         if (empty($data['likes']))
             return 0;
 
         return count($data['likes']);
     }
 
-    private function num_locations(&$data) {
+    private function numLocations(array &$data) {
         if (empty($data['locations']))
             return 0;
 
         return count($data['locations']);
     }
 
-    private function num_links(&$data) {
+    private function numLinks(array &$data) {
         if (empty($data['links']))
             return 0;
 
         return count($data['links']);
     }
 
-    private function num_photos(&$data) {
+    private function numPhotos(array &$data) {
         if (empty($data['photos']))
             return 0;
 
         return count($data['photos']);
     }
 
-    private function num_posts(&$data) {
+    private function numPosts(array &$data) {
         if (empty($data['posts']))
             return 0;
 
         return count($data['posts']);
     }
 
-    private function num_statuses(&$data) {
+    private function numStatuses(array &$data) {
         if (empty($data['statuses']))
             return 0;
 
         return count($data['statuses']);
     }
 
-    private function num_tagged(&$data) {
+    private function numTagged(array &$data) {
         if (empty($data['tagged']))
             return 0;
 
         return count($data['tagged']);
     }
 
-    private function profile_age(&$data) {
+    private function profileAge(array &$data) {
         $age = null;
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property)
             if (! empty($data[$property]))
@@ -1221,7 +1303,7 @@ final class Facebook extends AbstractExtractor {
                         $timestamp = strtotime($item['created_time']);
                     if ($timestamp === false)
                         continue;
-                    if ((is_null($age)) || ($timestamp < $age))
+                    if (($age === null) || ($timestamp < $age))
                         $age = $timestamp;
                 }
 
@@ -1240,7 +1322,7 @@ final class Facebook extends AbstractExtractor {
         return 0;
     }
 
-    private function first_most_recent_education(&$data) {
+    private function firstMostRecentEducation(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1252,7 +1334,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[0]['name'];
     }
 
-    private function second_most_recent_education(&$data) {
+    private function secondMostRecentEducation(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1264,7 +1346,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[1]['name'];
     }
 
-    private function third_most_recent_education(&$data) {
+    private function thirdMostRecentEducation(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1276,7 +1358,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[2]['name'];
     }
 
-    private function first_most_recent_education_type(&$data) {
+    private function firstMostRecentEducationType(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1288,7 +1370,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[0]['type'];
     }
 
-    private function second_most_recent_education_type(&$data) {
+    private function secondMostRecentEducationType(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1300,7 +1382,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[1]['type'];
     }
 
-    private function third_most_recent_education_type(&$data) {
+    private function thirdMostRecentEducationType(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1312,7 +1394,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[2]['type'];
     }
 
-    private function first_most_recent_education_course(&$data) {
+    private function firstMostRecentEducationCourse(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1324,7 +1406,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[0]['course'];
     }
 
-    private function second_most_recent_education_course(&$data) {
+    private function secondMostRecentEducationCourse(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1336,7 +1418,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[1]['course'];
     }
 
-    private function third_most_recent_education_course(&$data) {
+    private function thirdMostRecentEducationCourse(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1348,7 +1430,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[2]['course'];
     }
 
-    private function first_most_recent_education_graduation_year(&$data) {
+    private function firstMostRecentEducationGraduationYear(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1360,7 +1442,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[0]['year'];
     }
 
-    private function second_most_recent_education_graduation_year(&$data) {
+    private function secondMostRecentEducationGraduationYear(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1372,7 +1454,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[1]['year'];
     }
 
-    private function third_most_recent_education_graduation_year(&$data) {
+    private function thirdMostRecentEducationGraduationYear(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1384,7 +1466,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[2]['year'];
     }
 
-    private function first_most_recent_education_graduated(&$data) {
+    private function firstMostRecentEducation_graduated(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1396,7 +1478,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[0]['year'] < date('Y');
     }
 
-    private function second_most_recent_education_graduated(&$data) {
+    private function secondMostRecentEducation_graduated(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1408,7 +1490,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[1]['year'] < date('Y');
     }
 
-    private function third_most_recent_education_graduated(&$data) {
+    private function thirdMostRecentEducation_graduated(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -1420,7 +1502,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[2]['year'] < date('Y');
     }
 
-    private function num_friends_first_most_recent_education(&$data) {
+    private function numFriendsFirstMostRecentEducation(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1429,7 +1511,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($educations[0]['id']))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1444,7 +1526,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_second_most_recent_education(&$data) {
+    private function numFriendsSecondMostRecentEducation(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1453,7 +1535,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($educations[1]['id']))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1468,7 +1550,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_third_most_recent_education(&$data) {
+    private function numFriendsThirdMostRecentEducation(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1477,7 +1559,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($educations[2]['id']))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1492,7 +1574,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_first_most_recent_education_same_graduation_year(&$data) {
+    private function numFriendsFirstMostRecentEducationSameGraduationYear(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1501,7 +1583,7 @@ final class Facebook extends AbstractExtractor {
         if ((empty($educations[0]['id'])) || (empty($educations[0]['year'])))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1518,7 +1600,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_second_most_recent_education_same_graduation_year(&$data) {
+    private function numFriendsSecondMostRecentEducationSameGraduationYear(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1527,7 +1609,7 @@ final class Facebook extends AbstractExtractor {
         if ((empty($educations[1]['id'])) || (empty($educations[1]['year'])))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1544,7 +1626,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_third_most_recent_education_same_graduation_year(&$data) {
+    private function numFriendsThirdMostRecentEducationSameGraduationYear(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1553,7 +1635,7 @@ final class Facebook extends AbstractExtractor {
         if ((empty($educations[2]['id'])) || (empty($educations[2]['year'])))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -1570,7 +1652,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_working_first_most_recent_education(&$data) {
+    private function numFriendsWorkingFirstMostRecentEducation(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1579,7 +1661,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($educations[0]['id']))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['work']))
@@ -1594,7 +1676,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_working_second_most_recent_education(&$data) {
+    private function numFriendsWorkingSecondMostRecentEducation(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1603,7 +1685,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($educations[1]['id']))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['work']))
@@ -1618,7 +1700,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_working_third_most_recent_education(&$data) {
+    private function numFriendsWorkingThirdMostRecentEducation(array &$data) {
         if ((empty($data['profile']['education'])) || (empty($data['friends'])))
             return 0;
 
@@ -1627,7 +1709,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($educations[2]['id']))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['work']))
@@ -1642,7 +1724,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_checkins_first_most_recent_education_this_year(&$data) {
+    private function numCheckinsFirstMostRecentEducationThisYear(array &$data) {
         if (empty($data['profile']['education']))
             return 0;
 
@@ -1735,7 +1817,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_checkins_second_most_recent_education_this_year(&$data) {
+    private function numCheckinsSecondMostRecentEducationThisYear(array &$data) {
         if (empty($data['profile']['education']))
             return 0;
 
@@ -1828,7 +1910,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_checkins_third_most_recent_education_this_year(&$data) {
+    private function numCheckinsThirdMostRecentEducationThisYear(array &$data) {
         if (empty($data['profile']['education']))
             return 0;
 
@@ -1921,7 +2003,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_checkins_first_most_recent_education_last_year(&$data) {
+    private function numCheckinsFirstMostRecentEducationLastYear(array &$data) {
         if (empty($data['profile']['education']))
             return 0;
 
@@ -2014,7 +2096,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_checkins_second_most_recent_education_last_year(&$data) {
+    private function numCheckinsSecondMostRecentEducationLastYear(array &$data) {
         if (empty($data['profile']['education']))
             return 0;
 
@@ -2107,7 +2189,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_checkins_third_most_recent_education_last_year(&$data) {
+    private function numCheckinsThirdMostRecentEducationLastYear(array &$data) {
         if (empty($data['profile']['education']))
             return 0;
 
@@ -2200,13 +2282,13 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_student_friends(&$data) {
+    private function numOfStudentFriends(array &$data) {
         if (empty($data['friends']))
             return 0;
 
         $year = date('Y');
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if (empty($friend['education']))
@@ -2221,7 +2303,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_student_friends_same_age(&$data) {
+    private function numOfStudentFriendsWithSameAge(array &$data) {
         if (empty($data['friends']))
             return 0;
 
@@ -2229,7 +2311,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($birthYear))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if ((empty($friend['birthday'])) || (empty($friend['education'])))
@@ -2249,7 +2331,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_student_friends_within_one_year_age_difference(&$data) {
+    private function numOfStudentFriendsWithinOneYearAgeDifference(array &$data) {
         if (empty($data['friends']))
             return 0;
 
@@ -2257,7 +2339,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($birthYear))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if ((empty($friend['birthday'])) || (empty($friend['education'])))
@@ -2277,7 +2359,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_student_friends_within_two_years_age_difference(&$data) {
+    private function numOfStudentFriendsWithinTwoYearsAgeDifference(array &$data) {
         if (empty($data['friends']))
             return 0;
 
@@ -2285,7 +2367,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($birthYear))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if ((empty($friend['birthday'])) || (empty($friend['education'])))
@@ -2305,7 +2387,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function num_student_friends_within_three_years_age_difference(&$data) {
+    private function numOfStudentFriendsWithinThreeYearsAgeDifference(array &$data) {
         if (empty($data['friends']))
             return 0;
 
@@ -2313,7 +2395,7 @@ final class Facebook extends AbstractExtractor {
         if (empty($birthYear))
             return 0;
 
-        $friends = $this->_friends($data);
+        $friends = $data['friends'];
         $return  = 0;
         foreach ($friends as $friend) {
             if ((empty($friend['birthday'])) || (empty($friend['education'])))
@@ -2333,7 +2415,7 @@ final class Facebook extends AbstractExtractor {
         return $return;
     }
 
-    private function is_student(&$data) {
+    private function isAStudent(array &$data) {
         if (empty($data['profile']['education']))
             return;
 
@@ -2345,7 +2427,7 @@ final class Facebook extends AbstractExtractor {
         return $educations[0]['year'] >= date('Y');
     }
 
-    private function is_student_age(&$data) {
+    private function isWithinStudentAge(array &$data) {
         $birthYear = $this->birth($data, 2);
         if (empty($birthYear))
             return;
@@ -2357,21 +2439,21 @@ final class Facebook extends AbstractExtractor {
         return ($age >= 10) && ($age <= 25);
     }
 
-    private function is_in_relationship(&$data) {
+    private function isInARelationship(array &$data) {
         if (empty($data['relationship_status']))
             return false;
 
         return in_array($data['relationship_status'], ['In a relationship', 'Engaged', 'Married', 'In a civil union', 'In a domestic partnership', 'In an open relationship', 'It\'s complicated']);
     }
 
-    private function significant_other(&$data) {
+    private function significantOther(array &$data) {
         if (empty($data['profile']['significant_other']['name']))
             return;
 
         return $data['profile']['significant_other']['name'];
     }
 
-    private function first_most_recent_employer(&$data) {
+    private function firstMostRecentEmployer(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2383,7 +2465,7 @@ final class Facebook extends AbstractExtractor {
         return $works[0]['employer'];
     }
 
-    private function second_most_recent_employer(&$data) {
+    private function secondMostRecentEmployer(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2395,7 +2477,7 @@ final class Facebook extends AbstractExtractor {
         return $works[1]['employer'];
     }
 
-    private function third_most_recent_employer(&$data) {
+    private function thirdMostRecentEmployer(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2407,7 +2489,7 @@ final class Facebook extends AbstractExtractor {
         return $works[2]['employer'];
     }
 
-    private function fourth_most_recent_employer(&$data) {
+    private function fourthMostRecentEmployer(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2419,7 +2501,7 @@ final class Facebook extends AbstractExtractor {
         return $works[3]['employer'];
     }
 
-    private function fifth_most_recent_employer(&$data) {
+    private function fifthMostRecentEmployer(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2431,7 +2513,7 @@ final class Facebook extends AbstractExtractor {
         return $works[4]['employer'];
     }
 
-    private function first_most_recent_work_position(&$data) {
+    private function firstMostRecentWorkPosition(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2443,7 +2525,7 @@ final class Facebook extends AbstractExtractor {
         return $works[0]['position'];
     }
 
-    private function second_most_recent_work_position(&$data) {
+    private function secondMostRecentWorkPosition(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2455,7 +2537,7 @@ final class Facebook extends AbstractExtractor {
         return $works[1]['position'];
     }
 
-    private function third_most_recent_work_position(&$data) {
+    private function thirdMostRecentWorkPosition(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2467,7 +2549,7 @@ final class Facebook extends AbstractExtractor {
         return $works[2]['position'];
     }
 
-    private function fourth_most_recent_work_position(&$data) {
+    private function fourthMostRecentWorkPosition(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2479,7 +2561,7 @@ final class Facebook extends AbstractExtractor {
         return $works[3]['position'];
     }
 
-    private function fifth_most_recent_work_position(&$data) {
+    private function fifthMostRecentWorkPosition(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2491,7 +2573,7 @@ final class Facebook extends AbstractExtractor {
         return $works[4]['position'];
     }
 
-    private function first_most_recent_work_location(&$data) {
+    private function firstMostRecentWorkLocation(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2503,7 +2585,7 @@ final class Facebook extends AbstractExtractor {
         return $works[0]['location'];
     }
 
-    private function second_most_recent_work_location(&$data) {
+    private function secondMostRecentWorkLocation(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2515,7 +2597,7 @@ final class Facebook extends AbstractExtractor {
         return $works[1]['location'];
     }
 
-    private function third_most_recent_work_location(&$data) {
+    private function thirdMostRecentWorkLocation(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2527,7 +2609,7 @@ final class Facebook extends AbstractExtractor {
         return $works[2]['location'];
     }
 
-    private function fourth_most_recent_work_location(&$data) {
+    private function fourthMostRecentWorkLocation(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2539,7 +2621,7 @@ final class Facebook extends AbstractExtractor {
         return $works[3]['location'];
     }
 
-    private function fifth_most_recent_work_location(&$data) {
+    private function fifthMostRecentWorkLocation(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2551,7 +2633,7 @@ final class Facebook extends AbstractExtractor {
         return $works[4]['location'];
     }
 
-    private function first_most_recent_work_has_projects(&$data) {
+    private function firstMostRecentWorkHasProjects(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2563,7 +2645,7 @@ final class Facebook extends AbstractExtractor {
         return;
     }
 
-    private function second_most_recent_work_has_projects(&$data) {
+    private function secondMostRecentWorkHasProjects(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2575,7 +2657,7 @@ final class Facebook extends AbstractExtractor {
         return;
     }
 
-    private function third_most_recent_work_has_projects(&$data) {
+    private function thirdMostRecentWorkHasProjects(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2587,7 +2669,7 @@ final class Facebook extends AbstractExtractor {
         return;
     }
 
-    private function fourth_most_recent_work_has_projects(&$data) {
+    private function fourthMostRecentWorkHasProjects(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2599,7 +2681,7 @@ final class Facebook extends AbstractExtractor {
         return;
     }
 
-    private function fifth_most_recent_work_has_projects(&$data) {
+    private function fifthMostRecentWorkHasProjects(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2611,7 +2693,7 @@ final class Facebook extends AbstractExtractor {
         return;
     }
 
-    private function first_most_recent_work_is_current(&$data) {
+    private function firstMostRecentWorkIsCurrent(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2623,7 +2705,7 @@ final class Facebook extends AbstractExtractor {
         return empty($works[0]['end_date']);
     }
 
-    private function second_most_recent_work_is_current(&$data) {
+    private function secondMostRecentWorkIsCurrent(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2635,7 +2717,7 @@ final class Facebook extends AbstractExtractor {
         return empty($works[1]['end_date']);
     }
 
-    private function third_most_recent_work_is_current(&$data) {
+    private function thirdMostRecentWorkIs_current(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2647,7 +2729,7 @@ final class Facebook extends AbstractExtractor {
         return empty($works[2]['end_date']);
     }
 
-    private function fourth_most_recent_work_is_current(&$data) {
+    private function fourthMostRecentWorkIsCurrent(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2659,7 +2741,7 @@ final class Facebook extends AbstractExtractor {
         return empty($works[3]['end_date']);
     }
 
-    private function fifth_most_recent_work_is_current(&$data) {
+    private function fifthMostRecentWorkIsCurrent(array &$data) {
         if (empty($data['profile']['work']))
             return;
 
@@ -2672,151 +2754,149 @@ final class Facebook extends AbstractExtractor {
     }
 
     public function analyze(array $data) : array {
-        $facts                                                                    = [];
-        $facts['isActive']                                                        = ! empty($data);
-        $facts['profilePicture']                                                  = $this->profile_picture($data);
-        $facts['verifiedProfile']                                                 = $this->verified_profile($data);
-        $facts['isACommonName']                                                   = $this->is_common_name($data);
-        $facts['isListedName']                                                    = $this->is_listed_name($data);
-        $facts['isFantasyName']                                                   = $this->is_fantasy_name($data);
-        $facts['isSanctionedName']                                                = $this->is_sanctioned_name($data);
-        $facts['isPEPName']                                                       = $this->is_pep_name($data);
-        $facts['isCelebrityName']                                                 = $this->is_celebrity_name($data);
-        $facts['isSillyName']                                                     = $this->is_silly_name($data);
-        $facts['nameGender']                                                      = $this->name_gender($data);
-        $facts['fullName']                                                        = $this->full_name($data);
-        $facts['firstName']                                                       = $this->first_name($data);
-        $facts['firstNameInitial']                                                = $this->first_name_initial($data);
-        $facts['middleName']                                                      = $this->middle_name($data);
-        $facts['middleNameInitial']                                               = $this->middle_name_initial($data);
-        $facts['lastName']                                                        = $this->last_name($data);
-        $facts['lastNameInitial']                                                 = $this->last_name_initial($data);
-        $facts['profileGender']                                                   = $this->profile_gender($data);
-        $facts['emailAddress']                                                    = $this->email_address($data);
-        $facts['emailUsername']                                                   = $this->email_username($data);
-        $facts['pictureIsSilhouette']                                             = $this->picture_is_silhouette($data);
-        $facts['hometownCityName']                                                = $this->hometown_city_name($data);
-        $facts['hometownRegionName']                                              = $this->hometown_region_name($data);
-        $facts['hometownCountryName']                                             = $this->hometown_country_name($data);
-        $facts['currentCityName']                                                 = $this->current_city_name($data);
-        $facts['currentRegionName']                                               = $this->current_region_name($data);
-        $facts['currentCountryName']                                              = $this->current_country_name($data);
-        $facts['numFamilyMembersWithSameLastName']                                = $this->num_family_members_same_last_name($data);
-        $facts['numFriendsWithSameLastName']                                      = $this->num_friends_same_last_name($data);
-        $facts['top1FriendsCity']                                                 = $this->top1_friends_city($data);
-        $facts['top1FriendsCountry']                                              = $this->top1_friends_country($data);
-        $facts['top2FriendsCity']                                                 = $this->top2_friends_city($data);
-        $facts['top2FriendsCountry']                                              = $this->top2_friends_country($data);
-        $facts['top3FriendsCity']                                                 = $this->top3_friends_city($data);
-        $facts['top3FriendsCountry']                                              = $this->top3_friends_country($data);
-        $facts['top4FriendsCity']                                                 = $this->top4_friends_city($data);
-        $facts['top4FriendsCountry']                                              = $this->top4_friends_country($data);
-        $facts['top5FriendsCity']                                                 = $this->top5_friends_city($data);
-        $facts['top5FriendsCountry']                                              = $this->top5_friends_country($data);
-        $facts['mostActiveCityPastMonth']                                         = $this->most_active_city($data, 1);
-        $facts['mostActiveCountryPastMonth']                                      = $this->most_active_country($data, 1);
-        $facts['mostActiveCityPastSixMonths']                                     = $this->most_active_city($data, 6);
-        $facts['mostActiveCountrySixMonths']                                      = $this->most_active_country($data, 6);
-        $facts['mostActiveCityPastYear']                                          = $this->most_active_city($data, 12);
-        $facts['mostActiveCountryPastYear']                                       = $this->most_active_country($data, 12);
-        $facts['avgFriendsBirthYear']                                             = $this->avg_friends_birth_year($data);
-        $facts['numOfFriendsBirthWithinOneYear']                                  = $this->num_friends_within_oneyear($data);
-        $facts['numOfFriendsBirthWithinTwoYears']                                 = $this->num_friends_within_twoyears($data);
-        $facts['numOfFriendsBirthWithinThreeYears']                               = $this->num_friends_within_threeyears($data);
-        $facts['numOfFriendsBirthWithinFourYears']                                = $this->num_friends_within_fouryears($data);
-        $facts['numOfFriendsBirthWithinFiveYears']                                = $this->num_friends_within_fiveyears($data);
-        $facts['avgPostsPerWeek']                                                 = $this->avg_posts_week($data);
-        $facts['avgCommentsReceivedPerWeek']                                      = $this->avg_comments_week($data);
-        $facts['avgLikesPerWeek']                                                 = $this->avg_likes_week($data);
-        $facts['numOfReceivedComments']                                           = $this->num_comments_received($data);
-        $facts['numOfReceivedLikes']                                              = $this->num_likes_received($data);
-        $facts['numOfFamilyMembers']                                              = $this->num_family_members($data);
-        $facts['numOfFriends']                                                    = $this->num_friends($data);
-        $facts['numOfCloseFriends']                                               = $this->close_friends($data);
-        $facts['numOfSchoolFriends']                                              = $this->school_friends($data);
-        $facts['numOfCollegeFriends']                                             = $this->college_friends($data);
-        $facts['numOfCoworkers']                                                  = $this->num_coworkers($data);
-        $facts['numOfEvents']                                                     = $this->num_events($data);
-        $facts['numOfEventsAttended']                                             = $this->num_events_attended($data);
-        $facts['numOfGroups']                                                     = $this->num_groups($data);
-        $facts['numOfGroupsAdministrating']                                       = $this->num_groups_administrating($data);
-        $facts['numOfLikes']                                                      = $this->num_likes($data);
-        $facts['numOfLocations']                                                  = $this->num_locations($data);
-        $facts['numOfLinks']                                                      = $this->num_links($data);
-        $facts['numOfPhotos']                                                     = $this->num_photos($data);
-        $facts['numOfPosts']                                                      = $this->num_posts($data);
-        $facts['numOfStatuses']                                                   = $this->num_statuses($data);
-        $facts['numOfTagged']                                                     = $this->num_tagged($data);
-        $facts['profileAge']                                                      = $this->profile_age($data);
-        $facts['birthDay']                                                        = $this->birth($data, 1);
-        $facts['birthMonth']                                                      = $this->birth($data, 0);
-        $facts['birthYear']                                                       = $this->birth($data, 2);
-        $facts['firstMostRecentEducation']                                        = $this->first_most_recent_education($data);
-        $facts['secondMostRecentEducation']                                       = $this->second_most_recent_education($data);
-        $facts['thirdMostRecentEducation']                                        = $this->third_most_recent_education($data);
-        $facts['firstMostRecentEducationType']                                    = $this->first_most_recent_education_type($data);
-        $facts['secondMostRecentEducationType']                                   = $this->second_most_recent_education_type($data);
-        $facts['thirdMostRecentEducationType']                                    = $this->third_most_recent_education_type($data);
-        $facts['firstMostRecentEducationCourse']                                  = $this->first_most_recent_education_course($data);
-        $facts['secondMostRecentEducationCourse']                                 = $this->second_most_recent_education_course($data);
-        $facts['thirdMostRecentEducationCourse']                                  = $this->third_most_recent_education_course($data);
-        $facts['firstMostRecentEducationGraduationYear']                          = $this->first_most_recent_education_graduation_year($data);
-        $facts['secondMostRecentEducationGraduationYear']                         = $this->second_most_recent_education_graduation_year($data);
-        $facts['thirdMostRecentEducationGraduationYear']                          = $this->third_most_recent_education_graduation_year($data);
-        $facts['isFirstMostRecentEducationGraduated']                             = $this->first_most_recent_education_graduated($data);
-        $facts['isSecondMostRecentEducationGraduated']                            = $this->second_most_recent_education_graduated($data);
-        $facts['isThirdMostRecentEducationGraduated']                             = $this->third_most_recent_education_graduated($data);
-        $facts['numOfFriendsFromFirstMostRecentEducation']                        = $this->num_friends_first_most_recent_education($data);
-        $facts['numOfFriendsFromSecondMostRecentEducation']                       = $this->num_friends_second_most_recent_education($data);
-        $facts['numOfFriendsFromThirdMostRecentEducation']                        = $this->num_friends_third_most_recent_education($data);
-        $facts['numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear']  = $this->num_friends_first_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear'] = $this->num_friends_second_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear']  = $this->num_friends_third_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsWorkingAtFirstMostRecentEducation']                   = $this->num_friends_working_first_most_recent_education($data);
-        $facts['numOfFriendsWorkingAtSecondMostRecentEducation']                  = $this->num_friends_working_second_most_recent_education($data);
-        $facts['numOfFriendsWorkingAtThirdMostRecentEducation']                   = $this->num_friends_working_third_most_recent_education($data);
-        $facts['numOfCheckinsAtFirstMostRecentEducationThisYear']                 = $this->num_checkins_first_most_recent_education_this_year($data);
-        $facts['numOfCheckinsAtSecondMostRecentEducationThisYear']                = $this->num_checkins_second_most_recent_education_this_year($data);
-        $facts['numOfCheckinsAtThirdMostRecentEducationThisYear']                 = $this->num_checkins_third_most_recent_education_this_year($data);
-        $facts['numOfCheckinsAtFirstMostRecentEducationLastYear']                 = $this->num_checkins_first_most_recent_education_last_year($data);
-        $facts['numOfCheckinsAtSecondMostRecentEducationLastYear']                = $this->num_checkins_second_most_recent_education_last_year($data);
-        $facts['numOfCheckinsAtThirdMostRecentEducationLastYear']                 = $this->num_checkins_third_most_recent_education_last_year($data);
-        $facts['numOfStudentFriends']                                             = $this->num_student_friends($data);
-        $facts['numOfStudentFriendsWithSameAge']                                  = $this->num_student_friends_same_age($data);
-        $facts['numOfStudentFriendsWithinOneYearAgeDifference']                   = $this->num_student_friends_within_one_year_age_difference($data);
-        $facts['numOfStudentFriendsWithinTwoYearsAgeDifference']                  = $this->num_student_friends_within_two_years_age_difference($data);
-        $facts['numOfStudentFriendsWithinThreeYearsAgeDifference']                = $this->num_student_friends_within_three_years_age_difference($data);
-        $facts['isAStudent']                                                      = $this->is_student($data);
-        $facts['isWithinStudentAge']                                              = $this->is_student_age($data);
-        $facts['isInARelationship']                                               = $this->is_in_relationship($data);
-        $facts['significantOther']                                                = $this->significant_other($data);
-        $facts['firstMostRecentEmployer']                                         = $this->first_most_recent_employer($data);
-        $facts['secondMostRecentEmployer']                                        = $this->second_most_recent_employer($data);
-        $facts['thirdMostRecentEmployer']                                         = $this->third_most_recent_employer($data);
-        $facts['fourthMostRecentEmployer']                                        = $this->fourth_most_recent_employer($data);
-        $facts['fifthMostRecentEmployer']                                         = $this->fifth_most_recent_employer($data);
-        $facts['firstMostRecentWorkPosition']                                     = $this->first_most_recent_work_position($data);
-        $facts['secondMostRecentWorkPosition']                                    = $this->second_most_recent_work_position($data);
-        $facts['thirdMostRecentWorkPosition']                                     = $this->third_most_recent_work_position($data);
-        $facts['fourthMostRecentWorkPosition']                                    = $this->fourth_most_recent_work_position($data);
-        $facts['fifthMostRecentWorkPosition']                                     = $this->fifth_most_recent_work_position($data);
-        $facts['firstMostRecentWorkLocation']                                     = $this->first_most_recent_work_location($data);
-        $facts['secondMostRecentWorkLocation']                                    = $this->second_most_recent_work_location($data);
-        $facts['thirdMostRecentWorkLocation']                                     = $this->third_most_recent_work_location($data);
-        $facts['fourthMostRecentWorkLocation']                                    = $this->fourth_most_recent_work_location($data);
-        $facts['fifthMostRecentWorkLocation']                                     = $this->fifth_most_recent_work_location($data);
-        $facts['firstMostRecentWorkHasProjects']                                  = $this->first_most_recent_work_has_projects($data);
-        $facts['secondMostRecentWorkHasProjects']                                 = $this->second_most_recent_work_has_projects($data);
-        $facts['thirdMostRecentWorkHasProjects']                                  = $this->third_most_recent_work_has_projects($data);
-        $facts['fourthMostRecentWorkHasProjects']                                 = $this->fourth_most_recent_work_has_projects($data);
-        $facts['fifthMostRecentWorkHasProjects']                                  = $this->fifth_most_recent_work_has_projects($data);
-        $facts['firstMostRecentWorkIsCurrent']                                    = $this->first_most_recent_work_is_current($data);
-        $facts['secondMostRecentWorkIsCurrent']                                   = $this->second_most_recent_work_is_current($data);
-        $facts['thirdMostRecentWorkIsCurrent']                                    = $this->third_most_recent_work_is_current($data);
-        $facts['fourthMostRecentWorkIsCurrent']                                   = $this->fourth_most_recent_work_is_current($data);
-        $facts['fifthMostRecentWorkIsCurrent']                                    = $this->fifth_most_recent_work_is_current($data);
-
-        return $facts;
+        return [
+            'isActive'                                                        => ! empty($data),
+            'profilePicture'                                                  => $this->profilePicture($data),
+            'verifiedProfile'                                                 => $this->verifiedProfile($data),
+            'isACommonName'                                                   => $this->isACommonName($data),
+            'isListedName'                                                    => $this->isListedName($data),
+            'isFantasyName'                                                   => $this->isFantasyName($data),
+            'isSanctionedName'                                                => $this->isSanctionedName($data),
+            'isPEPName'                                                       => $this->isPEPName($data),
+            'isCelebrityName'                                                 => $this->isCelebrityName($data),
+            'isSillyName'                                                     => $this->isSillyName($data),
+            'nameGender'                                                      => $this->nameGender($data),
+            'fullName'                                                        => $this->fullName($data),
+            'firstName'                                                       => $this->firstName($data),
+            'firstNameInitial'                                                => $this->firstNameInitial($data),
+            'middleName'                                                      => $this->middleName($data),
+            'middleNameInitial'                                               => $this->middleNameInitial($data),
+            'lastName'                                                        => $this->lastName($data),
+            'lastNameInitial'                                                 => $this->lastNameInitial($data),
+            'profileGender'                                                   => $this->profile_gender($data),
+            'emailAddress'                                                    => $this->emailAddress($data),
+            'emailUsername'                                                   => $this->emailUsername($data),
+            'pictureIsSilhouette'                                             => $this->pictureIsSilhouette($data),
+            'hometownCityName'                                                => $this->hometownCityName($data),
+            'hometownRegionName'                                              => $this->hometownRegionName($data),
+            'hometownCountryName'                                             => $this->hometownCountryName($data),
+            'currentCityName'                                                 => $this->currentCityName($data),
+            'currentRegionName'                                               => $this->currentRegionName($data),
+            'currentCountryName'                                              => $this->currentCountryName($data),
+            'numFamilyMembersWithSameLastName'                                => $this->numFamilyMembersWithSameLastName($data),
+            'numFriendsWithSameLastName'                                      => $this->numFriendsWithSameLastName($data),
+            'top1FriendsCity'                                                 => $this->top1FriendsCity($data),
+            'top1FriendsCountry'                                              => $this->top1FriendsCountry($data),
+            'top2FriendsCity'                                                 => $this->top2FriendsCity($data),
+            'top2FriendsCountry'                                              => $this->top2FriendsCountry($data),
+            'top3FriendsCity'                                                 => $this->top3FriendsCity($data),
+            'top3FriendsCountry'                                              => $this->top3FriendsCountry($data),
+            'top4FriendsCity'                                                 => $this->top4FriendsCity($data),
+            'top4FriendsCountry'                                              => $this->top4FriendsCountry($data),
+            'top5FriendsCity'                                                 => $this->top5FriendsCity($data),
+            'top5FriendsCountry'                                              => $this->top5FriendsCountry($data),
+            'mostActiveCityPastMonth'                                         => $this->mostActiveCity($data, 1),
+            'mostActiveCountryPastMonth'                                      => $this->mostActiveCountry($data, 1),
+            'mostActiveCityPastSixMonths'                                     => $this->mostActiveCity($data, 6),
+            'mostActiveCountrySixMonths'                                      => $this->mostActiveCountry($data, 6),
+            'mostActiveCityPastYear'                                          => $this->mostActiveCity($data, 12),
+            'mostActiveCountryPastYear'                                       => $this->mostActiveCountry($data, 12),
+            'avgFriendsBirthYear'                                             => $this->avgFriendsBirthYear($data),
+            'numOfFriendsBirthWithinOneYear'                                  => $this->numOfFriendsWithinOneYyear($data),
+            'numOfFriendsBirthWithinTwoYears'                                 => $this->numOfFriendsWithinTwoYears($data),
+            'numOfFriendsBirthWithinThreeYears'                               => $this->numOfFriendsWithinThreeYears($data),
+            'numOfFriendsBirthWithinFourYears'                                => $this->numOfFriendsWithinFourYears($data),
+            'numOfFriendsBirthWithinFiveYears'                                => $this->numOfFriendsWithinFiveYears($data),
+            'avgPostsPerWeek'                                                 => $this->avgPostsPerWeek($data),
+            'avgCommentsReceivedPerWeek'                                      => $this->avgCommentsReceivedPerWeek($data),
+            'avgLikesPerWeek'                                                 => $this->avgLikesPerWeek($data),
+            'numOfReceivedComments'                                           => $this->numCommentsReceived($data),
+            'numOfReceivedLikes'                                              => $this->numLikesReceived($data),
+            'numOfFamilyMembers'                                              => $this->numFamilyMembers($data),
+            'numOfFriends'                                                    => $this->numFriends($data),
+            'numOfCloseFriends'                                               => $this->closeFriends($data),
+            'numOfSchoolFriends'                                              => $this->schoolFriends($data),
+            'numOfCollegeFriends'                                             => $this->collegeFriends($data),
+            'numOfCoworkers'                                                  => $this->numCoworkers($data),
+            'numOfEvents'                                                     => $this->numEvents($data),
+            'numOfEventsAttended'                                             => $this->numEventsAttended($data),
+            'numOfGroups'                                                     => $this->numGroups($data),
+            'numOfGroupsAdministrating'                                       => $this->numGroupsAdministrating($data),
+            'numOfLikes'                                                      => $this->numLikes($data),
+            'numOfLocations'                                                  => $this->numLocations($data),
+            'numOfLinks'                                                      => $this->numLinks($data),
+            'numOfPhotos'                                                     => $this->numPhotos($data),
+            'numOfPosts'                                                      => $this->numPosts($data),
+            'numOfStatuses'                                                   => $this->numStatuses($data),
+            'numOfTagged'                                                     => $this->numTagged($data),
+            'profileAge'                                                      => $this->profileAge($data),
+            'birthDay'                                                        => $this->birth($data, 1),
+            'birthMonth'                                                      => $this->birth($data, 0),
+            'birthYear'                                                       => $this->birth($data, 2),
+            'firstMostRecentEducation'                                        => $this->firstMostRecentEducation($data),
+            'secondMostRecentEducation'                                       => $this->secondMostRecentEducation($data),
+            'thirdMostRecentEducation'                                        => $this->thirdMostRecentEducation($data),
+            'firstMostRecentEducationType'                                    => $this->firstMostRecentEducationType($data),
+            'secondMostRecentEducationType'                                   => $this->secondMostRecentEducationType($data),
+            'thirdMostRecentEducationType'                                    => $this->thirdMostRecentEducationType($data),
+            'firstMostRecentEducationCourse'                                  => $this->firstMostRecentEducationCourse($data),
+            'secondMostRecentEducationCourse'                                 => $this->secondMostRecentEducationCourse($data),
+            'thirdMostRecentEducationCourse'                                  => $this->thirdMostRecentEducationCourse($data),
+            'firstMostRecentEducationGraduationYear'                          => $this->firstMostRecentEducationGraduationYear($data),
+            'secondMostRecentEducationGraduationYear'                         => $this->secondMostRecentEducationGraduationYear($data),
+            'thirdMostRecentEducationGraduationYear'                          => $this->thirdMostRecentEducationGraduationYear($data),
+            'isFirstMostRecentEducationGraduated'                             => $this->firstMostRecentEducation_graduated($data),
+            'isSecondMostRecentEducationGraduated'                            => $this->secondMostRecentEducation_graduated($data),
+            'isThirdMostRecentEducationGraduated'                             => $this->thirdMostRecentEducation_graduated($data),
+            'numOfFriendsFromFirstMostRecentEducation'                        => $this->numFriendsFirstMostRecentEducation($data),
+            'numOfFriendsFromSecondMostRecentEducation'                       => $this->numFriendsSecondMostRecentEducation($data),
+            'numOfFriendsFromThirdMostRecentEducation'                        => $this->numFriendsThirdMostRecentEducation($data),
+            'numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear'  => $this->numFriendsFirstMostRecentEducationSameGraduationYear($data),
+            'numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear' => $this->numFriendsSecondMostRecentEducationSameGraduationYear($data),
+            'numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear'  => $this->numFriendsThirdMostRecentEducationSameGraduationYear($data),
+            'numOfFriendsWorkingAtFirstMostRecentEducation'                   => $this->numFriendsWorkingFirstMostRecentEducation($data),
+            'numOfFriendsWorkingAtSecondMostRecentEducation'                  => $this->numFriendsWorkingSecondMostRecentEducation($data),
+            'numOfFriendsWorkingAtThirdMostRecentEducation'                   => $this->numFriendsWorkingThirdMostRecentEducation($data),
+            'numOfCheckinsAtFirstMostRecentEducationThisYear'                 => $this->numCheckinsFirstMostRecentEducationThisYear($data),
+            'numOfCheckinsAtSecondMostRecentEducationThisYear'                => $this->numCheckinsSecondMostRecentEducationThisYear($data),
+            'numOfCheckinsAtThirdMostRecentEducationThisYear'                 => $this->numCheckinsThirdMostRecentEducationThisYear($data),
+            'numOfCheckinsAtFirstMostRecentEducationLastYear'                 => $this->numCheckinsFirstMostRecentEducationLastYear($data),
+            'numOfCheckinsAtSecondMostRecentEducationLastYear'                => $this->numCheckinsSecondMostRecentEducationLastYear($data),
+            'numOfCheckinsAtThirdMostRecentEducationLastYear'                 => $this->numCheckinsThirdMostRecentEducationLastYear($data),
+            'numOfStudentFriends'                                             => $this->numOfStudentFriends($data),
+            'numOfStudentFriendsWithSameAge'                                  => $this->numOfStudentFriendsWithSameAge($data),
+            'numOfStudentFriendsWithinOneYearAgeDifference'                   => $this->numOfStudentFriendsWithinOneYearAgeDifference($data),
+            'numOfStudentFriendsWithinTwoYearsAgeDifference'                  => $this->numOfStudentFriendsWithinTwoYearsAgeDifference($data),
+            'numOfStudentFriendsWithinThreeYearsAgeDifference'                => $this->numOfStudentFriendsWithinThreeYearsAgeDifference($data),
+            'isAStudent'                                                      => $this->isAStudent($data),
+            'isWithinStudentAge'                                              => $this->isWithinStudentAge($data),
+            'isInARelationship'                                               => $this->isInARelationship($data),
+            'significantOther'                                                => $this->significantOther($data),
+            'firstMostRecentEmployer'                                         => $this->firstMostRecentEmployer($data),
+            'secondMostRecentEmployer'                                        => $this->secondMostRecentEmployer($data),
+            'thirdMostRecentEmployer'                                         => $this->thirdMostRecentEmployer($data),
+            'fourthMostRecentEmployer'                                        => $this->fourthMostRecentEmployer($data),
+            'fifthMostRecentEmployer'                                         => $this->fifthMostRecentEmployer($data),
+            'firstMostRecentWorkPosition'                                     => $this->firstMostRecentWorkPosition($data),
+            'secondMostRecentWorkPosition'                                    => $this->secondMostRecentWorkPosition($data),
+            'thirdMostRecentWorkPosition'                                     => $this->thirdMostRecentWorkPosition($data),
+            'fourthMostRecentWorkPosition'                                    => $this->fourthMostRecentWorkPosition($data),
+            'fifthMostRecentWorkPosition'                                     => $this->fifthMostRecentWorkPosition($data),
+            'firstMostRecentWorkLocation'                                     => $this->firstMostRecentWorkLocation($data),
+            'secondMostRecentWorkLocation'                                    => $this->secondMostRecentWorkLocation($data),
+            'thirdMostRecentWorkLocation'                                     => $this->thirdMostRecentWorkLocation($data),
+            'fourthMostRecentWorkLocation'                                    => $this->fourthMostRecentWorkLocation($data),
+            'fifthMostRecentWorkLocation'                                     => $this->fifthMostRecentWorkLocation($data),
+            'firstMostRecentWorkHasProjects'                                  => $this->firstMostRecentWorkHasProjects($data),
+            'secondMostRecentWorkHasProjects'                                 => $this->secondMostRecentWorkHasProjects($data),
+            'thirdMostRecentWorkHasProjects'                                  => $this->thirdMostRecentWorkHasProjects($data),
+            'fourthMostRecentWorkHasProjects'                                 => $this->fourthMostRecentWorkHasProjects($data),
+            'fifthMostRecentWorkHasProjects'                                  => $this->fifthMostRecentWorkHasProjects($data),
+            'firstMostRecentWorkIsCurrent'                                    => $this->firstMostRecentWorkIsCurrent($data),
+            'secondMostRecentWorkIsCurrent'                                   => $this->secondMostRecentWorkIsCurrent($data),
+            'thirdMostRecentWorkIsCurrent'                                    => $this->thirdMostRecentWorkIs_current($data),
+            'fourthMostRecentWorkIsCurrent'                                   => $this->fourthMostRecentWorkIsCurrent($data),
+            'fifthMostRecentWorkIsCurrent'                                    => $this->fifthMostRecentWorkIsCurrent($data)
+        ];
     }
-
 }

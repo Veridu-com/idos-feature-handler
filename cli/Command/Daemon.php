@@ -83,7 +83,7 @@ class Daemon extends Command {
          */
         $gearman->addFunction(
             'feature',
-            function (\GearmanJob $job) use ($logger, $test) {
+            function (\GearmanJob $job) use ($logger) {
                 $logger->debug('Got a new job!');
                 $jobData = json_decode($job->workload(), true);
                 if ($jobData === null) {
@@ -129,17 +129,16 @@ class Daemon extends Command {
                 $featuresEndpoint = $sdk
                     ->Profile($jobData['userName'])
                     ->Features;
-                try {
-                    foreach ($parsedBuffer as $field => $value) {
-                        $featuresEndpoint->createOrUpdate(
-                            (int) $jobData['sourceId'],
-                            $field,
-                            $value
-                        );
-                    }
-                } catch (\Exception $exception) {
-                    echo $exception->getMessage(), PHP_EOL;
+
+                $features = [];
+                foreach ($parsedBuffer as $name => $value) {
+                    $features[] = [
+                        'source_id' => $jobData['sourceId'],
+                        'name'      => $name,
+                        'value'     => $value
+                    ];
                 }
+                $featuresEndpoint->upsertBulk($features);
 
                 // $sdk
                 //     ->profiles
