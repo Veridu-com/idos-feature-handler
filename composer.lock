@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "239fbe7c924959bf8fca34f308b2c24c",
-    "content-hash": "0720ace519519d05718433753f0e585c",
+    "hash": "244304bacec8a27e3174a198e9e562fa",
+    "content-hash": "a549bffd2b58bd2c69e06e113d05daf1",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -187,32 +187,31 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "7.2.8",
+            "version": "7.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "3214f7d8da6270707d8489c9fe7e691a96fb1c20"
+                "reference": "78b06909657a11d3b915bd348adf982854dbbc29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/3214f7d8da6270707d8489c9fe7e691a96fb1c20",
-                "reference": "3214f7d8da6270707d8489c9fe7e691a96fb1c20",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/78b06909657a11d3b915bd348adf982854dbbc29",
+                "reference": "78b06909657a11d3b915bd348adf982854dbbc29",
                 "shasum": ""
             },
             "require": {
-                "ext-mbstring": "*"
+                "ext-mbstring": "*",
+                "giggsey/locale": "^1.0",
+                "php": ">=5.3.2"
             },
             "require-dev": {
                 "pear/pear-core-minimal": "^1.9",
                 "pear/pear_exception": "^1.0",
                 "pear/versioncontrol_git": "dev-master",
-                "phing/phing": "~2.7",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "~0.6",
-                "symfony/console": "^2.5"
-            },
-            "suggest": {
-                "ext-intl": "To use the geocoder and carrier mapping"
+                "phing/phing": "^2.7",
+                "phpunit/phpunit": "^4.8|^5.0",
+                "satooshi/php-coveralls": "^1.0",
+                "symfony/console": "^2.8|^3.0"
             },
             "type": "library",
             "extra": {
@@ -246,7 +245,53 @@
                 "phonenumber",
                 "validation"
             ],
-            "time": "2016-03-21 15:20:21"
+            "time": "2016-09-12 19:11:13"
+        },
+        {
+            "name": "giggsey/locale",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/giggsey/Locale.git",
+                "reference": "9087acaf8493472fcd129118017fd7e06be3d8fa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/giggsey/Locale/zipball/9087acaf8493472fcd129118017fd7e06be3d8fa",
+                "reference": "9087acaf8493472fcd129118017fd7e06be3d8fa",
+                "shasum": ""
+            },
+            "require-dev": {
+                "pear/pear-core-minimal": "^1.9",
+                "pear/pear_exception": "^1.0",
+                "pear/versioncontrol_git": "dev-master",
+                "phing/phing": "~2.7",
+                "phpunit/phpunit": "^4.8|^5.0",
+                "satooshi/php-coveralls": "^1.0",
+                "symfony/console": "^2.8|^3.0",
+                "symfony/filesystem": "^2.8|^3.0",
+                "symfony/finder": "^2.8|^3.0",
+                "symfony/process": "^2.8|^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Giggsey\\Locale\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joshua Gigg",
+                    "email": "giggsey@gmail.com",
+                    "homepage": "http://giggsey.com/"
+                }
+            ],
+            "description": "Locale functions required by libphonenumber-for-php",
+            "time": "2016-08-04 23:02:29"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1492,12 +1537,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/flavioheleno/idos-sdk-php.git",
-                "reference": "29b35de0f7b6ad9a804ce6fff9ceb39881fd65f6"
+                "reference": "9e59205f5faecd2921de9a7c84f2f8dea7dd3f76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flavioheleno/idos-sdk-php/zipball/29b35de0f7b6ad9a804ce6fff9ceb39881fd65f6",
-                "reference": "29b35de0f7b6ad9a804ce6fff9ceb39881fd65f6",
+                "url": "https://api.github.com/repos/flavioheleno/idos-sdk-php/zipball/9e59205f5faecd2921de9a7c84f2f8dea7dd3f76",
+                "reference": "9e59205f5faecd2921de9a7c84f2f8dea7dd3f76",
                 "shasum": ""
             },
             "require": {
@@ -1554,7 +1599,7 @@
                 "source": "https://github.com/flavioheleno/idos-sdk-php/tree/master",
                 "issues": "https://github.com/flavioheleno/idos-sdk-php/issues"
             },
-            "time": "2016-09-16 20:47:14"
+            "time": "2016-09-29 12:48:55"
         }
     ],
     "packages-dev": [
@@ -1647,16 +1692,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v1.12.1",
+            "version": "v1.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "d33ee60f3d3e6152888b7f3a385f49e5c43bf1bf"
+                "reference": "baa7112bef3b86c65fcfaae9a7a50436e3902b41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/d33ee60f3d3e6152888b7f3a385f49e5c43bf1bf",
-                "reference": "d33ee60f3d3e6152888b7f3a385f49e5c43bf1bf",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/baa7112bef3b86c65fcfaae9a7a50436e3902b41",
+                "reference": "baa7112bef3b86c65fcfaae9a7a50436e3902b41",
                 "shasum": ""
             },
             "require": {
@@ -1701,7 +1746,7 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2016-09-07 06:48:24"
+            "time": "2016-09-27 07:57:59"
         },
         {
             "name": "jakub-onderka/php-console-color",

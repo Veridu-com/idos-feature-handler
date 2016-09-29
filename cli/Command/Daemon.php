@@ -84,6 +84,8 @@ class Daemon extends Command {
         $gearman->addFunction(
             'feature',
             function (\GearmanJob $job) use ($logger) {
+                $time = microtime(true);
+
                 $logger->debug('Got a new job!');
                 $jobData = json_decode($job->workload(), true);
                 if ($jobData === null) {
@@ -160,8 +162,9 @@ class Daemon extends Command {
                 //         ]
                 //     );
 
-                $logger->debug('Job done!');
-                //$job->sendComplete('ok');
+                $time = microtime(true) - $time;
+                $logger->debug('Job done! (' . $time . ')');
+                $job->sendComplete('ok');
             }
         );
 
