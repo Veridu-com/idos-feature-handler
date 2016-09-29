@@ -4,14 +4,37 @@ declare(strict_types = 1);
 
 namespace Cli\Extractor;
 
-use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
 final class LinkedIn extends AbstractExtractor {
+    public function linkedinConnections($data) {
+        //@FIXME
+        return [];
+        /*$mongo = new Mongo;
+        $connections = $mongo->selectCollection('linkedin', 'connections')->findOne(array('id' => $profile_id));
+        if (empty($connections['list'])) {
+            $mongo->close();
+            return array();
+        }
+
+        $return = array();
+        $docs = $mongo->selectCollection('linkedin', 'profile')->find(array(
+            'id' => array(
+                '$in' => $connections['list']
+            )
+        ));
+        foreach ($docs as $doc) {
+            unset($doc['_id']);
+            $return[] = $doc;
+        }
+        $mongo->close();
+        return $return;*/
+    }
+
     private function _connections(&$data) {
         if (isset($data['_connections']))
             return $data['_connections'];
-        $data['_connections'] = Profile::linkedinConnections($data);
+        $data['_connections'] = $this->linkedinConnections($data);
 
         return $data['_connections'];
     }

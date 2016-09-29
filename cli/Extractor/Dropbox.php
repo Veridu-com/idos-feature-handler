@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Cli\Extractor;
 
-use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
 final class Dropbox extends AbstractExtractor {

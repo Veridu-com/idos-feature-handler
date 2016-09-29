@@ -4,15 +4,34 @@ declare(strict_types = 1);
 
 namespace Cli\Extractor;
 
-use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
 final class Spotify extends AbstractExtractor {
+    public function spotifyPlaylists($data) {
+        if (empty($data['playlists']))
+            return false;
+
+        if (isset($data['playlists']['_id']))
+            unset($data['playlists']['_id']);
+
+        return $data;
+    }
+
+    public function spotifyTracks($data) {
+        if (empty($data['tracks']))
+            return false;
+
+        if (isset($data['tracks']['_id']))
+            unset($data['tracks']['_id']);
+
+        return $data;
+    }
+
     private function _playlists(&$data) {
         if (isset($data['_playlists']))
             return $data['_playlists'];
 
-        $playlists = Profile::spotifyPlaylists($data);
+        $playlists = $this->spotifyPlaylists($data);
 
         if (empty($playlists))
             return [];
@@ -54,7 +73,7 @@ final class Spotify extends AbstractExtractor {
         if (isset($data['_tracks']))
             return $data['_tracks'];
 
-        $tracks = Profile::spotifyTracks($data);
+        $tracks = $this->spotifyTracks($data);
 
         if (empty($tracks))
             return [];
