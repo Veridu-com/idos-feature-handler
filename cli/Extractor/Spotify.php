@@ -7,44 +7,22 @@ namespace Cli\Extractor;
 use Cli\Utils\Utils;
 
 final class Spotify extends AbstractExtractor {
-    public function spotifyPlaylists($data) {
-        if (empty($data['playlists']))
-            return false;
-
-        if (isset($data['playlists']['_id']))
-            unset($data['playlists']['_id']);
-
-        return $data;
-    }
-
-    public function spotifyTracks($data) {
-        if (empty($data['tracks']))
-            return false;
-
-        if (isset($data['tracks']['_id']))
-            unset($data['tracks']['_id']);
-
-        return $data;
-    }
-
     private function _playlists(&$data) {
         if (isset($data['_playlists']))
             return $data['_playlists'];
 
-        $playlists = $this->spotifyPlaylists($data);
-
-        if (empty($playlists))
+        if (empty($data['playlists']))
             return [];
 
         $data['_playlists'] = [];
 
-        foreach ($playlists as $playlist)
+        foreach ($data['playlists'] as $playlist)
             $data['_playlists'][] = [
                 'id'            => $playlist['id'],
                 'name'          => $playlist['name'],
                 'owner'         => $playlist['owner']['id'],
                 'collaborative' => $playlist['collaborative'],
-                'public'        => $playlist['public'],
+                'public'        => isset($playlist['public']) ? $playlist['public'] : false,
                 'total_tracks'  => $playlist['tracks']['total']
             ];
 
@@ -73,14 +51,16 @@ final class Spotify extends AbstractExtractor {
         if (isset($data['_tracks']))
             return $data['_tracks'];
 
-        $tracks = $this->spotifyTracks($data);
-
-        if (empty($tracks))
+        if (empty($data['tracks']))
             return [];
 
         $data['_tracks'] = [];
 
-        foreach ($tracks as $track)
+        foreach ($data['tracks'] as $track) {
+            if (empty($track['track'])) {
+                continue;
+            }
+
             $data['_tracks'][] = [
                 'id'         => $track['track']['id'],
                 'name'       => $track['track']['name'],
@@ -90,6 +70,7 @@ final class Spotify extends AbstractExtractor {
                 'is_local'   => $track['is_local'],
                 'playlists'  => $track['playlists']
             ];
+        }
 
         return $data['_tracks'];
     }
