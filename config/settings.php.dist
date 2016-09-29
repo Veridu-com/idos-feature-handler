@@ -25,5 +25,28 @@ $appSettings = [
         'servers' => [
             ['localhost', 4730]
         ]
-    ]
+    ],
+    'db' => [
+        'sql' => [
+            'driver'    => 'pgsql',
+            // 'read' => [
+            //     'host' => 'localhost'
+            // ],
+            // 'write' => [
+            //     'host' => 'localhost'
+            // ],
+            'host'      => 'localhost',
+            'port'      => 5432,
+            'database'  => 'veridu-idos-api',
+            'username'  => 'veridu',
+            'password'  => 'veridu',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+            'options'   => [
+                \PDO::ATTR_TIMEOUT    => 5,
+                \PDO::ATTR_PERSISTENT => true
+            ]
+        ]
+    ],
 ];

@@ -8,6 +8,8 @@ use Gender\Gender;
 use HumanNameParser\Name;
 use HumanNameParser\Parser as NameParser;
 use libphonenumber\PhoneNumberUtil;
+use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Connection;
 
 final class Utils {
     private $nameParser;
@@ -22,7 +24,14 @@ final class Utils {
     }
 
     private function __construct() {
+        include __DIR__ . '/../../config/settings.php';
+
         $this->nameParser = new NameParser();
+
+        $capsule = new Manager();
+        $capsule->addConnection($appSettings['db']['sql']);
+
+        $this->dbConnection = $capsule->getConnection();
     }
 
     /* ADDRESS UTILITIES */
@@ -170,22 +179,26 @@ final class Utils {
     }
 
     public function codeToCountry($code) {
-        return;
         static $cache = [];
         try {
             if (isset($cache[$code])) {
                 return $cache[$code];
             }
 
-            $this->sql->exec('SELECT "name" FROM "countries" WHERE "code" = :code', ['code' => strtoupper($code)]);
-            if ($this->sql->count() == 0) {
+            $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
+
+            $result = $this->dbConnection->table('countries')
+                ->where('code', '=', strtoupper($code))
+                ->get(['name'])
+                ->first();
+
+            if (count($result) == 0) {
                 return $code;
             }
 
-            $res          = $this->sql->next();
-            $cache[$code] = $res['name'];
+            $cache[$code] = $result['name'];
 
-            return $res['name'];
+            return $result['name'];
         } catch (\Exception $exception) {
             return;
         }
@@ -196,21 +209,31 @@ final class Utils {
     }
 
     public function countryFromCity($city) {
-        return;
-        // Disabled Code (needs improved data source)
-        // static $cache = array();
-        // try {
-        //  if (isset($cache[$city]))
-        //      return $cache[$city];
-        //  $this->sql->exec('SELECT "countries"."name" FROM "cities" INNER JOIN countries ON ("countries"."code" = "cities"."country") WHERE "city" ILIKE :city LIMIT 1', array('city' => $city));
-        //  if ($this->sql->count() == 0)
-        //      return null;
-        //  $res = $this->sql->next();
-        //  $cache[$city] = $res['name'];
-        //  return $res['name'];
-        // } catch (\Exception $exception) {
-        //  return null;
-        // }
+        static $cache = array();
+        try {
+            if (isset($cache[$city])) {
+                return $cache[$city];
+            }
+
+            $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
+
+            $result = $this->dbConnection->table('cities')
+                ->join('countries', 'countries.code', '=', 'cities.country')
+                ->where('cities.name', 'ILIKE', $city)
+                ->limit(1)
+                ->get(['countries.name']);
+
+            if (count($result) == 0) {
+                return null;
+            }
+
+            $res = $result->first();
+            $cache[$city] = $res['name'];
+
+            return $res['name'];
+        } catch (\Exception $exception) {
+            return null;
+        }
     }
 
     public function geoCode($address) {
@@ -220,24 +243,28 @@ final class Utils {
     /* NAME UTILITIES */
 
     private function checkList($name, $type) {
-        return false;
         try {
             $name   = Matcher::normalize_string($name);
-            $values = [
-                    'name' => $name,
-                    'len'  => ceil(strlen($name) / 2),
-                    'type' => $type
-                ];
-            $this->sql->exec('SELECT * FROM "known_names" WHERE "type" = :type AND ("name" = :name OR "soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len LIMIT 1', $values);
 
-            return $this->sql->count() > 0;
+            return $this->dbConnection->table('known_names')
+                ->where('type', '=', $type)
+                ->where(function($query) use ($name) {
+                    return $query->where('name', '=', $name)
+                        ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
+                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                })
+                ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
+                ->exists();
+
         } catch (\Exception $exception) {
             return false;
         }
     }
 
     public function isListedName($name) {
-        return false;
+
         static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
@@ -245,12 +272,18 @@ final class Utils {
                 return $cache[$name];
             }
 
-            $values = [
-                'name' => $name,
-                'len'  => ceil(strlen($name) / 2)
-            ];
-            $this->sql->exec('SELECT * FROM "known_names" WHERE ("name" = :name OR "soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len LIMIT 1', $values);
-            $cache[$name] = ($this->sql->count() > 0);
+            $result = $this->dbConnection->table('known_names')
+                ->where(function($query) use ($name) {
+                    return $query->where('name', '=', $name)
+                        ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
+                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                })
+                ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
+                ->exists();
+
+            $cache[$name] = $result;
 
             return $cache[$name];
         } catch (\Exception $exception) {
@@ -314,7 +347,6 @@ final class Utils {
     }
 
     public function isCommonName($name) {
-        return false;
         static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
@@ -322,12 +354,18 @@ final class Utils {
                 return $cache[$name];
             }
 
-            $values = [
-                'name' => $name,
-                'len'  => strlen($name) - 1
-            ];
-            $this->sql->exec('SELECT * FROM "names" WHERE ("soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len LIMIT 1', $values);
-            $cache[$name] = ($this->sql->count() > 0);
+            $result = $this->dbConnection->table('names')
+                ->where(function($query) use ($name) {
+                    return $query->where('name', '=', $name)
+                        ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
+                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                })
+                ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
+                ->exists();
+
+            $cache[$name] = ($result);
 
             return $cache[$name];
         } catch (\Exception $exception) {
@@ -336,7 +374,7 @@ final class Utils {
     }
 
     public function nameGender($name) {
-        return;
+
         static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
@@ -345,6 +383,7 @@ final class Utils {
             }
 
             $gender = new Gender();
+
             switch ($gender->get($name)) {
                 case Gender::IS_FEMALE:
                 case Gender::IS_MOSTLY_FEMALE:
@@ -355,9 +394,18 @@ final class Utils {
                     $cache[$name] = 'male';
                     break;
                 default:
-                    $this->sql->exec('SELECT COUNT(*) AS "total", "gender" FROM "names" WHERE LOWER("name") = :name GROUP BY "gender" ORDER BY COUNT(*) DESC LIMIT 1', ['name' => $name]);
-                    if ($this->sql->count() > 0) {
-                        $res = $this->sql->next();
+                    $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
+
+                    $result = $this->dbConnection->table('names')
+                        ->whereRaw('LOWER("name") = ?', [$name])
+                        ->groupBy(['gender'])
+                        ->orderByRaw('count(*) DESC')
+                        ->limit(1)
+                        ->selectRaw('COUNT(*) as total, gender')
+                        ->get(['*']);
+
+                    if (count($result) > 0) {
+                        $res = $result->first();
                         if ($res['gender'] === 'm') {
                             $cache[$name] = 'male';
                         } elseif ($res['gender'] === 'f') {
@@ -366,16 +414,26 @@ final class Utils {
 
                         return $cache[$name];
                     }
-                    $values = [
-                        'name' => $name,
-                        'len'  => (strlen($name) - 1)
-                    ];
-                    $this->sql->exec('SELECT COUNT(*) AS "total", "gender" FROM "names" WHERE ("soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len GROUP BY "gender" ORDER BY COUNT(*) DESC LIMIT 1', $values);
-                    if ($this->sql->count() == 0) {
+
+                    $result = $this->dbConnection->table('names')
+                        ->where(function($query) use ($name) {
+                            return $query->whereRaw('soundex = SOUNDEX(?)', [$name])
+                                ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                                ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                                ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                        })
+                        ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
+                        ->groupBy(['gender'])
+                        ->orderByRaw('COUNT(*) DESC')
+                        ->limit(1)
+                        ->selectRaw('COUNT(*) as total, gender')
+                        ->get(['*']);
+
+                    if (count($result) == 0) {
                         return;
                     }
 
-                    $res = $this->sql->next();
+                    $res = $result->first();
                     if ($res['gender'] === 'm') {
                         $cache[$name] = 'male';
                     } elseif ($res['gender'] === 'f') {
@@ -392,7 +450,6 @@ final class Utils {
     }
 
     public function nameCountry($name) {
-        return;
         static $cache = [];
         try {
             $name = Matcher::normalize_string($name);
@@ -400,16 +457,27 @@ final class Utils {
                 return $cache[$name];
             }
 
-            $values = [
-                'name' => $name,
-                'len'  => (strlen($name) - 1)
-            ];
-            $this->sql->exec('SELECT COUNT(*), "country" FROM "names" WHERE ("soundex" = SOUNDEX(:name) OR "metaphone" = METAPHONE(:name, 10) OR "dmetaphone1" = DMETAPHONE(:name) OR "dmetaphone2" = DMETAPHONE_ALT(:name)) AND LEVENSHTEIN("name", :name) < :len GROUP BY "country" ORDER BY COUNT(*) DESC LIMIT 1', $values);
-            if ($this->sql->count() == 0) {
+            $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
+
+            $result = $this->dbConnection->table('names')
+                ->where(function($query) use ($name) {
+                    return $query->whereRaw('soundex = SOUNDEX(?)', [$name])
+                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                })
+                ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
+                ->groupBy(['country'])
+                ->orderByRaw('COUNT(*) DESC')
+                ->limit(1)
+                ->selectRaw('COUNT(*) as total, country')
+                ->get(['*']);
+
+            if (count($result) == 0) {
                 return;
             }
 
-            $res          = $this->sql->next();
+            $res          = $result->first();
             $cache[$name] = $res['country'];
 
             return $res['country'];
