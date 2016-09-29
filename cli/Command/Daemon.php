@@ -131,6 +131,11 @@ class Daemon extends Command {
 
                 $rawBuffer = [];
                 foreach ($response['data'] as $item) {
+                    if (! isset($item['collection'], $item['data'])) {
+                        $logger->error(sprintf('Malformed API response: %s', json_encode($item)));
+                        continue;
+                    }
+
                     $rawBuffer[$item['collection']] = $item['data'];
                 }
 
@@ -148,6 +153,7 @@ class Daemon extends Command {
                         'value'     => $value
                     ];
                 }
+
                 $featuresEndpoint->upsertBulk($features);
 
                 // $sdk

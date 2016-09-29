@@ -103,6 +103,11 @@ class Runner extends Command {
 
         $rawBuffer = [];
         foreach ($response['data'] as $item) {
+            if (! isset($item['collection'], $item['data'])) {
+                $logger->error(sprintf('Malformed API response: %s', json_encode($item)));
+                continue;
+            }
+
             $rawBuffer[$item['collection']] = $item['data'];
         }
 
@@ -129,17 +134,17 @@ class Runner extends Command {
         $featuresEndpoint = $sdk
             ->Profile($input->getArgument('userName'))
             ->Features;
-        try {
-            foreach ($parsedBuffer as $field => $value) {
-                $featuresEndpoint->createOrUpdate(
-                    (int) $input->getArgument('sourceId'),
-                    $field,
-                    $value
-                );
-            }
-        } catch (\Exception $exception) {
-            echo $exception->getMessage(), PHP_EOL;
+
+        $features = [];
+        foreach ($parsedBuffer as $name => $value) {
+            $features[] = [
+                'source_id' => $jobData['sourceId'],
+                'name'      => $name,
+                'value'     => $value
+            ];
         }
+
+        $featuresEndpoint->upsertBulk($features);
 
         // $sdk
         //     ->profiles
