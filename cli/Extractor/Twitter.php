@@ -313,9 +313,14 @@ final class Twitter extends AbstractExtractor {
     }
 
     private function profile_age(&$data) {
-        $timestamp = strtotime($data['profile']['created_at']);
-        if ($timestamp === false)
+        if (empty($data['profile']['created_at'])) {
             return;
+        }
+
+        $timestamp = strtotime($data['profile']['created_at']);
+        if ($timestamp === false) {
+            return;
+        }
 
         return $timestamp;
     }
