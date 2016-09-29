@@ -146,7 +146,7 @@ class Daemon extends Command {
                         'value'     => $value
                     ];
                 }
-                //$featuresEndpoint->upsertBulk($features);
+                $featuresEndpoint->upsertBulk($features);
 
                 // $sdk
                 //     ->profiles
