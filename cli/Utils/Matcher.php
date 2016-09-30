@@ -134,7 +134,7 @@ final class Matcher {
             return 0.0;
         }
 
-        $soundex = [
+        /*$soundex = [
             'a' => soundex($a),
             'b' => soundex($b)
         ];
@@ -145,41 +145,41 @@ final class Matcher {
         $dmetaphone = [
             'a' => double_metaphone($a),
             'b' => double_metaphone($b)
-        ];
+        ];*/
         $levenshtein = [
             'plain'      => (1.0 - (levenshtein($a, $b) / max(1, strlen(max($a, $b))))),
-            'soundex'    => (1.0 - (levenshtein($soundex['a'], $soundex['b']) / max(1, strlen(max($soundex['a'], $soundex['b']))))),
-            'metaphone'  => (1.0 - (levenshtein($metaphone['a'], $metaphone['b']) / max(1, strlen(max($metaphone['a'], $metaphone['b']))))),
-            'dmetaphone' => max(
+            //'soundex'    => (1.0 - (levenshtein($soundex['a'], $soundex['b']) / max(1, strlen(max($soundex['a'], $soundex['b']))))),
+            //'metaphone'  => (1.0 - (levenshtein($metaphone['a'], $metaphone['b']) / max(1, strlen(max($metaphone['a'], $metaphone['b']))))),
+            /*'dmetaphone' => max(
                 (1.0 - (levenshtein($dmetaphone['a'][0], $dmetaphone['b'][0]) / max(1, strlen(max($dmetaphone['a'][0], $dmetaphone['b'][0]))))),
                 (1.0 - (levenshtein($dmetaphone['a'][1], $dmetaphone['b'][1]) / max(1, strlen(max($dmetaphone['a'][1], $dmetaphone['b'][1])))))
-            )
+            )*/
         ];
         array_walk($levenshtein, 'self::interval_fix');
         similar_text($a, $b, $sp1);
         similar_text($b, $a, $sp2);
-        similar_text($soundex['a'], $soundex['b'], $ss1);
+        /*similar_text($soundex['a'], $soundex['b'], $ss1);
         similar_text($soundex['b'], $soundex['a'], $ss2);
         similar_text($metaphone['a'], $metaphone['b'], $sm1);
         similar_text($metaphone['b'], $metaphone['a'], $sm2);
         similar_text($dmetaphone['a'][0], $dmetaphone['b'][0], $sd01);
         similar_text($dmetaphone['b'][0], $dmetaphone['a'][0], $sd02);
         similar_text($dmetaphone['a'][1], $dmetaphone['b'][1], $sd11);
-        similar_text($dmetaphone['b'][1], $dmetaphone['a'][1], $sd12);
+        similar_text($dmetaphone['b'][1], $dmetaphone['a'][1], $sd12);*/
         $similar = [
             'plain'      => (($sp1 + $sp2) / 2),
-            'soundex'    => (($ss1 + $ss2) / 2),
+            /*'soundex'    => (($ss1 + $ss2) / 2),
             'metaphone'  => (($sm1 + $sm2) / 2),
             'dmetaphone' => max(
                 (($sd01 + $sd02) / 2),
                 (($sd11 + $sd12) / 2)
-            )
+            )*/
         ];
         array_walk($similar, 'self::interval_fix');
         $result = min($levenshtein['plain'], $similar['plain']);
-        $result += min($levenshtein['soundex'], $similar['soundex']);
-        $result += min($levenshtein['metaphone'], $similar['metaphone']);
-        $result += min($levenshtein['dmetaphone'], $similar['dmetaphone']);
+        //$result += min($levenshtein['soundex'], $similar['soundex']);
+        //$result += min($levenshtein['metaphone'], $similar['metaphone']);
+        //$result += min($levenshtein['dmetaphone'], $similar['dmetaphone']);
 
         return round(($result / 4), 2);
     }
