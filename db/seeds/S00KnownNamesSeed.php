@@ -14538,7 +14538,7 @@ class S00KnownNamesSeed extends AbstractSeed {
                 'dmetaphone2' => 'TLRS'
             ],
             [
-                'name'        => 'Thomas O'Malley',
+                'name'        => 'Thomas O\'Malley',
                 'type'        => 'fantasy',
                 'soundex'     => 'T525',
                 'metaphone'   => '0MSML',
@@ -14546,7 +14546,7 @@ class S00KnownNamesSeed extends AbstractSeed {
                 'dmetaphone2' => 'TMSML'
             ],
             [
-                'name'        => 'Thumper's Mother',
+                'name'        => 'Thumper\'s Mother',
                 'type'        => 'fantasy',
                 'soundex'     => 'T516',
                 'metaphone'   => '0MPRSM0R',
