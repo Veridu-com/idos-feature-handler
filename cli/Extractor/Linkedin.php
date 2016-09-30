@@ -6,7 +6,7 @@ namespace Cli\Extractor;
 
 use Cli\Utils\Utils;
 
-final class LinkedIn extends AbstractExtractor {
+final class Linkedin extends AbstractExtractor {
     public function linkedinConnections($data) {
         //@FIXME
         return [];

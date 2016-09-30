@@ -7,7 +7,7 @@ namespace Cli\Extractor;
 use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
-final class PayPal extends AbstractExtractor {
+final class Paypal extends AbstractExtractor {
     private function verified_profile(&$data) {
         if (empty($data['profile']['verified_account']))
             return false;
