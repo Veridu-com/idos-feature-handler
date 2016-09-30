@@ -37,9 +37,9 @@ $appSettings = [
             // ],
             'host'      => 'localhost',
             'port'      => 5432,
-            'database'  => 'veridu-idos-api',
-            'username'  => 'veridu',
-            'password'  => 'veridu',
+            'database'  => 'idos-feature',
+            'username'  => 'idos-feature',
+            'password'  => 'idos-feature',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
@@ -48,5 +48,5 @@ $appSettings = [
                 \PDO::ATTR_PERSISTENT => true
             ]
         ]
-    ],
+    ]
 ];
