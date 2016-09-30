@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Cli\Utils;
 
-use Gender\Gender;
+// use Gender\Gender;
 use HumanNameParser\Name;
 use HumanNameParser\Parser as NameParser;
 use libphonenumber\PhoneNumberUtil;
@@ -374,79 +374,79 @@ final class Utils {
     }
 
     public function nameGender($name) {
+        return;
+        // static $cache = [];
+        // try {
+        //     $name = Matcher::normalize_string($name);
+        //     if (isset($cache[$name])) {
+        //         return $cache[$name];
+        //     }
 
-        static $cache = [];
-        try {
-            $name = Matcher::normalize_string($name);
-            if (isset($cache[$name])) {
-                return $cache[$name];
-            }
+        //     $gender = new Gender();
 
-            $gender = new Gender();
+        //     switch ($gender->get($name)) {
+        //         case Gender::IS_FEMALE:
+        //         case Gender::IS_MOSTLY_FEMALE:
+        //             $cache[$name] = 'female';
+        //             break;
+        //         case Gender::IS_MALE:
+        //         case Gender::IS_MOSTLY_MALE:
+        //             $cache[$name] = 'male';
+        //             break;
+        //         default:
+        //             $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
 
-            switch ($gender->get($name)) {
-                case Gender::IS_FEMALE:
-                case Gender::IS_MOSTLY_FEMALE:
-                    $cache[$name] = 'female';
-                    break;
-                case Gender::IS_MALE:
-                case Gender::IS_MOSTLY_MALE:
-                    $cache[$name] = 'male';
-                    break;
-                default:
-                    $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
+        //             $result = $this->dbConnection->table('names')
+        //                 ->whereRaw('LOWER("name") = ?', [$name])
+        //                 ->groupBy(['gender'])
+        //                 ->orderByRaw('count(*) DESC')
+        //                 ->limit(1)
+        //                 ->selectRaw('COUNT(*) as total, gender')
+        //                 ->get(['*']);
 
-                    $result = $this->dbConnection->table('names')
-                        ->whereRaw('LOWER("name") = ?', [$name])
-                        ->groupBy(['gender'])
-                        ->orderByRaw('count(*) DESC')
-                        ->limit(1)
-                        ->selectRaw('COUNT(*) as total, gender')
-                        ->get(['*']);
+        //             if (count($result) > 0) {
+        //                 $res = $result->first();
+        //                 if ($res['gender'] === 'm') {
+        //                     $cache[$name] = 'male';
+        //                 } elseif ($res['gender'] === 'f') {
+        //                     $cache[$name] = 'female';
+        //                 }
 
-                    if (count($result) > 0) {
-                        $res = $result->first();
-                        if ($res['gender'] === 'm') {
-                            $cache[$name] = 'male';
-                        } elseif ($res['gender'] === 'f') {
-                            $cache[$name] = 'female';
-                        }
+        //                 return $cache[$name];
+        //             }
 
-                        return $cache[$name];
-                    }
+        //             $result = $this->dbConnection->table('names')
+        //                 ->where(function($query) use ($name) {
+        //                     return $query->whereRaw('soundex = SOUNDEX(?)', [$name])
+        //                         ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+        //                         ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+        //                         ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+        //                 })
+        //                 ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
+        //                 ->groupBy(['gender'])
+        //                 ->orderByRaw('COUNT(*) DESC')
+        //                 ->limit(1)
+        //                 ->selectRaw('COUNT(*) as total, gender')
+        //                 ->get(['*']);
 
-                    $result = $this->dbConnection->table('names')
-                        ->where(function($query) use ($name) {
-                            return $query->whereRaw('soundex = SOUNDEX(?)', [$name])
-                                ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
-                                ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
-                                ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
-                        })
-                        ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
-                        ->groupBy(['gender'])
-                        ->orderByRaw('COUNT(*) DESC')
-                        ->limit(1)
-                        ->selectRaw('COUNT(*) as total, gender')
-                        ->get(['*']);
+        //             if (count($result) == 0) {
+        //                 return;
+        //             }
 
-                    if (count($result) == 0) {
-                        return;
-                    }
+        //             $res = $result->first();
+        //             if ($res['gender'] === 'm') {
+        //                 $cache[$name] = 'male';
+        //             } elseif ($res['gender'] === 'f') {
+        //                 $cache[$name] = 'female';
+        //             } else {
+        //                 return;
+        //             }
+        //     }
 
-                    $res = $result->first();
-                    if ($res['gender'] === 'm') {
-                        $cache[$name] = 'male';
-                    } elseif ($res['gender'] === 'f') {
-                        $cache[$name] = 'female';
-                    } else {
-                        return;
-                    }
-            }
-
-            return $cache[$name];
-        } catch (\Exception $exception) {
-            return;
-        }
+        //     return $cache[$name];
+        // } catch (\Exception $exception) {
+        //     return;
+        // }
     }
 
     public function nameCountry($name) {
