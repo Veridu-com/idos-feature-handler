@@ -80,11 +80,12 @@ final class Spotify extends AbstractExtractor {
             return;
         $count = [];
         foreach($data['tracks'] as $tracks)
-            foreach ($tracks['track']['artists'] as $artist) {
-                if (! isset($count[$artist['name']]))
-                    $count[$artist['name']] = 0;
-                $count[$artist['name']]++;
-            }
+        foreach ($tracks['track']['artists'] as $artist) {
+            if (! isset($count[$artist['name']]))
+            $count[$artist['name']] = 0;
+            $count[$artist['name']]++;
+        }
+
         arsort($count);
 
         return array_keys($count);
@@ -544,5 +545,4 @@ final class Spotify extends AbstractExtractor {
 
         return $facts;
     }
-
 }

@@ -170,6 +170,7 @@ final class Twitter extends AbstractExtractor {
                 $statuses[date('Y', $ts)][date('n', $ts)] = 0;
             $statuses[date('Y', $ts)][date('n', $ts)]++;
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -183,8 +184,10 @@ final class Twitter extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($statuses);
 
         return $statuses;
@@ -207,6 +210,7 @@ final class Twitter extends AbstractExtractor {
                 $statuses[date('Y', $ts)][date('n', $ts)] += $status['retweet_count'];
             }
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -220,8 +224,10 @@ final class Twitter extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($statuses);
 
         return $statuses;
@@ -244,6 +250,7 @@ final class Twitter extends AbstractExtractor {
                 $statuses[date('Y', $ts)][date('n', $ts)] += $status['favorite_count'];
             }
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -257,8 +264,10 @@ final class Twitter extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($statuses);
 
         return $statuses;
@@ -422,5 +431,4 @@ final class Twitter extends AbstractExtractor {
 
         return $facts;
     }
-
 }

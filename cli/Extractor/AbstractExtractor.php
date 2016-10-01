@@ -6,5 +6,4 @@ namespace Cli\Extractor;
 
 abstract class AbstractExtractor {
     abstract public function analyze(array $data) : array;
-
 }

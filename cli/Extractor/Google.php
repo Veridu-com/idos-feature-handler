@@ -94,12 +94,14 @@ final class Google extends AbstractExtractor {
                 ];
 
         if (count($data['_education']))
-            usort($data['_education'], function ($a, $b) {
-                if ($b['start_year'] == $a['start_year'])
+            usort(
+                $data['_education'], function ($a, $b) {
+                    if ($b['start_year'] == $a['start_year'])
                     return $b['end_year'] - $a['end_year'];
 
-                return $b['start_year'] - $a['start_year'];
-            });
+                    return $b['start_year'] - $a['start_year'];
+                }
+            );
 
         return $data['_education'];
     }
@@ -122,21 +124,23 @@ final class Google extends AbstractExtractor {
                 ];
 
         if (count($data['_work']))
-            usort($data['_work'], function ($a, $b) {
-                if ((empty($a['end_date'])) && (empty($b['end_date'])))
+            usort(
+                $data['_work'], function ($a, $b) {
+                    if ((empty($a['end_date'])) && (empty($b['end_date'])))
                     return $b['start_date'] - $a['start_date'];
 
-                if (empty($a['end_date']))
+                    if (empty($a['end_date']))
                     return -1;
 
-                if (empty($b['end_date']))
+                    if (empty($b['end_date']))
                     return 1;
 
-                if ($a['start_date'] == $b['start_date'])
+                    if ($a['start_date'] == $b['start_date'])
                     return $b['end_date'] - $a['end_date'];
 
-                return $b['start_date'] - $a['start_date'];
-            });
+                    return $b['start_date'] - $a['start_date'];
+                }
+            );
 
         return $data['_work'];
     }
@@ -362,6 +366,7 @@ final class Google extends AbstractExtractor {
                 $activities[date('Y', $ts)][date('n', $ts)] = 0;
             $activities[date('Y', $ts)][date('n', $ts)]++;
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -375,8 +380,10 @@ final class Google extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($activities);
 
         return $activities;
@@ -402,6 +409,7 @@ final class Google extends AbstractExtractor {
                 $replies[date('Y', $ts)][date('n', $ts)] += $activity['object']['replies']['totalItems'];
             }
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -415,8 +423,10 @@ final class Google extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($replies);
 
         return $replies;
@@ -442,6 +452,7 @@ final class Google extends AbstractExtractor {
                 $plusoners[date('Y', $ts)][date('n', $ts)] += $activity['object']['plusoners']['totalItems'];
             }
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -455,8 +466,10 @@ final class Google extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($plusoners);
 
         return $plusoners;
@@ -482,6 +495,7 @@ final class Google extends AbstractExtractor {
                 $resharers[date('Y', $ts)][date('n', $ts)] += $activity['object']['resharers']['totalItems'];
             }
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -495,8 +509,10 @@ final class Google extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($resharers);
 
         return $resharers;
@@ -538,6 +554,7 @@ final class Google extends AbstractExtractor {
 
             return trim($city[0]);
         }
+
         $city = explode(',', $data['plus']['placesLived'][$i]['value']);
 
         return trim($city[0]);
@@ -718,12 +735,13 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'])) &&
-                    ($organization['type'] === 'school') &&
-                    ($organization['name'] === $educations[0]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type']))
+                && ($organization['type'] === 'school')
+                && ($organization['name'] === $educations[0]['name'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -744,12 +762,13 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'])) &&
-                    ($organization['type'] === 'school') &&
-                    ($organization['name'] === $educations[1]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type']))
+                && ($organization['type'] === 'school')
+                && ($organization['name'] === $educations[1]['name'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -769,12 +788,13 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'])) &&
-                    ($organization['type'] === 'school') &&
-                    ($organization['name'] === $educations[2]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type']))
+                && ($organization['type'] === 'school')
+                && ($organization['name'] === $educations[2]['name'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -795,13 +815,14 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'], $organization['endDate'])) &&
-                    ($organization['type'] === 'school') &&
-                    ($organization['name'] === $educations[0]['name']) &&
-                    ($organization['endDate'] == $educations[0]['end_year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type'], $organization['endDate']))
+                && ($organization['type'] === 'school')
+                && ($organization['name'] === $educations[0]['name'])
+                && ($organization['endDate'] == $educations[0]['end_year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -821,13 +842,14 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'], $organization['endDate'])) &&
-                    ($organization['type'] === 'school') &&
-                    ($organization['name'] === $educations[1]['name']) &&
-                    ($organization['endDate'] == $educations[1]['year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type'], $organization['endDate']))
+                && ($organization['type'] === 'school')
+                && ($organization['name'] === $educations[1]['name'])
+                && ($organization['endDate'] == $educations[1]['year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -848,13 +870,14 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'], $organization['endDate'])) &&
-                    ($organization['type'] === 'school') &&
-                    ($organization['name'] === $educations[2]['name']) &&
-                    ($organization['endDate'] == $educations[2]['year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type'], $organization['endDate']))
+                && ($organization['type'] === 'school')
+                && ($organization['name'] === $educations[2]['name'])
+                && ($organization['endDate'] == $educations[2]['year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -875,12 +898,13 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'])) &&
-                    ($organization['type'] === 'work') &&
-                    ($organization['name'] === $educations[0]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type']))
+                && ($organization['type'] === 'work')
+                && ($organization['name'] === $educations[0]['name'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -901,12 +925,13 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'])) &&
-                    ($organization['type'] === 'work') &&
-                    ($organization['name'] === $educations[1]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type']))
+                && ($organization['type'] === 'work')
+                && ($organization['name'] === $educations[1]['name'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -927,12 +952,13 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['name'], $organization['type'])) &&
-                    ($organization['type'] === 'work') &&
-                    ($organization['name'] === $educations[2]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['name'], $organization['type']))
+                && ($organization['type'] === 'work')
+                && ($organization['name'] === $educations[2]['name'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -950,12 +976,13 @@ final class Google extends AbstractExtractor {
             if (empty($circle['organizations']))
                 continue;
             foreach ($circle['organizations'] as $organization)
-                if ((isset($organization['type'], $organization['endDate'])) &&
-                    ($organization['type'] === 'school') &&
-                    ($organization['endDate'] >= $year)) {
-                    $return++;
-                    break;
-                }
+            if ((isset($organization['type'], $organization['endDate']))
+                && ($organization['type'] === 'school')
+                && ($organization['endDate'] >= $year)
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1275,5 +1302,4 @@ final class Google extends AbstractExtractor {
 
         return $facts;
     }
-
 }

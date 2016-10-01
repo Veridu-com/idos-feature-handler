@@ -78,7 +78,6 @@ final class Linkedin extends AbstractExtractor {
                     $location['country'][$country]++;
                 }
             }
-
         }
 
         arsort($location['city']);
@@ -97,43 +96,45 @@ final class Linkedin extends AbstractExtractor {
 
         $data['_education'] = [];
         foreach ($data['profile']['educations']['values'] as $education)
-            if (isset($education['schoolName'], $education['startDate']['year'], $education['endDate']['year'])) {
-                if (isset($education['degree']))
-                    switch (strtolower($education['degree'])) {
-                        case 'high school':
-                            $type = 'High School';
-                            break;
-                        case 'associate\'s degree':
-                        case 'bachelor\'s degree':
-                        case 'master\'s degree':
-                        case 'master of business administration (m.b.a.)':
-                        case 'juris doctor (j.d.)':
-                        case 'doctor of medicine (m.d.)':
-                        case 'doctor of philosophy (ph.d.)':
-                        case 'engineer\'s degree':
-                            $type = 'College';
-                            break;
-                        default:
-                            $type = 'Other';
-                    }
-                else
-                    $type             = null;
-                $data['_education'][] = [
-                    'name'       => $education['schoolName'],
-                    'start_year' => $education['startDate']['year'],
-                    'end_year'   => $education['endDate']['year'],
-                    'type'       => $type,
-                    'course'     => (isset($education['fieldOfStudy']) ? $education['fieldOfStudy'] : null)
-                ];
+        if (isset($education['schoolName'], $education['startDate']['year'], $education['endDate']['year'])) {
+            if (isset($education['degree']))
+            switch (strtolower($education['degree'])) {
+                case 'high school':
+                    $type = 'High School';
+                    break;
+                case 'associate\'s degree':
+                case 'bachelor\'s degree':
+                case 'master\'s degree':
+                case 'master of business administration (m.b.a.)':
+                case 'juris doctor (j.d.)':
+                case 'doctor of medicine (m.d.)':
+                case 'doctor of philosophy (ph.d.)':
+                case 'engineer\'s degree':
+                    $type = 'College';
+                    break;
+                default:
+                    $type = 'Other';
             }
+            else
+            $type                 = null;
+            $data['_education'][] = [
+            'name'       => $education['schoolName'],
+            'start_year' => $education['startDate']['year'],
+            'end_year'   => $education['endDate']['year'],
+            'type'       => $type,
+            'course'     => (isset($education['fieldOfStudy']) ? $education['fieldOfStudy'] : null)
+            ];
+        }
 
         if (count($data['_education']))
-            usort($data['_education'], function ($a, $b) {
-                if ($b['start_year'] == $a['start_year'])
+            usort(
+                $data['_education'], function ($a, $b) {
+                    if ($b['start_year'] == $a['start_year'])
                     return $b['end_year'] - $a['end_year'];
 
-                return $b['start_year'] - $a['start_year'];
-            });
+                    return $b['start_year'] - $a['start_year'];
+                }
+            );
 
         return $data['_education'];
     }
@@ -143,12 +144,12 @@ final class Linkedin extends AbstractExtractor {
             return;
 
         foreach ($data['companies'] as $company)
-            if ((isset($company['id'])) && ($company['id'] == $id)) {
-                if (isset($company['locations']['values'][0]['address']['city']))
-                    return $company['locations']['values'][0]['address']['city'];
+        if ((isset($company['id'])) && ($company['id'] == $id)) {
+            if (isset($company['locations']['values'][0]['address']['city']))
+            return $company['locations']['values'][0]['address']['city'];
 
-                return;
-            }
+            return;
+        }
     }
 
     private function _work(&$data) {
@@ -162,59 +163,61 @@ final class Linkedin extends AbstractExtractor {
         $seen          = [];
         if (! empty($data['profile']['positions']['values']))
             foreach ($data['profile']['positions']['values'] as $work)
-                if (isset($work['company']['name'], $work['title'], $work['startDate']['year'])) {
-                    $data['_work'][] = [
-                        'employer'   => $work['company']['name'],
-                        'position'   => $work['title'],
-                        'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
-                        'start_date' => $work['startDate']['year'],
-                        'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
-                    ];
-                    $seen[] = $work['id'];
-                }
+        if (isset($work['company']['name'], $work['title'], $work['startDate']['year'])) {
+            $data['_work'][] = [
+            'employer'   => $work['company']['name'],
+            'position'   => $work['title'],
+            'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
+            'start_date' => $work['startDate']['year'],
+            'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
+            ];
+            $seen[] = $work['id'];
+        }
 
         if (! empty($data['profile']['threeCurrentPositions']['values']))
             foreach ($data['profile']['threeCurrentPositions']['values'] as $work)
-                if ((isset($work['company']['name'], $work['title'], $work['startDate']['year'])) && (! in_array($work['id'], $seen))) {
-                    $data['_work'][] = [
-                        'employer'   => $work['company']['name'],
-                        'position'   => $work['title'],
-                        'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
-                        'start_date' => $work['startDate']['year'],
-                        'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
-                    ];
-                    $seen[] = $work['id'];
-                }
+        if ((isset($work['company']['name'], $work['title'], $work['startDate']['year'])) && (! in_array($work['id'], $seen))) {
+            $data['_work'][] = [
+            'employer'   => $work['company']['name'],
+            'position'   => $work['title'],
+            'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
+            'start_date' => $work['startDate']['year'],
+            'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
+            ];
+            $seen[] = $work['id'];
+        }
 
         if (! empty($data['profile']['threePastPositions']['values']))
             foreach ($data['profile']['threePastPositions']['values'] as $work)
-                if ((isset($work['company']['name'], $work['title'], $work['startDate']['year'])) && (! in_array($work['id'], $seen))) {
-                    $data['_work'][] = [
-                        'employer'   => $work['company']['name'],
-                        'position'   => $work['title'],
-                        'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
-                        'start_date' => $work['startDate']['year'],
-                        'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
-                    ];
-                    $seen[] = $work['id'];
-                }
+        if ((isset($work['company']['name'], $work['title'], $work['startDate']['year'])) && (! in_array($work['id'], $seen))) {
+            $data['_work'][] = [
+            'employer'   => $work['company']['name'],
+            'position'   => $work['title'],
+            'location'   => (isset($work['company']['id']) ? $this->_workLocation($work['company']['id'], $data) : null),
+            'start_date' => $work['startDate']['year'],
+            'end_date'   => (empty($work['endDate']['year']) ? null : $work['endDate']['year'])
+            ];
+            $seen[] = $work['id'];
+        }
 
         if (count($data['_work']))
-            usort($data['_work'], function ($a, $b) {
-                if ((empty($a['end_date'])) && (empty($b['end_date'])))
+            usort(
+                $data['_work'], function ($a, $b) {
+                    if ((empty($a['end_date'])) && (empty($b['end_date'])))
                     return $b['start_date'] - $a['start_date'];
 
-                if (empty($a['end_date']))
+                    if (empty($a['end_date']))
                     return -1;
 
-                if (empty($b['end_date']))
+                    if (empty($b['end_date']))
                     return 1;
 
-                if ($a['start_date'] == $b['start_date'])
+                    if ($a['start_date'] == $b['start_date'])
                     return $b['end_date'] - $a['end_date'];
 
-                return $b['start_date'] - $a['start_date'];
-            });
+                    return $b['start_date'] - $a['start_date'];
+                }
+            );
 
         return $data['_work'];
     }
@@ -824,10 +827,10 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['educations']['values']))
                 continue;
             foreach ($connection['educations']['values'] as $education)
-                if ((isset($education['schoolName'])) && ($education['schoolName'] === $educations[0]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['schoolName'])) && ($education['schoolName'] === $educations[0]['name'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -850,10 +853,10 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['educations']['values']))
                 continue;
             foreach ($connection['educations']['values'] as $education)
-                if ((isset($education['schoolName'])) && ($education['schoolName'] === $educations[1]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['schoolName'])) && ($education['schoolName'] === $educations[1]['name'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -876,10 +879,10 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['educations']['values']))
                 continue;
             foreach ($connection['educations']['values'] as $education)
-                if ((isset($education['schoolName'])) && ($education['schoolName'] === $educations[2]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['schoolName'])) && ($education['schoolName'] === $educations[2]['name'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -902,12 +905,13 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['educations']['values']))
                 continue;
             foreach ($connection['educations']['values'] as $education)
-                if ((isset($education['schoolName'], $education['endDate']['year'])) &&
-                    ($education['schoolName'] === $educations[0]['name']) &&
-                    ($education['endDate']['year'] == $educations[0]['end_year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['schoolName'], $education['endDate']['year']))
+                && ($education['schoolName'] === $educations[0]['name'])
+                && ($education['endDate']['year'] == $educations[0]['end_year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -930,12 +934,13 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['educations']['values']))
                 continue;
             foreach ($connection['educations']['values'] as $education)
-                if ((isset($education['schoolName'], $education['endDate']['year'])) &&
-                    ($education['schoolName'] === $educations[1]['name']) &&
-                    ($education['endDate']['year'] == $educations[1]['end_year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['schoolName'], $education['endDate']['year']))
+                && ($education['schoolName'] === $educations[1]['name'])
+                && ($education['endDate']['year'] == $educations[1]['end_year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -958,12 +963,13 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['educations']['values']))
                 continue;
             foreach ($connection['educations']['values'] as $education)
-                if ((isset($education['schoolName'], $education['endDate']['year'])) &&
-                    ($education['schoolName'] === $educations[2]['name']) &&
-                    ($education['endDate']['year'] == $educations[2]['end_year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['schoolName'], $education['endDate']['year']))
+                && ($education['schoolName'] === $educations[2]['name'])
+                && ($education['endDate']['year'] == $educations[2]['end_year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -986,10 +992,10 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['positions']['values']))
                 continue;
             foreach ($connection['positions']['values'] as $position)
-                if ((isset($position['company']['name'])) && ($position['company']['name'] === $educations[0]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($position['company']['name'])) && ($position['company']['name'] === $educations[0]['name'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1012,10 +1018,10 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['positions']['values']))
                 continue;
             foreach ($connection['positions']['values'] as $position)
-                if ((isset($position['company']['name'])) && ($position['company']['name'] === $educations[1]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($position['company']['name'])) && ($position['company']['name'] === $educations[1]['name'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1038,10 +1044,10 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['positions']['values']))
                 continue;
             foreach ($connection['positions']['values'] as $position)
-                if ((isset($position['company']['name'])) && ($position['company']['name'] === $educations[2]['name'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($position['company']['name'])) && ($position['company']['name'] === $educations[2]['name'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1057,10 +1063,10 @@ final class Linkedin extends AbstractExtractor {
             if (empty($connection['educations']['values']))
                 continue;
             foreach ($connection['educations']['values'] as $education)
-                if ((isset($education['endDate']['year'])) && ($education['endDate']['year'] >= date('Y'))) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['endDate']['year'])) && ($education['endDate']['year'] >= date('Y'))) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1432,5 +1438,4 @@ final class Linkedin extends AbstractExtractor {
 
         return $facts;
     }
-
 }

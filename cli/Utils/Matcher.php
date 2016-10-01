@@ -19,21 +19,23 @@ final class Matcher {
         $string = self::normalize_string($string);
         $string = self::remove_stopwords($string);
 
-        return trim(preg_replace(
-            [
+        return trim(
+            preg_replace(
+                [
                 '/\./',
                 '/,/',
                 '/ - /',
                 '/ +/'
-            ],
-            [
+                ],
+                [
                 '',
                 '',
                 ' ',
                 ' '
-            ],
-            $string
-        ));
+                ],
+                $string
+            )
+        );
     }
 
     public static function normalize_string($string) {
@@ -357,5 +359,4 @@ final class Matcher {
 
         return round(($matchScore / 2), 2);
     }
-
 }

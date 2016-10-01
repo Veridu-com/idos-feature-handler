@@ -2250,14 +2250,6 @@ class S00KnownNamesSeed extends AbstractSeed {
                 'dmetaphone2' => 'RPRTTNJR'
             ],
             [
-                'name'        => 'Robert Downey Jr',
-                'type'        => 'celebrity',
-                'soundex'     => 'R163',
-                'metaphone'   => 'RBRTTNJR',
-                'dmetaphone1' => 'RPRTTNJR',
-                'dmetaphone2' => 'RPRTTNJR'
-            ],
-            [
                 'name'        => 'Robert Pattinson',
                 'type'        => 'celebrity',
                 'soundex'     => 'R163',

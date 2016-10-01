@@ -16,10 +16,10 @@ final class Yahoo extends AbstractExtractor {
             return;
 
         foreach ($data['profile']['addresses'] as $address)
-            if ($address['type'] === 'HOME') {
-                $data['_home_address'] = $address;
-                break;
-            }
+        if ($address['type'] === 'HOME') {
+            $data['_home_address'] = $address;
+            break;
+        }
 
         return $data['_home_address'];
     }
@@ -46,12 +46,14 @@ final class Yahoo extends AbstractExtractor {
         }
 
         if (count($data['_education']))
-            usort($data['_education'], function ($a, $b) {
-                if ($b['start_date'] == $a['start_date'])
+            usort(
+                $data['_education'], function ($a, $b) {
+                    if ($b['start_date'] == $a['start_date'])
                     return $b['end_date'] - $a['end_date'];
 
-                return $b['start_date'] - $a['start_date'];
-            });
+                    return $b['start_date'] - $a['start_date'];
+                }
+            );
 
         return $data['_education'];
     }
@@ -80,12 +82,14 @@ final class Yahoo extends AbstractExtractor {
         }
 
         if (count($data['_work']))
-            usort($data['_work'], function ($a, $b) {
-                if ($b['start_date'] == $a['start_date'])
+            usort(
+                $data['_work'], function ($a, $b) {
+                    if ($b['start_date'] == $a['start_date'])
                     return $b['end_date'] - $a['end_date'];
 
-                return $b['start_date'] - $a['start_date'];
-            });
+                    return $b['start_date'] - $a['start_date'];
+                }
+            );
 
         return $data['_work'];
     }
@@ -509,5 +513,4 @@ final class Yahoo extends AbstractExtractor {
 
         return $facts;
     }
-
 }

@@ -267,5 +267,4 @@ final class Paypal extends AbstractExtractor {
 
         return $facts;
     }
-
 }

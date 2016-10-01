@@ -201,5 +201,4 @@ final class Amazon extends AbstractExtractor {
 
         return $facts;
     }
-
 }
