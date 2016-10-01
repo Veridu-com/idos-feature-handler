@@ -180,13 +180,13 @@ final class Instagram extends AbstractExtractor {
     private function profile_age(&$data) {
         $age = null;
         if (! empty($data['media']))
-            foreach ($data['media']['data'] as $item) {
-                $ts = intval($item['created_time']);
-                if ($ts === false)
-                    continue;
-                if ((is_null($age)) || ($ts < $age))
-                    $age = $ts;
-            }
+        foreach ($data['media']['data'] as $item) {
+            $ts = intval($item['created_time']);
+            if ($ts === false)
+            continue;
+            if ((is_null($age)) || ($ts < $age))
+            $age = $ts;
+        }
 
         return $age;
     }
@@ -206,6 +206,7 @@ final class Instagram extends AbstractExtractor {
                 $medias[date('Y', $ts)][date('n', $ts)] = 0;
             $medias[date('Y', $ts)][date('n', $ts)]++;
         }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -219,14 +220,16 @@ final class Instagram extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($medias);
 
         return $medias;
     }
 
-public function analyze(array $data) : array {
+    public function analyze(array $data) : array {
         $facts                        = [];
         $facts['isActive']            = ! empty($data);
         $facts['profilePicture']      = $this->profile_picture($data);
@@ -255,5 +258,4 @@ public function analyze(array $data) : array {
 
         return $facts;
     }
-
 }

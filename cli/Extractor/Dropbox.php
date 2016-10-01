@@ -25,15 +25,15 @@ final class Dropbox extends AbstractExtractor {
         $data['_files'] = [];
 
         foreach ($data['contents'] as $content)
-            foreach ($content['contents'] as $item) {
-                if ($item['is_dir'])
-                    continue;
-                $data['_files'][] = [
-                    'path'     => $item['path'],
-                    'bytes'    => $item['bytes'],
-                    'modified' => $item['modified']
-                ];
-            }
+        foreach ($content['contents'] as $item) {
+            if ($item['is_dir'])
+            continue;
+            $data['_files'][] = [
+            'path'     => $item['path'],
+            'bytes'    => $item['bytes'],
+            'modified' => $item['modified']
+            ];
+        }
 
         return $data['_files'];
     }

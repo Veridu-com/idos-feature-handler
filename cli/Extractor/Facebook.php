@@ -81,7 +81,7 @@ final class Facebook extends AbstractExtractor {
     private function _age_distribution(array &$data) {
         if (isset($data['_age_distribution']))
             return $data['_age_distribution'];
-        $years   = [];
+        $years = [];
 
         if (empty($data['friends'])) {
             return $years;
@@ -97,6 +97,7 @@ final class Facebook extends AbstractExtractor {
                 $years[$matches[2]]++;
             }
         }
+
         arsort($years);
         $data['_age_distribution'] = $years;
 
@@ -143,7 +144,6 @@ final class Facebook extends AbstractExtractor {
                     $location['country'][$country] = 0;
                 $location['country'][$country]++;
             }
-
         }
 
         arsort($location['city']);
@@ -163,20 +163,22 @@ final class Facebook extends AbstractExtractor {
         $data['_education'] = [];
 
         foreach ($data['profile']['education'] as $education)
-            if (isset($education['school']['id'], $education['school']['name'], $education['year']['name'])) {
-                $data['_education'][] = [
-                    'id'     => $education['school']['id'],
-                    'name'   => $education['school']['name'],
-                    'year'   => $education['year']['name'],
-                    'type'   => (isset($education['type']) ? $education['type'] : null),
-                    'course' => (isset($education['concentration'][0]['name']) ? $education['concentration'][0]['name'] : null)
-                ];
-            }
+        if (isset($education['school']['id'], $education['school']['name'], $education['year']['name'])) {
+            $data['_education'][] = [
+            'id'     => $education['school']['id'],
+            'name'   => $education['school']['name'],
+            'year'   => $education['year']['name'],
+            'type'   => (isset($education['type']) ? $education['type'] : null),
+            'course' => (isset($education['concentration'][0]['name']) ? $education['concentration'][0]['name'] : null)
+            ];
+        }
 
         if (count($data['_education']))
-            usort($data['_education'], function ($a, $b) {
-                return $b['year'] - $a['year'];
-            });
+            usort(
+                $data['_education'], function ($a, $b) {
+                    return $b['year'] - $a['year'];
+                }
+            );
 
         return $data['_education'];
     }
@@ -191,33 +193,35 @@ final class Facebook extends AbstractExtractor {
         $data['_work'] = [];
 
         foreach ($data['profile']['work'] as $work)
-            if (isset($work['employer']['name'], $work['position']['name'], $work['start_date'])) {
-                $data['_work'][] = [
-                    'employer'     => $work['employer']['name'],
-                    'position'     => $work['position']['name'],
-                    'location'     => (empty($work['location']['name']) ? null : $work['location']['name']),
-                    'has_projects' => ! empty($work['projects']),
-                    'start_date'   => $work['start_date'],
-                    'end_date'     => (empty($work['end_date']) ? null : $work['end_date'])
-                ];
-            }
+        if (isset($work['employer']['name'], $work['position']['name'], $work['start_date'])) {
+            $data['_work'][] = [
+            'employer'     => $work['employer']['name'],
+            'position'     => $work['position']['name'],
+            'location'     => (empty($work['location']['name']) ? null : $work['location']['name']),
+            'has_projects' => ! empty($work['projects']),
+            'start_date'   => $work['start_date'],
+            'end_date'     => (empty($work['end_date']) ? null : $work['end_date'])
+            ];
+        }
 
         if (count($data['_work']))
-            usort($data['_work'], function ($a, $b) {
-                if ((empty($a['end_date'])) && (empty($b['end_date'])))
+            usort(
+                $data['_work'], function ($a, $b) {
+                    if ((empty($a['end_date'])) && (empty($b['end_date'])))
                     return $b['start_date'] - $a['start_date'];
 
-                if (empty($a['end_date']))
+                    if (empty($a['end_date']))
                     return -1;
 
-                if (empty($b['end_date']))
+                    if (empty($b['end_date']))
                     return 1;
 
-                if ($a['start_date'] == $b['start_date'])
+                    if ($a['start_date'] == $b['start_date'])
                     return $b['end_date'] - $a['end_date'];
 
-                return $b['start_date'] - $a['start_date'];
-            });
+                    return $b['start_date'] - $a['start_date'];
+                }
+            );
 
         return $data['_work'];
     }
@@ -472,10 +476,10 @@ final class Facebook extends AbstractExtractor {
             return 0;
         }
 
-        $friends = $data['friends'];
+        $friends  = $data['friends'];
         $lastName = strtolower($lastName);
-        $utils   = Utils::getInstance();
-        $count   = 0;
+        $utils    = Utils::getInstance();
+        $count    = 0;
         foreach ($friends as $friend) {
             if (empty($friend['last_name'])) {
                 continue;
@@ -620,6 +624,7 @@ final class Facebook extends AbstractExtractor {
                 $activity[$item['place']['location']['city']]++;
             }
         }
+
         if (empty($activity))
             return;
         arsort($activity);
@@ -648,6 +653,7 @@ final class Facebook extends AbstractExtractor {
                 $activity[$item['place']['location']['country']]++;
             }
         }
+
         if (empty($activity))
             return;
         arsort($activity);
@@ -754,19 +760,20 @@ final class Facebook extends AbstractExtractor {
         $posts = [];
         foreach (['links', 'photos', 'posts', 'statuses'] as $property)
             if (! empty($data[$property]))
-                foreach ($data[$property] as $item) {
-                    if (empty($item['created_time']))
-                        $ts = strtotime($item['updated_time']);
-                    else
-                        $ts = strtotime($item['created_time']);
-                    if ($ts === false)
-                        continue;
-                    if (! isset($posts[date('Y', $ts)]))
-                        $posts[date('Y', $ts)] = [];
-                    if (! isset($posts[date('Y', $ts)][date('n', $ts)]))
-                        $posts[date('Y', $ts)][date('n', $ts)] = 0;
-                    $posts[date('Y', $ts)][date('n', $ts)]++;
-                }
+        foreach ($data[$property] as $item) {
+            if (empty($item['created_time']))
+            $ts = strtotime($item['updated_time']);
+            else
+            $ts = strtotime($item['created_time']);
+            if ($ts === false)
+            continue;
+            if (! isset($posts[date('Y', $ts)]))
+            $posts[date('Y', $ts)] = [];
+            if (! isset($posts[date('Y', $ts)][date('n', $ts)]))
+            $posts[date('Y', $ts)][date('n', $ts)] = 0;
+            $posts[date('Y', $ts)][date('n', $ts)]++;
+        }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -780,8 +787,10 @@ final class Facebook extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($posts);
 
         return $posts;
@@ -792,19 +801,20 @@ final class Facebook extends AbstractExtractor {
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property)
             if (! empty($data[$property]))
                 foreach ($data[$property] as $item)
-                    if (! empty($item['comments']['data'])) {
-                        if (empty($item['created_time']))
-                            $ts = strtotime($item['updated_time']);
-                        else
-                            $ts = strtotime($item['created_time']);
-                        if ($ts === false)
-                            continue;
-                        if (! isset($comments[date('Y', $ts)]))
-                            $comments[date('Y', $ts)] = [];
-                        if (! isset($comments[date('Y', $ts)][date('n', $ts)]))
-                            $comments[date('Y', $ts)][date('n', $ts)] = 0;
-                        $comments[date('Y', $ts)][date('n', $ts)] += count($item['comments']['data']);
-                    }
+        if (! empty($item['comments']['data'])) {
+            if (empty($item['created_time']))
+            $ts = strtotime($item['updated_time']);
+            else
+            $ts = strtotime($item['created_time']);
+            if ($ts === false)
+            continue;
+            if (! isset($comments[date('Y', $ts)]))
+            $comments[date('Y', $ts)] = [];
+            if (! isset($comments[date('Y', $ts)][date('n', $ts)]))
+            $comments[date('Y', $ts)][date('n', $ts)] = 0;
+            $comments[date('Y', $ts)][date('n', $ts)] += count($item['comments']['data']);
+        }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -818,8 +828,10 @@ final class Facebook extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($comments);
 
         return $comments;
@@ -830,19 +842,20 @@ final class Facebook extends AbstractExtractor {
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property)
             if (! empty($data[$property]))
                 foreach ($data[$property] as $item)
-                    if (! empty($item['likes']['data'])) {
-                        if (empty($item['created_time']))
-                            $ts = strtotime($item['updated_time']);
-                        else
-                            $ts = strtotime($item['created_time']);
-                        if ($ts === false)
-                            continue;
-                        if (! isset($likes[date('Y', $ts)]))
-                            $likes[date('Y', $ts)] = [];
-                        if (! isset($likes[date('Y', $ts)][date('n', $ts)]))
-                            $likes[date('Y', $ts)][date('n', $ts)] = 0;
-                        $likes[date('Y', $ts)][date('n', $ts)] += count($item['likes']['data']);
-                    }
+        if (! empty($item['likes']['data'])) {
+            if (empty($item['created_time']))
+            $ts = strtotime($item['updated_time']);
+            else
+            $ts = strtotime($item['created_time']);
+            if ($ts === false)
+            continue;
+            if (! isset($likes[date('Y', $ts)]))
+            $likes[date('Y', $ts)] = [];
+            if (! isset($likes[date('Y', $ts)][date('n', $ts)]))
+            $likes[date('Y', $ts)][date('n', $ts)] = 0;
+            $likes[date('Y', $ts)][date('n', $ts)] += count($item['likes']['data']);
+        }
+
         $current = [
             'year'  => date('Y'),
             'month' => date('n')
@@ -856,8 +869,10 @@ final class Facebook extends AbstractExtractor {
                 else
                     $months[$i] = 0;
             }
+
             ksort($months);
         }
+
         ksort($likes);
 
         return $likes;
@@ -869,51 +884,51 @@ final class Facebook extends AbstractExtractor {
             foreach ($data['links'] as $like)
                 if (isset($like['comments']['data']))
                     foreach ($like['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($ids[$comment['from']['id']]))
-                                $ids[$comment['from']['id']] = 0;
-                            $ids[$comment['from']['id']]++;
-                        }
+        if (isset($comment['from']['id'])) {
+            if (! isset($ids[$comment['from']['id']]))
+            $ids[$comment['from']['id']] = 0;
+            $ids[$comment['from']['id']]++;
+        }
 
         if (! empty($data['photos']))
             foreach ($data['photos'] as $photo)
                 if (isset($photo['comments']['data']))
                     foreach ($photo['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($ids[$comment['from']['id']]))
-                                $ids[$comment['from']['id']] = 0;
-                            $ids[$comment['from']['id']]++;
-                        }
+        if (isset($comment['from']['id'])) {
+            if (! isset($ids[$comment['from']['id']]))
+            $ids[$comment['from']['id']] = 0;
+            $ids[$comment['from']['id']]++;
+        }
 
         if (! empty($data['posts']))
             foreach ($data['posts'] as $post)
                 if (isset($post['comments']['data']))
                     foreach ($post['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($ids[$comment['from']['id']]))
-                                $ids[$comment['from']['id']] = 0;
-                            $ids[$comment['from']['id']]++;
-                        }
+        if (isset($comment['from']['id'])) {
+            if (! isset($ids[$comment['from']['id']]))
+            $ids[$comment['from']['id']] = 0;
+            $ids[$comment['from']['id']]++;
+        }
 
         if (! empty($data['statuses']))
             foreach ($data['statuses'] as $status)
                 if (isset($status['comments']['data']))
                     foreach ($status['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($ids[$comment['from']['id']]))
-                                $ids[$comment['from']['id']] = 0;
-                            $ids[$comment['from']['id']]++;
-                        }
+        if (isset($comment['from']['id'])) {
+            if (! isset($ids[$comment['from']['id']]))
+            $ids[$comment['from']['id']] = 0;
+            $ids[$comment['from']['id']]++;
+        }
 
         if (! empty($data['tagged']))
             foreach ($data['tagged'] as $tagged)
                 if (isset($tagged['comments']['data']))
                     foreach ($tagged['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($ids[$comment['from']['id']]))
-                                $ids[$comment['from']['id']] = 0;
-                            $ids[$comment['from']['id']]++;
-                        }
+        if (isset($comment['from']['id'])) {
+            if (! isset($ids[$comment['from']['id']]))
+            $ids[$comment['from']['id']] = 0;
+            $ids[$comment['from']['id']]++;
+        }
 
         if ((isset($data['profile']['id'])) && (isset($ids[$data['profile']['id']])))
             unset($ids[$data['profile']['id']]);
@@ -927,51 +942,51 @@ final class Facebook extends AbstractExtractor {
             foreach ($data['links'] as $link)
                 if (isset($link['likes']['data']))
                     foreach ($link['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($ids[$like['id']]))
-                                $ids[$like['id']] = 0;
-                            $ids[$like['id']]++;
-                        }
+        if (isset($like['id'])) {
+            if (! isset($ids[$like['id']]))
+            $ids[$like['id']] = 0;
+            $ids[$like['id']]++;
+        }
 
         if (! empty($data['photos']))
             foreach ($data['photos'] as $photo)
                 if (isset($photo['likes']['data']))
                     foreach ($photo['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($ids[$like['id']]))
-                                $ids[$like['id']] = 0;
-                            $ids[$like['id']]++;
-                        }
+        if (isset($like['id'])) {
+            if (! isset($ids[$like['id']]))
+            $ids[$like['id']] = 0;
+            $ids[$like['id']]++;
+        }
 
         if (! empty($data['posts']))
             foreach ($data['posts'] as $post)
                 if (isset($post['likes']['data']))
                     foreach ($post['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($ids[$like['id']]))
-                                $ids[$like['id']] = 0;
-                            $ids[$like['id']]++;
-                        }
+        if (isset($like['id'])) {
+            if (! isset($ids[$like['id']]))
+            $ids[$like['id']] = 0;
+            $ids[$like['id']]++;
+        }
 
         if (! empty($data['statuses']))
             foreach ($data['statuses'] as $status)
                 if (isset($status['likes']['data']))
                     foreach ($status['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($ids[$like['id']]))
-                                $ids[$like['id']] = 0;
-                            $ids[$like['id']]++;
-                        }
+        if (isset($like['id'])) {
+            if (! isset($ids[$like['id']]))
+            $ids[$like['id']] = 0;
+            $ids[$like['id']]++;
+        }
 
         if (! empty($data['tagged']))
             foreach ($data['tagged'] as $tagged)
                 if (isset($tagged['likes']['data']))
                     foreach ($tagged['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($ids[$like['id']]))
-                                $ids[$like['id']] = 0;
-                            $ids[$like['id']]++;
-                        }
+        if (isset($like['id'])) {
+            if (! isset($ids[$like['id']]))
+            $ids[$like['id']] = 0;
+            $ids[$like['id']]++;
+        }
 
         if ((isset($data['profile']['id'])) && (isset($ids[$data['profile']['id']])))
             unset($ids[$data['profile']['id']]);
@@ -1000,132 +1015,141 @@ final class Facebook extends AbstractExtractor {
     private function closeFriends(array &$data) {
         $close = [];
         if (! empty($data['links']))
-            foreach ($data['links'] as $link) {
-                if (! isset($close[$link['from']['id']]))
-                    $close[$link['from']['id']] = 0;
-                $close[$link['from']['id']]++;
-                if (isset($link['tags']['data']))
-                    foreach ($link['tags']['data'] as $tag)
-                        if (isset($tag['id'])) {
-                            if (! isset($close[$tag['id']]))
-                                $close[$tag['id']] = 0;
-                            $close[$tag['id']]++;
-                        }
-                if (isset($link['comments']['data']))
-                    foreach ($link['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($close[$comment['from']['id']]))
-                                $close[$comment['from']['id']] = 0;
-                            $close[$comment['from']['id']]++;
-                        }
-                if (isset($link['likes']['data']))
-                    foreach ($link['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($close[$like['id']]))
-                                $close[$like['id']] = 0;
-                            $close[$like['id']]++;
-                        }
+        foreach ($data['links'] as $link) {
+            if (! isset($close[$link['from']['id']]))
+            $close[$link['from']['id']] = 0;
+            $close[$link['from']['id']]++;
+            if (isset($link['tags']['data']))
+            foreach ($link['tags']['data'] as $tag)
+            if (isset($tag['id'])) {
+                if (! isset($close[$tag['id']]))
+                $close[$tag['id']] = 0;
+                $close[$tag['id']]++;
             }
+
+                if (isset($link['comments']['data']))
+                foreach ($link['comments']['data'] as $comment)
+            if (isset($comment['from']['id'])) {
+                if (! isset($close[$comment['from']['id']]))
+                $close[$comment['from']['id']] = 0;
+                $close[$comment['from']['id']]++;
+            }
+
+                if (isset($link['likes']['data']))
+                foreach ($link['likes']['data'] as $like)
+            if (isset($like['id'])) {
+                if (! isset($close[$like['id']]))
+                $close[$like['id']] = 0;
+                $close[$like['id']]++;
+            }
+        }
 
         if (! empty($data['photos']))
-            foreach ($data['photos'] as $photo) {
-                if (! isset($close[$photo['from']['id']]))
-                    $close[$photo['from']['id']] = 0;
-                $close[$photo['from']['id']]++;
-                if (isset($photo['tags']['data']))
-                    foreach ($photo['tags']['data'] as $tag)
-                        if (isset($tag['id'])) {
-                            if (! isset($close[$tag['id']]))
-                                $close[$tag['id']] = 0;
-                            $close[$tag['id']]++;
-                        }
-                if (isset($photo['comments']['data']))
-                    foreach ($photo['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($close[$comment['from']['id']]))
-                                $close[$comment['from']['id']] = 0;
-                            $close[$comment['from']['id']]++;
-                        }
-                if (isset($photo['likes']['data']))
-                    foreach ($photo['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($close[$like['id']]))
-                                $close[$like['id']] = 0;
-                            $close[$like['id']]++;
-                        }
+        foreach ($data['photos'] as $photo) {
+            if (! isset($close[$photo['from']['id']]))
+            $close[$photo['from']['id']] = 0;
+            $close[$photo['from']['id']]++;
+            if (isset($photo['tags']['data']))
+            foreach ($photo['tags']['data'] as $tag)
+            if (isset($tag['id'])) {
+                if (! isset($close[$tag['id']]))
+                $close[$tag['id']] = 0;
+                $close[$tag['id']]++;
             }
+
+                if (isset($photo['comments']['data']))
+                foreach ($photo['comments']['data'] as $comment)
+            if (isset($comment['from']['id'])) {
+                if (! isset($close[$comment['from']['id']]))
+                $close[$comment['from']['id']] = 0;
+                $close[$comment['from']['id']]++;
+            }
+
+                if (isset($photo['likes']['data']))
+                foreach ($photo['likes']['data'] as $like)
+            if (isset($like['id'])) {
+                if (! isset($close[$like['id']]))
+                $close[$like['id']] = 0;
+                $close[$like['id']]++;
+            }
+        }
 
         if (! empty($data['posts']))
-            foreach ($data['posts'] as $post) {
-                if (isset($post['comments']['data']))
-                    foreach ($post['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($close[$comment['from']['id']]))
-                                $close[$comment['from']['id']] = 0;
-                            $close[$comment['from']['id']]++;
-                        }
-                if (isset($post['likes']['data']))
-                    foreach ($post['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($close[$like['id']]))
-                                $close[$like['id']] = 0;
-                            $close[$like['id']]++;
-                        }
+        foreach ($data['posts'] as $post) {
+            if (isset($post['comments']['data']))
+            foreach ($post['comments']['data'] as $comment)
+            if (isset($comment['from']['id'])) {
+                if (! isset($close[$comment['from']['id']]))
+                $close[$comment['from']['id']] = 0;
+                $close[$comment['from']['id']]++;
             }
+
+                if (isset($post['likes']['data']))
+                foreach ($post['likes']['data'] as $like)
+            if (isset($like['id'])) {
+                if (! isset($close[$like['id']]))
+                    $close[$like['id']] = 0;
+                    $close[$like['id']]++;
+            }
+        }
 
         if (! empty($data['statuses']))
-            foreach ($data['statuses'] as $status) {
-                if (! isset($close[$status['from']['id']]))
-                    $close[$status['from']['id']] = 0;
-                $close[$status['from']['id']]++;
-                if (isset($status['to']['data']))
-                    foreach ($status['to']['data'] as $to) {
-                        if (! isset($close[$to['id']]))
-                            $close[$to['id']] = 0;
-                        $close[$to['id']]++;
-                    }
-                if (isset($status['comments']['data']))
-                    foreach ($status['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($close[$comment['from']['id']]))
-                                $close[$comment['from']['id']] = 0;
-                            $close[$comment['from']['id']]++;
-                        }
-                if (isset($status['likes']['data']))
-                    foreach ($status['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($close[$like['id']]))
-                                $close[$like['id']] = 0;
-                            $close[$like['id']]++;
-                        }
+        foreach ($data['statuses'] as $status) {
+            if (! isset($close[$status['from']['id']]))
+            $close[$status['from']['id']] = 0;
+            $close[$status['from']['id']]++;
+            if (isset($status['to']['data']))
+            foreach ($status['to']['data'] as $to) {
+                if (! isset($close[$to['id']]))
+                $close[$to['id']] = 0;
+                $close[$to['id']]++;
             }
 
-        if (! empty($data['tagged']))
-            foreach ($data['tagged'] as $tagged) {
-                if (! isset($close[$tagged['from']['id']]))
-                    $close[$tagged['from']['id']] = 0;
-                $close[$tagged['from']['id']]++;
-                if (isset($tagged['to']['data']))
-                    foreach ($tagged['to']['data'] as $to) {
-                        if (! isset($close[$to['id']]))
-                            $close[$to['id']] = 0;
-                        $close[$to['id']]++;
-                    }
-                if (isset($tagged['comments']['data']))
-                    foreach ($tagged['comments']['data'] as $comment)
-                        if (isset($comment['from']['id'])) {
-                            if (! isset($close[$comment['from']['id']]))
-                                $close[$comment['from']['id']] = 0;
-                            $close[$comment['from']['id']]++;
-                        }
-                if (isset($tagged['likes']['data']))
-                    foreach ($tagged['likes']['data'] as $like)
-                        if (isset($like['id'])) {
-                            if (! isset($close[$like['id']]))
-                                $close[$like['id']] = 0;
-                            $close[$like['id']]++;
-                        }
+            if (isset($status['comments']['data']))
+            foreach ($status['comments']['data'] as $comment)
+            if (isset($comment['from']['id'])) {
+                if (! isset($close[$comment['from']['id']]))
+                $close[$comment['from']['id']] = 0;
+                $close[$comment['from']['id']]++;
             }
+
+                if (isset($status['likes']['data']))
+                foreach ($status['likes']['data'] as $like)
+            if (isset($like['id'])) {
+                if (! isset($close[$like['id']]))
+                $close[$like['id']] = 0;
+                $close[$like['id']]++;
+            }
+        }
+
+        if (! empty($data['tagged']))
+        foreach ($data['tagged'] as $tagged) {
+            if (! isset($close[$tagged['from']['id']]))
+            $close[$tagged['from']['id']] = 0;
+            $close[$tagged['from']['id']]++;
+            if (isset($tagged['to']['data']))
+            foreach ($tagged['to']['data'] as $to) {
+                if (! isset($close[$to['id']]))
+                $close[$to['id']] = 0;
+                $close[$to['id']]++;
+            }
+
+            if (isset($tagged['comments']['data']))
+            foreach ($tagged['comments']['data'] as $comment)
+            if (isset($comment['from']['id'])) {
+                if (! isset($close[$comment['from']['id']]))
+                $close[$comment['from']['id']] = 0;
+                $close[$comment['from']['id']]++;
+            }
+
+                if (isset($tagged['likes']['data']))
+                foreach ($tagged['likes']['data'] as $like)
+            if (isset($like['id'])) {
+                if (! isset($close[$like['id']]))
+                $close[$like['id']] = 0;
+                $close[$like['id']]++;
+            }
+        }
 
         if ((isset($data['profile']['id'])) && (isset($close[$data['profile']['id']])))
             unset($close[$data['profile']['id']]);
@@ -1198,10 +1222,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['work']))
                 continue;
             foreach ($friend['work'] as $work)
-                if ((isset($work['employer']['id'])) && (in_array($work['employer']['id'], $companies))) {
-                    $return++;
-                    break;
-                }
+            if ((isset($work['employer']['id'])) && (in_array($work['employer']['id'], $companies))) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1296,16 +1320,16 @@ final class Facebook extends AbstractExtractor {
         $age = null;
         foreach (['links', 'photos', 'posts', 'statuses', 'tagged'] as $property)
             if (! empty($data[$property]))
-                foreach ($data[$property] as $item) {
-                    if (empty($item['created_time']))
-                        $timestamp = strtotime($item['updated_time']);
-                    else
-                        $timestamp = strtotime($item['created_time']);
-                    if ($timestamp === false)
-                        continue;
-                    if (($age === null) || ($timestamp < $age))
-                        $age = $timestamp;
-                }
+        foreach ($data[$property] as $item) {
+            if (empty($item['created_time']))
+            $timestamp = strtotime($item['updated_time']);
+            else
+            $timestamp = strtotime($item['created_time']);
+            if ($timestamp === false)
+            continue;
+            if (($age === null) || ($timestamp < $age))
+            $age = $timestamp;
+        }
 
         return $age;
     }
@@ -1517,10 +1541,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['education']))
                 continue;
             foreach ($friend['education'] as $education)
-                if ((isset($education['school']['id'])) && ($education['school']['id'] === $educations[0]['id'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['school']['id'])) && ($education['school']['id'] === $educations[0]['id'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1541,10 +1565,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['education']))
                 continue;
             foreach ($friend['education'] as $education)
-                if ((isset($education['school']['id'])) && ($education['school']['id'] === $educations[1]['id'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['school']['id'])) && ($education['school']['id'] === $educations[1]['id'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1565,10 +1589,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['education']))
                 continue;
             foreach ($friend['education'] as $education)
-                if ((isset($education['school']['id'])) && ($education['school']['id'] === $educations[2]['id'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['school']['id'])) && ($education['school']['id'] === $educations[2]['id'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1589,12 +1613,13 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['education']))
                 continue;
             foreach ($friend['education'] as $education)
-                if ((isset($education['school']['id'], $education['year']['name'])) &&
-                    ($education['school']['id'] === $educations[0]['id']) &&
-                    ($education['year']['name'] == $educations[0]['year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['school']['id'], $education['year']['name']))
+                && ($education['school']['id'] === $educations[0]['id'])
+                && ($education['year']['name'] == $educations[0]['year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1615,12 +1640,13 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['education']))
                 continue;
             foreach ($friend['education'] as $education)
-                if ((isset($education['school']['id'], $education['year']['name'])) &&
-                    ($education['school']['id'] === $educations[1]['id']) &&
-                    ($education['year']['name'] == $educations[1]['year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['school']['id'], $education['year']['name']))
+                && ($education['school']['id'] === $educations[1]['id'])
+                && ($education['year']['name'] == $educations[1]['year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1641,12 +1667,13 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['education']))
                 continue;
             foreach ($friend['education'] as $education)
-                if ((isset($education['school']['id'], $education['year']['name'])) &&
-                    ($education['school']['id'] === $educations[2]['id']) &&
-                    ($education['year']['name'] == $educations[2]['year'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['school']['id'], $education['year']['name']))
+                && ($education['school']['id'] === $educations[2]['id'])
+                && ($education['year']['name'] == $educations[2]['year'])
+            ) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1667,10 +1694,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['work']))
                 continue;
             foreach ($friend['work'] as $work)
-                if ((isset($work['employer']['id'])) && ($work['employer']['id'] === $educations[0]['id'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($work['employer']['id'])) && ($work['employer']['id'] === $educations[0]['id'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1691,10 +1718,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['work']))
                 continue;
             foreach ($friend['work'] as $work)
-                if ((isset($work['employer']['id'])) && ($work['employer']['id'] === $educations[1]['id'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($work['employer']['id'])) && ($work['employer']['id'] === $educations[1]['id'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1715,10 +1742,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['work']))
                 continue;
             foreach ($friend['work'] as $work)
-                if ((isset($work['employer']['id'])) && ($work['employer']['id'] === $educations[2]['id'])) {
-                    $return++;
-                    break;
-                }
+            if ((isset($work['employer']['id'])) && ($work['employer']['id'] === $educations[2]['id'])) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -1737,82 +1764,82 @@ final class Facebook extends AbstractExtractor {
 
         $return = 0;
         if (! empty($data['locations']))
-            foreach ($data['locations'] as $location) {
-                if (! isset($location['created_time'], $location['place']['id']))
-                    continue;
+        foreach ($data['locations'] as $location) {
+            if (! isset($location['created_time'], $location['place']['id']))
+            continue;
 
-                if ($location['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($location['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($location['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($location['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['links']))
-            foreach ($data['links'] as $link) {
-                if (! isset($link['created_time'], $link['place']['id']))
-                    continue;
+        foreach ($data['links'] as $link) {
+            if (! isset($link['created_time'], $link['place']['id']))
+            continue;
 
-                if ($link['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($link['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($link['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($link['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['photos']))
-            foreach ($data['photos'] as $photo) {
-                if (! isset($photo['created_time'], $photo['place']['id']))
-                    continue;
+        foreach ($data['photos'] as $photo) {
+            if (! isset($photo['created_time'], $photo['place']['id']))
+            continue;
 
-                if ($photo['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($photo['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($photo['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($photo['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['posts']))
-            foreach ($data['posts'] as $post) {
-                if (! isset($post['created_time'], $post['place']['id']))
-                    continue;
+        foreach ($data['posts'] as $post) {
+            if (! isset($post['created_time'], $post['place']['id']))
+            continue;
 
-                if ($post['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($post['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($post['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($post['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['statuses']))
-            foreach ($data['statuses'] as $status) {
-                if (! isset($status['created_time'], $status['place']['id']))
-                    continue;
+        foreach ($data['statuses'] as $status) {
+            if (! isset($status['created_time'], $status['place']['id']))
+            continue;
 
-                if ($status['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($status['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($status['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($status['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['tagged']))
-            foreach ($data['tagged'] as $tagged) {
-                if (! isset($tagged['created_time'], $tagged['place']['id']))
-                    continue;
+        foreach ($data['tagged'] as $tagged) {
+            if (! isset($tagged['created_time'], $tagged['place']['id']))
+            continue;
 
-                if ($tagged['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($tagged['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($tagged['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($tagged['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         return $return;
     }
@@ -1830,82 +1857,82 @@ final class Facebook extends AbstractExtractor {
 
         $return = 0;
         if (! empty($data['locations']))
-            foreach ($data['locations'] as $location) {
-                if (! isset($location['created_time'], $location['place']['id']))
-                    continue;
+        foreach ($data['locations'] as $location) {
+            if (! isset($location['created_time'], $location['place']['id']))
+            continue;
 
-                if ($location['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($location['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($location['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($location['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['links']))
-            foreach ($data['links'] as $link) {
-                if (! isset($link['created_time'], $link['place']['id']))
-                    continue;
+        foreach ($data['links'] as $link) {
+            if (! isset($link['created_time'], $link['place']['id']))
+            continue;
 
-                if ($link['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($link['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($link['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($link['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['photos']))
-            foreach ($data['photos'] as $photo) {
-                if (! isset($photo['created_time'], $photo['place']['id']))
-                    continue;
+        foreach ($data['photos'] as $photo) {
+            if (! isset($photo['created_time'], $photo['place']['id']))
+            continue;
 
-                if ($photo['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($photo['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($photo['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($photo['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['posts']))
-            foreach ($data['posts'] as $post) {
-                if (! isset($post['created_time'], $post['place']['id']))
-                    continue;
+        foreach ($data['posts'] as $post) {
+            if (! isset($post['created_time'], $post['place']['id']))
+            continue;
 
-                if ($post['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($post['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($post['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($post['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['statuses']))
-            foreach ($data['statuses'] as $status) {
-                if (! isset($status['created_time'], $status['place']['id']))
-                    continue;
+        foreach ($data['statuses'] as $status) {
+            if (! isset($status['created_time'], $status['place']['id']))
+            continue;
 
-                if ($status['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($status['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($status['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($status['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['tagged']))
-            foreach ($data['tagged'] as $tagged) {
-                if (! isset($tagged['created_time'], $tagged['place']['id']))
-                    continue;
+        foreach ($data['tagged'] as $tagged) {
+            if (! isset($tagged['created_time'], $tagged['place']['id']))
+            continue;
 
-                if ($tagged['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($tagged['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($tagged['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($tagged['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         return $return;
     }
@@ -1923,82 +1950,82 @@ final class Facebook extends AbstractExtractor {
 
         $return = 0;
         if (! empty($data['locations']))
-            foreach ($data['locations'] as $location) {
-                if (! isset($location['created_time'], $location['place']['id']))
-                    continue;
+        foreach ($data['locations'] as $location) {
+            if (! isset($location['created_time'], $location['place']['id']))
+            continue;
 
-                if ($location['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($location['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($location['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($location['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['links']))
-            foreach ($data['links'] as $link) {
-                if (! isset($link['created_time'], $link['place']['id']))
-                    continue;
+        foreach ($data['links'] as $link) {
+            if (! isset($link['created_time'], $link['place']['id']))
+            continue;
 
-                if ($link['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($link['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($link['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($link['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['photos']))
-            foreach ($data['photos'] as $photo) {
-                if (! isset($photo['created_time'], $photo['place']['id']))
-                    continue;
+        foreach ($data['photos'] as $photo) {
+            if (! isset($photo['created_time'], $photo['place']['id']))
+            continue;
 
-                if ($photo['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($photo['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($photo['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($photo['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['posts']))
-            foreach ($data['posts'] as $post) {
-                if (! isset($post['created_time'], $post['place']['id']))
-                    continue;
+        foreach ($data['posts'] as $post) {
+            if (! isset($post['created_time'], $post['place']['id']))
+            continue;
 
-                if ($post['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($post['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($post['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($post['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['statuses']))
-            foreach ($data['statuses'] as $status) {
-                if (! isset($status['created_time'], $status['place']['id']))
-                    continue;
+        foreach ($data['statuses'] as $status) {
+            if (! isset($status['created_time'], $status['place']['id']))
+            continue;
 
-                if ($status['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($status['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($status['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($status['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['tagged']))
-            foreach ($data['tagged'] as $tagged) {
-                if (! isset($tagged['created_time'], $tagged['place']['id']))
-                    continue;
+        foreach ($data['tagged'] as $tagged) {
+            if (! isset($tagged['created_time'], $tagged['place']['id']))
+            continue;
 
-                if ($tagged['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($tagged['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($tagged['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($tagged['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         return $return;
     }
@@ -2016,82 +2043,82 @@ final class Facebook extends AbstractExtractor {
 
         $return = 0;
         if (! empty($data['locations']))
-            foreach ($data['locations'] as $location) {
-                if (! isset($location['created_time'], $location['place']['id']))
-                    continue;
+        foreach ($data['locations'] as $location) {
+            if (! isset($location['created_time'], $location['place']['id']))
+            continue;
 
-                if ($location['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($location['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($location['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($location['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['links']))
-            foreach ($data['links'] as $link) {
-                if (! isset($link['created_time'], $link['place']['id']))
-                    continue;
+        foreach ($data['links'] as $link) {
+            if (! isset($link['created_time'], $link['place']['id']))
+            continue;
 
-                if ($link['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($link['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($link['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($link['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['photos']))
-            foreach ($data['photos'] as $photo) {
-                if (! isset($photo['created_time'], $photo['place']['id']))
-                    continue;
+        foreach ($data['photos'] as $photo) {
+            if (! isset($photo['created_time'], $photo['place']['id']))
+            continue;
 
-                if ($photo['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($photo['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($photo['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($photo['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['posts']))
-            foreach ($data['posts'] as $post) {
-                if (! isset($post['created_time'], $post['place']['id']))
-                    continue;
+        foreach ($data['posts'] as $post) {
+            if (! isset($post['created_time'], $post['place']['id']))
+            continue;
 
-                if ($post['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($post['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($post['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($post['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['statuses']))
-            foreach ($data['statuses'] as $status) {
-                if (! isset($status['created_time'], $status['place']['id']))
-                    continue;
+        foreach ($data['statuses'] as $status) {
+            if (! isset($status['created_time'], $status['place']['id']))
+            continue;
 
-                if ($status['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($status['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($status['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($status['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['tagged']))
-            foreach ($data['tagged'] as $tagged) {
-                if (! isset($tagged['created_time'], $tagged['place']['id']))
-                    continue;
+        foreach ($data['tagged'] as $tagged) {
+            if (! isset($tagged['created_time'], $tagged['place']['id']))
+            continue;
 
-                if ($tagged['place']['id'] !== $educations[0]['id'])
-                    continue;
+            if ($tagged['place']['id'] !== $educations[0]['id'])
+            continue;
 
-                $ts = strtotime($tagged['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($tagged['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         return $return;
     }
@@ -2109,82 +2136,82 @@ final class Facebook extends AbstractExtractor {
 
         $return = 0;
         if (! empty($data['locations']))
-            foreach ($data['locations'] as $location) {
-                if (! isset($location['created_time'], $location['place']['id']))
-                    continue;
+        foreach ($data['locations'] as $location) {
+            if (! isset($location['created_time'], $location['place']['id']))
+            continue;
 
-                if ($location['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($location['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($location['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($location['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['links']))
-            foreach ($data['links'] as $link) {
-                if (! isset($link['created_time'], $link['place']['id']))
-                    continue;
+        foreach ($data['links'] as $link) {
+            if (! isset($link['created_time'], $link['place']['id']))
+            continue;
 
-                if ($link['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($link['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($link['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($link['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['photos']))
-            foreach ($data['photos'] as $photo) {
-                if (! isset($photo['created_time'], $photo['place']['id']))
-                    continue;
+        foreach ($data['photos'] as $photo) {
+            if (! isset($photo['created_time'], $photo['place']['id']))
+            continue;
 
-                if ($photo['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($photo['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($photo['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($photo['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['posts']))
-            foreach ($data['posts'] as $post) {
-                if (! isset($post['created_time'], $post['place']['id']))
-                    continue;
+        foreach ($data['posts'] as $post) {
+            if (! isset($post['created_time'], $post['place']['id']))
+            continue;
 
-                if ($post['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($post['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($post['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($post['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['statuses']))
-            foreach ($data['statuses'] as $status) {
-                if (! isset($status['created_time'], $status['place']['id']))
-                    continue;
+        foreach ($data['statuses'] as $status) {
+            if (! isset($status['created_time'], $status['place']['id']))
+            continue;
 
-                if ($status['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($status['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($status['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($status['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['tagged']))
-            foreach ($data['tagged'] as $tagged) {
-                if (! isset($tagged['created_time'], $tagged['place']['id']))
-                    continue;
+        foreach ($data['tagged'] as $tagged) {
+            if (! isset($tagged['created_time'], $tagged['place']['id']))
+            continue;
 
-                if ($tagged['place']['id'] !== $educations[1]['id'])
-                    continue;
+            if ($tagged['place']['id'] !== $educations[1]['id'])
+            continue;
 
-                $ts = strtotime($tagged['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($tagged['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         return $return;
     }
@@ -2202,82 +2229,82 @@ final class Facebook extends AbstractExtractor {
 
         $return = 0;
         if (! empty($data['locations']))
-            foreach ($data['locations'] as $location) {
-                if (! isset($location['created_time'], $location['place']['id']))
-                    continue;
+        foreach ($data['locations'] as $location) {
+            if (! isset($location['created_time'], $location['place']['id']))
+            continue;
 
-                if ($location['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($location['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($location['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($location['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['links']))
-            foreach ($data['links'] as $link) {
-                if (! isset($link['created_time'], $link['place']['id']))
-                    continue;
+        foreach ($data['links'] as $link) {
+            if (! isset($link['created_time'], $link['place']['id']))
+            continue;
 
-                if ($link['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($link['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($link['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($link['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['photos']))
-            foreach ($data['photos'] as $photo) {
-                if (! isset($photo['created_time'], $photo['place']['id']))
-                    continue;
+        foreach ($data['photos'] as $photo) {
+            if (! isset($photo['created_time'], $photo['place']['id']))
+            continue;
 
-                if ($photo['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($photo['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($photo['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($photo['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['posts']))
-            foreach ($data['posts'] as $post) {
-                if (! isset($post['created_time'], $post['place']['id']))
-                    continue;
+        foreach ($data['posts'] as $post) {
+            if (! isset($post['created_time'], $post['place']['id']))
+            continue;
 
-                if ($post['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($post['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($post['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($post['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['statuses']))
-            foreach ($data['statuses'] as $status) {
-                if (! isset($status['created_time'], $status['place']['id']))
-                    continue;
+        foreach ($data['statuses'] as $status) {
+            if (! isset($status['created_time'], $status['place']['id']))
+            continue;
 
-                if ($status['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($status['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($status['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($status['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         if (! empty($data['tagged']))
-            foreach ($data['tagged'] as $tagged) {
-                if (! isset($tagged['created_time'], $tagged['place']['id']))
-                    continue;
+        foreach ($data['tagged'] as $tagged) {
+            if (! isset($tagged['created_time'], $tagged['place']['id']))
+            continue;
 
-                if ($tagged['place']['id'] !== $educations[2]['id'])
-                    continue;
+            if ($tagged['place']['id'] !== $educations[2]['id'])
+            continue;
 
-                $ts = strtotime($tagged['created_time']);
-                if (date('Y', $ts) == $year)
-                    $return++;
-            }
+            $ts = strtotime($tagged['created_time']);
+            if (date('Y', $ts) == $year)
+            $return++;
+        }
 
         return $return;
     }
@@ -2294,10 +2321,10 @@ final class Facebook extends AbstractExtractor {
             if (empty($friend['education']))
                 continue;
             foreach ($friend['education'] as $education)
-                if ((isset($education['year']['name'])) && ($education['year']['name'] >= $year)) {
-                    $return++;
-                    break;
-                }
+            if ((isset($education['year']['name'])) && ($education['year']['name'] >= $year)) {
+                $return++;
+                break;
+            }
         }
 
         return $return;
@@ -2321,10 +2348,10 @@ final class Facebook extends AbstractExtractor {
                 if ($birthYear != $matches[2])
                     continue;
                 foreach ($friend['education'] as $education)
-                    if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
-                        $return++;
-                        break;
-                    }
+                if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
+                    $return++;
+                    break;
+                }
             }
         }
 
@@ -2349,10 +2376,10 @@ final class Facebook extends AbstractExtractor {
                 if (abs($birthYear - $matches[2]) > 1)
                     continue;
                 foreach ($friend['education'] as $education)
-                    if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
-                        $return++;
-                        break;
-                    }
+                if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
+                    $return++;
+                    break;
+                }
             }
         }
 
@@ -2377,10 +2404,10 @@ final class Facebook extends AbstractExtractor {
                 if (abs($birthYear - $matches[2]) > 2)
                     continue;
                 foreach ($friend['education'] as $education)
-                    if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
-                        $return++;
-                        break;
-                    }
+                if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
+                    $return++;
+                    break;
+                }
             }
         }
 
@@ -2405,10 +2432,10 @@ final class Facebook extends AbstractExtractor {
                 if (abs($birthYear - $matches[2]) > 3)
                     continue;
                 foreach ($friend['education'] as $education)
-                    if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
-                        $return++;
-                        break;
-                    }
+                if ((isset($education['year']['name'])) && ($education['year']['name'] >= date('Y'))) {
+                    $return++;
+                    break;
+                }
             }
         }
 

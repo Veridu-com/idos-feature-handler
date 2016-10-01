@@ -7,9 +7,8 @@ namespace Cli\Utils;
 // use Gender\Gender;
 use HumanNameParser\Name;
 use HumanNameParser\Parser as NameParser;
-use libphonenumber\PhoneNumberUtil;
 use Illuminate\Database\Capsule\Manager;
-use Illuminate\Database\Connection;
+use libphonenumber\PhoneNumberUtil;
 
 final class Utils {
     private $nameParser;
@@ -209,7 +208,7 @@ final class Utils {
     }
 
     public function countryFromCity($city) {
-        static $cache = array();
+        static $cache = [];
         try {
             if (isset($cache[$city])) {
                 return $cache[$city];
@@ -224,15 +223,15 @@ final class Utils {
                 ->get(['countries.name']);
 
             if (count($result) == 0) {
-                return null;
+                return;
             }
 
-            $res = $result->first();
+            $res          = $result->first();
             $cache[$city] = $res['name'];
 
             return $res['name'];
         } catch (\Exception $exception) {
-            return null;
+            return;
         }
     }
 
@@ -244,20 +243,21 @@ final class Utils {
 
     private function checkList($name, $type) {
         try {
-            $name   = Matcher::normalize_string($name);
+            $name = Matcher::normalize_string($name);
 
             return $this->dbConnection->table('known_names')
                 ->where('type', '=', $type)
-                ->where(function($query) use ($name) {
-                    return $query->where('name', '=', $name)
-                        ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
-                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
-                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
-                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
-                })
+                ->where(
+                    function ($query) use ($name) {
+                        return $query->where('name', '=', $name)
+                            ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
+                            ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                            ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                            ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                    }
+                )
                 ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
                 ->exists();
-
         } catch (\Exception $exception) {
             return false;
         }
@@ -273,13 +273,15 @@ final class Utils {
             }
 
             $result = $this->dbConnection->table('known_names')
-                ->where(function($query) use ($name) {
-                    return $query->where('name', '=', $name)
-                        ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
-                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
-                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
-                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
-                })
+                ->where(
+                    function ($query) use ($name) {
+                        return $query->where('name', '=', $name)
+                            ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
+                            ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                            ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                            ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                    }
+                )
                 ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
                 ->exists();
 
@@ -355,13 +357,15 @@ final class Utils {
             }
 
             $result = $this->dbConnection->table('names')
-                ->where(function($query) use ($name) {
-                    return $query->where('name', '=', $name)
-                        ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
-                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
-                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
-                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
-                })
+                ->where(
+                    function ($query) use ($name) {
+                        return $query->where('name', '=', $name)
+                            ->orWhereRaw('soundex = SOUNDEX(?)', [$name])
+                            ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                            ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                            ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                    }
+                )
                 ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
                 ->exists();
 
@@ -460,12 +464,14 @@ final class Utils {
             $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
 
             $result = $this->dbConnection->table('names')
-                ->where(function($query) use ($name) {
-                    return $query->whereRaw('soundex = SOUNDEX(?)', [$name])
-                        ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
-                        ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
-                        ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
-                })
+                ->where(
+                    function ($query) use ($name) {
+                        return $query->whereRaw('soundex = SOUNDEX(?)', [$name])
+                            ->orWhereRaw('metaphone = METAPHONE(?, 10)', [$name])
+                            ->orWhereRaw('dmetaphone1 = DMETAPHONE(?)', [$name])
+                            ->orWhereRaw('dmetaphone2 = DMETAPHONE_ALT(?)', [$name]);
+                    }
+                )
                 ->whereRaw('LEVENSHTEIN("name", ?) < ?', [$name, ceil(strlen($name) / 2)])
                 ->groupBy(['country'])
                 ->orderByRaw('COUNT(*) DESC')
@@ -815,5 +821,4 @@ final class Utils {
 
         return $text;
     }
-
 }
