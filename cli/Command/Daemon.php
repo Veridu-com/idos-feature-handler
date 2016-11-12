@@ -10,6 +10,8 @@ namespace Cli\Command;
 
 use Cli\Extractor\Handler;
 use Cli\Utils\Logger;
+use GuzzleHttp\Client;
+use idOS\Auth\CredentialToken;
 use idOS\SDK;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -107,12 +109,23 @@ class Daemon extends Command {
                 $handler = new $handlerClass();
 
                 // idOS SDK
-                $auth = new \idOS\Auth\CredentialToken(
+                $auth = new CredentialToken(
                     $jobData['publicKey'],
                     __HNDKEY__,
                     __HNDSEC__
                 );
-                $sdk = \idOS\SDK::create($auth);
+                $sdk = SDK::create($auth);
+
+                // development mode: disable ssl check
+                if (__DEV__) {
+                    $sdk->setClient(
+                        new Client(
+                            [
+                                'verify' => false
+                            ]
+                        )
+                    );
+                }
 
                 // $sdk
                 //     ->Profile($jobData['userName'])
