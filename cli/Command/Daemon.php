@@ -13,9 +13,12 @@ use Cli\Utils\Logger;
 use GuzzleHttp\Client;
 use idOS\Auth\CredentialToken;
 use idOS\SDK;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger as Monolog;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -31,6 +34,12 @@ class Daemon extends Command {
         $this
             ->setName('feature:daemon')
             ->setDescription('idOS Feature - Daemon')
+            ->addOption(
+                'logFile',
+                'l',
+                InputOption::VALUE_REQUIRED,
+                'Path to log file'
+            )
             ->addArgument(
                 'serverList',
                 InputArgument::REQUIRED | InputArgument::IS_ARRAY,
@@ -47,7 +56,10 @@ class Daemon extends Command {
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $logger = new Logger();
+        $logFile = $input->getOption('logFile') ?? 'php://stdout';
+        $monolog = new Monolog('Feature');
+        $monolog->pushHandler(new StreamHandler($logFile, Monolog::DEBUG));
+        $logger = new Logger($monolog);
 
         $logger->debug('Initializing idOS Feature Handler Daemon');
 
