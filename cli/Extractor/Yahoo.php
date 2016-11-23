@@ -94,6 +94,14 @@ final class Yahoo extends AbstractExtractor {
         return $data['_work'];
     }
 
+    private function profile_id(&$data) {
+        if (empty($data['profile']['guid']['value'])) {
+            return;
+        }
+
+        return $data['profile']['guid']['value'];
+    }
+
     private function profile_picture(&$data) {
         if (empty($data['profile']['imageURL']))
             return;
@@ -462,55 +470,55 @@ final class Yahoo extends AbstractExtractor {
     }
 
     public function analyze(array $data) : array {
-        $facts                              = [];
-        $facts['isActive']                  = ! empty($data);
-        $facts['profilePicture']            = $this->profile_picture($data);
-        $facts['isACommonName']             = $this->is_common_name($data);
-        $facts['isListedName']              = $this->is_listed_name($data);
-        $facts['isFantasyName']             = $this->is_fantasy_name($data);
-        $facts['isSanctionedName']          = $this->is_sanctioned_name($data);
-        $facts['isPEPName']                 = $this->is_pep_name($data);
-        $facts['isCelebrityName']           = $this->is_celebrity_name($data);
-        $facts['isSillyName']               = $this->is_silly_name($data);
-        $facts['nameGender']                = $this->name_gender($data);
-        $facts['fullName']                  = $this->full_name($data);
-        $facts['firstName']                 = $this->first_name($data);
-        $facts['firstNameInitial']          = $this->first_name_initial($data);
-        $facts['middleName']                = $this->middle_name($data);
-        $facts['middleNameInitial']         = $this->middle_name_initial($data);
-        $facts['lastName']                  = $this->last_name($data);
-        $facts['lastNameInitial']           = $this->last_name_initial($data);
-        $facts['profileGender']             = $this->profile_gender($data);
-        $facts['firstEmailAddress']         = $this->first_email_address($data);
-        $facts['firstEmailUsername']        = $this->first_email_username($data);
-        $facts['secondEmailAddress']        = $this->second_email_address($data);
-        $facts['secondEmailUsername']       = $this->second_email_username($data);
-        $facts['thirdEmailAddress']         = $this->third_email_address($data);
-        $facts['thirdEmailUsername']        = $this->third_email_username($data);
-        $facts['streetAddress']             = $this->street_address($data);
-        $facts['cityName']                  = $this->city_name($data);
-        $facts['regionName']                = $this->region_name($data);
-        $facts['countryName']               = $this->country_name($data);
-        $facts['postalCode']                = $this->postal_code($data);
-        $facts['birthYear']                 = $this->birth_year($data);
-        $facts['birthMonth']                = $this->birth_month($data);
-        $facts['birthDay']                  = $this->birth_day($data);
-        $facts['profileAge']                = $this->profile_age($data);
-        $facts['firstPhoneCountry']         = $this->first_phone($data, 'country');
-        $facts['firstPhoneCountryCode']     = $this->first_phone($data, 'countrycode');
-        $facts['firstPhoneNumber']          = $this->first_phone($data, 'number');
-        $facts['secondPhoneCountry']        = $this->second_phone($data, 'country');
-        $facts['secondPhoneCountryCode']    = $this->second_phone($data, 'countrycode');
-        $facts['secondPhoneNumber']         = $this->second_phone($data, 'number');
-        $facts['numContacts']               = $this->num_contacts($data);
-        $facts['profileNickname']           = $this->profile_nickname($data);
-        $facts['firstMostRecentEducation']  = $this->first_most_recent_education($data);
-        $facts['secondMostRecentEducation'] = $this->second_most_recent_education($data);
-        $facts['thirdMostRecentEducation']  = $this->third_most_recent_education($data);
-        $facts['firstMostRecentWork']       = $this->first_most_recent_work($data);
-        $facts['secondMostRecentWork']      = $this->second_most_recent_work($data);
-        $facts['thirdMostRecentWork']       = $this->third_most_recent_work($data);
-
-        return $facts;
+        return [
+            'isActive'                  => ! empty($data),
+            'profileId'                 => $this->profile_id($data),
+            'profilePicture'            => $this->profile_picture($data),
+            'isACommonName'             => $this->is_common_name($data),
+            'isListedName'              => $this->is_listed_name($data),
+            'isFantasyName'             => $this->is_fantasy_name($data),
+            'isSanctionedName'          => $this->is_sanctioned_name($data),
+            'isPEPName'                 => $this->is_pep_name($data),
+            'isCelebrityName'           => $this->is_celebrity_name($data),
+            'isSillyName'               => $this->is_silly_name($data),
+            'nameGender'                => $this->name_gender($data),
+            'fullName'                  => $this->full_name($data),
+            'firstName'                 => $this->first_name($data),
+            'firstNameInitial'          => $this->first_name_initial($data),
+            'middleName'                => $this->middle_name($data),
+            'middleNameInitial'         => $this->middle_name_initial($data),
+            'lastName'                  => $this->last_name($data),
+            'lastNameInitial'           => $this->last_name_initial($data),
+            'profileGender'             => $this->profile_gender($data),
+            'firstEmailAddress'         => $this->first_email_address($data),
+            'firstEmailUsername'        => $this->first_email_username($data),
+            'secondEmailAddress'        => $this->second_email_address($data),
+            'secondEmailUsername'       => $this->second_email_username($data),
+            'thirdEmailAddress'         => $this->third_email_address($data),
+            'thirdEmailUsername'        => $this->third_email_username($data),
+            'streetAddress'             => $this->street_address($data),
+            'cityName'                  => $this->city_name($data),
+            'regionName'                => $this->region_name($data),
+            'countryName'               => $this->country_name($data),
+            'postalCode'                => $this->postal_code($data),
+            'birthYear'                 => $this->birth_year($data),
+            'birthMonth'                => $this->birth_month($data),
+            'birthDay'                  => $this->birth_day($data),
+            'profileAge'                => $this->profile_age($data),
+            'firstPhoneCountry'         => $this->first_phone($data, 'country'),
+            'firstPhoneCountryCode'     => $this->first_phone($data, 'countrycode'),
+            'firstPhoneNumber'          => $this->first_phone($data, 'number'),
+            'secondPhoneCountry'        => $this->second_phone($data, 'country'),
+            'secondPhoneCountryCode'    => $this->second_phone($data, 'countrycode'),
+            'secondPhoneNumber'         => $this->second_phone($data, 'number'),
+            'numContacts'               => $this->num_contacts($data),
+            'profileNickname'           => $this->profile_nickname($data),
+            'firstMostRecentEducation'  => $this->first_most_recent_education($data),
+            'secondMostRecentEducation' => $this->second_most_recent_education($data),
+            'thirdMostRecentEducation'  => $this->third_most_recent_education($data),
+            'firstMostRecentWork'       => $this->first_most_recent_work($data),
+            'secondMostRecentWork'      => $this->second_most_recent_work($data),
+            'thirdMostRecentWork'       => $this->third_most_recent_work($data)
+        ];
     }
 }

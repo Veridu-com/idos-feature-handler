@@ -222,6 +222,14 @@ final class Linkedin extends AbstractExtractor {
         return $data['_work'];
     }
 
+    private function profile_id(&$data) {
+        if (empty($data['profile']['id'])) {
+            return;
+        }
+
+        return $data['profile']['id'];
+    }
+
     private function profile_url(&$data) {
         if (empty($data['profile']['publicProfileUrl']))
             return;
@@ -1337,105 +1345,105 @@ final class Linkedin extends AbstractExtractor {
     }
 
     public function analyze(array $data) : array {
-        $facts                                                                    = [];
-        $facts['isActive']                                                        = ! empty($data);
-        $facts['profileURL']                                                      = $this->profile_url($data);
-        $facts['profilePicture']                                                  = $this->profile_picture($data);
-        $facts['isACommonName']                                                   = $this->is_common_name($data);
-        $facts['isListedName']                                                    = $this->is_listed_name($data);
-        $facts['isFantasyName']                                                   = $this->is_fantasy_name($data);
-        $facts['isSanctionedName']                                                = $this->is_sanctioned_name($data);
-        $facts['isPEPName']                                                       = $this->is_pep_name($data);
-        $facts['isCelebrityName']                                                 = $this->is_celebrity_name($data);
-        $facts['isSillyName']                                                     = $this->is_silly_name($data);
-        $facts['nameGender']                                                      = $this->name_gender($data);
-        $facts['fullName']                                                        = $this->full_name($data);
-        $facts['firstName']                                                       = $this->first_name($data);
-        $facts['firstNameInitial']                                                = $this->first_name_initial($data);
-        $facts['middleName']                                                      = $this->middle_name($data);
-        $facts['middleNameInitial']                                               = $this->middle_name_initial($data);
-        $facts['lastName']                                                        = $this->last_name($data);
-        $facts['lastNameInitial']                                                 = $this->last_name_initial($data);
-        $facts['emailAddress']                                                    = $this->email_address($data);
-        $facts['emailUsername']                                                   = $this->email_username($data);
-        $facts['firstPhoneCountry']                                               = $this->first_phone($data, 'country');
-        $facts['firstPhoneCountryCode']                                           = $this->first_phone($data, 'countrycode');
-        $facts['firstPhoneNumber']                                                = $this->first_phone($data, 'number');
-        $facts['secondPhoneCountry']                                              = $this->second_phone($data, 'country');
-        $facts['secondPhoneCountryCode']                                          = $this->second_phone($data, 'countrycode');
-        $facts['secondPhoneNumber']                                               = $this->second_phone($data, 'number');
-        $facts['numOfSchoolFriends']                                              = $this->school_friends($data);
-        $facts['numOfCoworkers']                                                  = $this->num_coworkers($data);
-        $facts['numOfConnections']                                                = $this->num_connections($data);
-        $facts['numOfCompanies']                                                  = $this->num_companies($data);
-        $facts['networkReach']                                                    = $this->network_reach($data);
-        $facts['numOfPositions']                                                  = $this->num_positions($data);
-        $facts['numOfLinkedTwitterAccounts']                                      = $this->twitter_accounts($data);
-        $facts['numOfRecommendationsReceived']                                    = $this->recommendations_received($data);
-        $facts['birthDay']                                                        = $this->birth($data, 'day');
-        $facts['birthMonth']                                                      = $this->birth($data, 'month');
-        $facts['birthYear']                                                       = $this->birth($data, 'year');
-        $facts['cityName']                                                        = $this->current_city_name($data);
-        $facts['regionName']                                                      = $this->current_region_name($data);
-        $facts['countryName']                                                     = $this->current_country_name($data);
-        $facts['top1ConnectionsCity']                                             = $this->top1_connections_city($data);
-        $facts['top1ConnectionsCountry']                                          = $this->top1_connections_country($data);
-        $facts['top2ConnectionsCity']                                             = $this->top2_connections_city($data);
-        $facts['top2ConnectionsCountry']                                          = $this->top2_connections_country($data);
-        $facts['top3ConnectionsCity']                                             = $this->top3_connections_city($data);
-        $facts['top3ConnectionsCountry']                                          = $this->top3_connections_country($data);
-        $facts['top4ConnectionsCity']                                             = $this->top4_connections_city($data);
-        $facts['top4ConnectionsCountry']                                          = $this->top4_connections_country($data);
-        $facts['top5ConnectionsCity']                                             = $this->top5_connections_city($data);
-        $facts['top5ConnectionsCountry']                                          = $this->top5_connections_country($data);
-        $facts['firstMostRecentEducation']                                        = $this->first_most_recent_education($data);
-        $facts['secondMostRecentEducation']                                       = $this->second_most_recent_education($data);
-        $facts['thirdMostRecentEducation']                                        = $this->third_most_recent_education($data);
-        $facts['firstMostRecentEducationType']                                    = $this->first_most_recent_education_type($data);
-        $facts['secondMostRecentEducationType']                                   = $this->second_most_recent_education_type($data);
-        $facts['thirdMostRecentEducationType']                                    = $this->third_most_recent_education_type($data);
-        $facts['firstMostRecentEducationCourse']                                  = $this->first_most_recent_education_course($data);
-        $facts['secondMostRecentEducationCourse']                                 = $this->second_most_recent_education_course($data);
-        $facts['thirdMostRecentEducationCourse']                                  = $this->third_most_recent_education_course($data);
-        $facts['firstMostRecentEducationGraduationYear']                          = $this->first_most_recent_education_graduation_year($data);
-        $facts['secondMostRecentEducationGraduationYear']                         = $this->second_most_recent_education_graduation_year($data);
-        $facts['thirdMostRecentEducationGraduationYear']                          = $this->third_most_recent_education_graduation_year($data);
-        $facts['isFirstMostRecentEducationGraduated']                             = $this->first_most_recent_education_graduated($data);
-        $facts['isSecondMostRecentEducationGraduated']                            = $this->second_most_recent_education_graduated($data);
-        $facts['isThirdMostRecentEducationGraduated']                             = $this->third_most_recent_education_graduated($data);
-        $facts['numOfFriendsFromFirstMostRecentEducation']                        = $this->num_friends_first_most_recent_education($data);
-        $facts['numOfFriendsFromSecondMostRecentEducation']                       = $this->num_friends_second_most_recent_education($data);
-        $facts['numOfFriendsFromThirdMostRecentEducation']                        = $this->num_friends_third_most_recent_education($data);
-        $facts['numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear']  = $this->num_friends_first_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear'] = $this->num_friends_second_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear']  = $this->num_friends_third_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsWorkingAtFirstMostRecentEducation']                   = $this->num_friends_working_first_most_recent_education($data);
-        $facts['numOfFriendsWorkingAtSecondMostRecentEducation']                  = $this->num_friends_working_second_most_recent_education($data);
-        $facts['numOfFriendsWorkingAtThirdMostRecentEducation']                   = $this->num_friends_working_third_most_recent_education($data);
-        $facts['numOfStudentFriends']                                             = $this->num_student_friends($data);
-        $facts['isAStudent']                                                      = $this->is_student($data);
-        $facts['isWithinStudentAge']                                              = $this->is_student_age($data);
-        $facts['firstMostRecentEmployer']                                         = $this->first_most_recent_employer($data);
-        $facts['secondMostRecentEmployer']                                        = $this->second_most_recent_employer($data);
-        $facts['thirdMostRecentEmployer']                                         = $this->third_most_recent_employer($data);
-        $facts['fourthMostRecentEmployer']                                        = $this->fourth_most_recent_employer($data);
-        $facts['fifthMostRecentEmployer']                                         = $this->fifth_most_recent_employer($data);
-        $facts['firstMostRecentWorkPosition']                                     = $this->first_most_recent_work_position($data);
-        $facts['secondMostRecentWorkPosition']                                    = $this->second_most_recent_work_position($data);
-        $facts['thirdMostRecentWorkPosition']                                     = $this->third_most_recent_work_position($data);
-        $facts['fourthMostRecentWorkPosition']                                    = $this->fourth_most_recent_work_position($data);
-        $facts['fifthMostRecentWorkPosition']                                     = $this->fifth_most_recent_work_position($data);
-        $facts['firstMostRecentWorkLocation']                                     = $this->first_most_recent_work_location($data);
-        $facts['secondMostRecentWorkLocation']                                    = $this->second_most_recent_work_location($data);
-        $facts['thirdMostRecentWorkLocation']                                     = $this->third_most_recent_work_location($data);
-        $facts['fourthMostRecentWorkLocation']                                    = $this->fourth_most_recent_work_location($data);
-        $facts['fifthMostRecentWorkLocation']                                     = $this->fifth_most_recent_work_location($data);
-        $facts['firstMostRecentWorkIsCurrent']                                    = $this->first_most_recent_work_is_current($data);
-        $facts['secondMostRecentWorkIsCurrent']                                   = $this->second_most_recent_work_is_current($data);
-        $facts['thirdMostRecentWorkIsCurrent']                                    = $this->third_most_recent_work_is_current($data);
-        $facts['fourthMostRecentWorkIsCurrent']                                   = $this->fourth_most_recent_work_is_current($data);
-        $facts['fifthMostRecentWorkIsCurrent']                                    = $this->fifth_most_recent_work_is_current($data);
-
-        return $facts;
+        return [
+            'isActive'                                                        => ! empty($data),
+            'profileId'                                                       => $this->profile_id($data),
+            'profileURL'                                                      => $this->profile_url($data),
+            'profilePicture'                                                  => $this->profile_picture($data),
+            'isACommonName'                                                   => $this->is_common_name($data),
+            'isListedName'                                                    => $this->is_listed_name($data),
+            'isFantasyName'                                                   => $this->is_fantasy_name($data),
+            'isSanctionedName'                                                => $this->is_sanctioned_name($data),
+            'isPEPName'                                                       => $this->is_pep_name($data),
+            'isCelebrityName'                                                 => $this->is_celebrity_name($data),
+            'isSillyName'                                                     => $this->is_silly_name($data),
+            'nameGender'                                                      => $this->name_gender($data),
+            'fullName'                                                        => $this->full_name($data),
+            'firstName'                                                       => $this->first_name($data),
+            'firstNameInitial'                                                => $this->first_name_initial($data),
+            'middleName'                                                      => $this->middle_name($data),
+            'middleNameInitial'                                               => $this->middle_name_initial($data),
+            'lastName'                                                        => $this->last_name($data),
+            'lastNameInitial'                                                 => $this->last_name_initial($data),
+            'emailAddress'                                                    => $this->email_address($data),
+            'emailUsername'                                                   => $this->email_username($data),
+            'firstPhoneCountry'                                               => $this->first_phone($data, 'country'),
+            'firstPhoneCountryCode'                                           => $this->first_phone($data, 'countrycode'),
+            'firstPhoneNumber'                                                => $this->first_phone($data, 'number'),
+            'secondPhoneCountry'                                              => $this->second_phone($data, 'country'),
+            'secondPhoneCountryCode'                                          => $this->second_phone($data, 'countrycode'),
+            'secondPhoneNumber'                                               => $this->second_phone($data, 'number'),
+            'numOfSchoolFriends'                                              => $this->school_friends($data),
+            'numOfCoworkers'                                                  => $this->num_coworkers($data),
+            'numOfConnections'                                                => $this->num_connections($data),
+            'numOfCompanies'                                                  => $this->num_companies($data),
+            'networkReach'                                                    => $this->network_reach($data),
+            'numOfPositions'                                                  => $this->num_positions($data),
+            'numOfLinkedTwitterAccounts'                                      => $this->twitter_accounts($data),
+            'numOfRecommendationsReceived'                                    => $this->recommendations_received($data),
+            'birthDay'                                                        => $this->birth($data, 'day'),
+            'birthMonth'                                                      => $this->birth($data, 'month'),
+            'birthYear'                                                       => $this->birth($data, 'year'),
+            'cityName'                                                        => $this->current_city_name($data),
+            'regionName'                                                      => $this->current_region_name($data),
+            'countryName'                                                     => $this->current_country_name($data),
+            'top1ConnectionsCity'                                             => $this->top1_connections_city($data),
+            'top1ConnectionsCountry'                                          => $this->top1_connections_country($data),
+            'top2ConnectionsCity'                                             => $this->top2_connections_city($data),
+            'top2ConnectionsCountry'                                          => $this->top2_connections_country($data),
+            'top3ConnectionsCity'                                             => $this->top3_connections_city($data),
+            'top3ConnectionsCountry'                                          => $this->top3_connections_country($data),
+            'top4ConnectionsCity'                                             => $this->top4_connections_city($data),
+            'top4ConnectionsCountry'                                          => $this->top4_connections_country($data),
+            'top5ConnectionsCity'                                             => $this->top5_connections_city($data),
+            'top5ConnectionsCountry'                                          => $this->top5_connections_country($data),
+            'firstMostRecentEducation'                                        => $this->first_most_recent_education($data),
+            'secondMostRecentEducation'                                       => $this->second_most_recent_education($data),
+            'thirdMostRecentEducation'                                        => $this->third_most_recent_education($data),
+            'firstMostRecentEducationType'                                    => $this->first_most_recent_education_type($data),
+            'secondMostRecentEducationType'                                   => $this->second_most_recent_education_type($data),
+            'thirdMostRecentEducationType'                                    => $this->third_most_recent_education_type($data),
+            'firstMostRecentEducationCourse'                                  => $this->first_most_recent_education_course($data),
+            'secondMostRecentEducationCourse'                                 => $this->second_most_recent_education_course($data),
+            'thirdMostRecentEducationCourse'                                  => $this->third_most_recent_education_course($data),
+            'firstMostRecentEducationGraduationYear'                          => $this->first_most_recent_education_graduation_year($data),
+            'secondMostRecentEducationGraduationYear'                         => $this->second_most_recent_education_graduation_year($data),
+            'thirdMostRecentEducationGraduationYear'                          => $this->third_most_recent_education_graduation_year($data),
+            'isFirstMostRecentEducationGraduated'                             => $this->first_most_recent_education_graduated($data),
+            'isSecondMostRecentEducationGraduated'                            => $this->second_most_recent_education_graduated($data),
+            'isThirdMostRecentEducationGraduated'                             => $this->third_most_recent_education_graduated($data),
+            'numOfFriendsFromFirstMostRecentEducation'                        => $this->num_friends_first_most_recent_education($data),
+            'numOfFriendsFromSecondMostRecentEducation'                       => $this->num_friends_second_most_recent_education($data),
+            'numOfFriendsFromThirdMostRecentEducation'                        => $this->num_friends_third_most_recent_education($data),
+            'numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear'  => $this->num_friends_first_most_recent_education_same_graduation_year($data),
+            'numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear' => $this->num_friends_second_most_recent_education_same_graduation_year($data),
+            'numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear'  => $this->num_friends_third_most_recent_education_same_graduation_year($data),
+            'numOfFriendsWorkingAtFirstMostRecentEducation'                   => $this->num_friends_working_first_most_recent_education($data),
+            'numOfFriendsWorkingAtSecondMostRecentEducation'                  => $this->num_friends_working_second_most_recent_education($data),
+            'numOfFriendsWorkingAtThirdMostRecentEducation'                   => $this->num_friends_working_third_most_recent_education($data),
+            'numOfStudentFriends'                                             => $this->num_student_friends($data),
+            'isAStudent'                                                      => $this->is_student($data),
+            'isWithinStudentAge'                                              => $this->is_student_age($data),
+            'firstMostRecentEmployer'                                         => $this->first_most_recent_employer($data),
+            'secondMostRecentEmployer'                                        => $this->second_most_recent_employer($data),
+            'thirdMostRecentEmployer'                                         => $this->third_most_recent_employer($data),
+            'fourthMostRecentEmployer'                                        => $this->fourth_most_recent_employer($data),
+            'fifthMostRecentEmployer'                                         => $this->fifth_most_recent_employer($data),
+            'firstMostRecentWorkPosition'                                     => $this->first_most_recent_work_position($data),
+            'secondMostRecentWorkPosition'                                    => $this->second_most_recent_work_position($data),
+            'thirdMostRecentWorkPosition'                                     => $this->third_most_recent_work_position($data),
+            'fourthMostRecentWorkPosition'                                    => $this->fourth_most_recent_work_position($data),
+            'fifthMostRecentWorkPosition'                                     => $this->fifth_most_recent_work_position($data),
+            'firstMostRecentWorkLocation'                                     => $this->first_most_recent_work_location($data),
+            'secondMostRecentWorkLocation'                                    => $this->second_most_recent_work_location($data),
+            'thirdMostRecentWorkLocation'                                     => $this->third_most_recent_work_location($data),
+            'fourthMostRecentWorkLocation'                                    => $this->fourth_most_recent_work_location($data),
+            'fifthMostRecentWorkLocation'                                     => $this->fifth_most_recent_work_location($data),
+            'firstMostRecentWorkIsCurrent'                                    => $this->first_most_recent_work_is_current($data),
+            'secondMostRecentWorkIsCurrent'                                   => $this->second_most_recent_work_is_current($data),
+            'thirdMostRecentWorkIsCurrent'                                    => $this->third_most_recent_work_is_current($data),
+            'fourthMostRecentWorkIsCurrent'                                   => $this->fourth_most_recent_work_is_current($data),
+            'fifthMostRecentWorkIsCurrent'                                    => $this->fifth_most_recent_work_is_current($data)
+        ];
     }
 }
