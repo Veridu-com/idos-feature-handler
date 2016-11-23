@@ -145,6 +145,14 @@ final class Google extends AbstractExtractor {
         return $data['_work'];
     }
 
+    private function profile_id(&$data) {
+        if (empty($data['profile']['id'])) {
+            return;
+        }
+
+        return $data['profile']['id'];
+    }
+
     private function profile_picture(&$data) {
         if (empty($data['profile']['picture'])) {
             if (empty($data['plus']['image']['url']))
@@ -154,6 +162,14 @@ final class Google extends AbstractExtractor {
         }
 
         return $data['profile']['picture'];
+    }
+
+    private function profile_url(&$data) {
+        if (empty($data['profile']['id'])) {
+            return;
+        }
+
+        return sprintf('https://plus.google.com/%s', $data['profile']['id']);
     }
 
     private function is_common_name(&$data) {
@@ -1224,82 +1240,83 @@ final class Google extends AbstractExtractor {
     }
 
     public function analyze(array $data) : array {
-        $facts                                                                    = [];
-        $facts['isActive']                                                        = ! empty($data);
-        $facts['profilePicture']                                                  = $this->profile_picture($data);
-        $facts['isACommonName']                                                   = $this->is_common_name($data);
-        $facts['isListedName']                                                    = $this->is_listed_name($data);
-        $facts['isFantasyName']                                                   = $this->is_fantasy_name($data);
-        $facts['isSanctionedName']                                                = $this->is_sanctioned_name($data);
-        $facts['isPEPName']                                                       = $this->is_pep_name($data);
-        $facts['isCelebrityName']                                                 = $this->is_celebrity_name($data);
-        $facts['isSillyName']                                                     = $this->is_silly_name($data);
-        $facts['nameGender']                                                      = $this->name_gender($data);
-        $facts['fullName']                                                        = $this->full_name($data);
-        $facts['firstName']                                                       = $this->first_name($data);
-        $facts['firstNameInitial']                                                = $this->first_name_initial($data);
-        $facts['middleName']                                                      = $this->middle_name($data);
-        $facts['middleNameInitial']                                               = $this->middle_name_initial($data);
-        $facts['lastName']                                                        = $this->last_name($data);
-        $facts['lastNameInitial']                                                 = $this->last_name_initial($data);
-        $facts['profileGender']                                                   = $this->profile_gender($data);
-        $facts['emailAddress']                                                    = $this->email_address($data);
-        $facts['emailUsername']                                                   = $this->email_username($data);
-        $facts['numOfCircles']                                                    = $this->num_circles($data);
-        $facts['numOfSchoolFriends']                                              = $this->school_friends($data);
-        $facts['numOfCoworkers']                                                  = $this->num_coworkers($data);
-        $facts['avgActivitiesPerWeek']                                            = $this->avg_activities_week($data);
-        $facts['avgRepliesPerWeek']                                               = $this->avg_replies_week($data);
-        $facts['avgPlusonersPerWeek']                                             = $this->avg_plusoners_week($data);
-        $facts['avgResharersPerWeek']                                             = $this->avg_resharers_week($data);
-        $facts['profileAge']                                                      = $this->profile_age($data);
-        $facts['currentCityName']                                                 = $this->current_city_name($data);
-        $facts['currentRegionName']                                               = $this->current_region_name($data);
-        $facts['currentCountryName']                                              = $this->current_country_name($data);
-        $facts['firstMostRecentEducation']                                        = $this->first_most_recent_education($data);
-        $facts['secondMostRecentEducation']                                       = $this->second_most_recent_education($data);
-        $facts['thirdMostRecentEducation']                                        = $this->third_most_recent_education($data);
-        $facts['firstMostRecentEducationCourse']                                  = $this->first_most_recent_education_course($data);
-        $facts['secondMostRecentEducationCourse']                                 = $this->second_most_recent_education_course($data);
-        $facts['thirdMostRecentEducationCourse']                                  = $this->third_most_recent_education_course($data);
-        $facts['firstMostRecentEducationGraduationYear']                          = $this->first_most_recent_education_graduation_year($data);
-        $facts['secondMostRecentEducationGraduationYear']                         = $this->second_most_recent_education_graduation_year($data);
-        $facts['thirdMostRecentEducationGraduationYear']                          = $this->third_most_recent_education_graduation_year($data);
-        $facts['isFirstMostRecentEducationGraduated']                             = $this->first_most_recent_education_graduated($data);
-        $facts['isSecondMostRecentEducationGraduated']                            = $this->second_most_recent_education_graduated($data);
-        $facts['isThirdMostRecentEducationGraduated']                             = $this->third_most_recent_education_graduated($data);
-        $facts['numOfFriendsFromFirstMostRecentEducation']                        = $this->num_friends_first_most_recent_education($data);
-        $facts['numOfFriendsFromSecondMostRecentEducation']                       = $this->num_friends_second_most_recent_education($data);
-        $facts['numOfFriendsFromThirdMostRecentEducation']                        = $this->num_friends_third_most_recent_education($data);
-        $facts['numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear']  = $this->num_friends_first_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear'] = $this->num_friends_second_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear']  = $this->num_friends_third_most_recent_education_same_graduation_year($data);
-        $facts['numOfFriendsWorkingAtFirstMostRecentEducation']                   = $this->num_friends_working_first_most_recent_education($data);
-        $facts['numOfFriendsWorkingAtSecondMostRecentEducation']                  = $this->num_friends_working_second_most_recent_education($data);
-        $facts['numOfFriendsWorkingAtThirdMostRecentEducation']                   = $this->num_friends_working_third_most_recent_education($data);
-        $facts['numOfStudentFriends']                                             = $this->num_student_friends($data);
-        $facts['isAStudent']                                                      = $this->is_student($data);
-        $facts['firstMostRecentEmployer']                                         = $this->first_most_recent_employer($data);
-        $facts['secondMostRecentEmployer']                                        = $this->second_most_recent_employer($data);
-        $facts['thirdMostRecentEmployer']                                         = $this->third_most_recent_employer($data);
-        $facts['fourthMostRecentEmployer']                                        = $this->fourth_most_recent_employer($data);
-        $facts['fifthMostRecentEmployer']                                         = $this->fifth_most_recent_employer($data);
-        $facts['firstMostRecentWorkPosition']                                     = $this->first_most_recent_work_position($data);
-        $facts['secondMostRecentWorkPosition']                                    = $this->second_most_recent_work_position($data);
-        $facts['thirdMostRecentWorkPosition']                                     = $this->third_most_recent_work_position($data);
-        $facts['fourthMostRecentWorkPosition']                                    = $this->fourth_most_recent_work_position($data);
-        $facts['fifthMostRecentWorkPosition']                                     = $this->fifth_most_recent_work_position($data);
-        $facts['firstMostRecentWorkIsCurrent']                                    = $this->first_most_recent_work_is_current($data);
-        $facts['secondMostRecentWorkIsCurrent']                                   = $this->second_most_recent_work_is_current($data);
-        $facts['thirdMostRecentWorkIsCurrent']                                    = $this->third_most_recent_work_is_current($data);
-        $facts['fourthMostRecentWorkIsCurrent']                                   = $this->fourth_most_recent_work_is_current($data);
-        $facts['fifthMostRecentWorkIsCurrent']                                    = $this->fifth_most_recent_work_is_current($data);
-        $facts['numGmailContacts']                                                = $this->num_gmail_contacts($data);
-        $facts['numGmailMessages']                                                = $this->num_gmail_messages($data);
-        $facts['numGmailInboxMessages']                                           = $this->num_gmail_inbox_messages($data);
-        $facts['numGmailSentMessages']                                            = $this->num_gmail_sent_messages($data);
-        $facts['numGmailLabels']                                                  = $this->num_gmail_labels($data);
-
-        return $facts;
+        return [
+            'isActive'                                                        => ! empty($data),
+            'profileId'                                                       => $this->profile_id($data),
+            'profilePicture'                                                  => $this->profile_picture($data),
+            'profileURL'                                                      => $this->profile_url($data),
+            'isACommonName'                                                   => $this->is_common_name($data),
+            'isListedName'                                                    => $this->is_listed_name($data),
+            'isFantasyName'                                                   => $this->is_fantasy_name($data),
+            'isSanctionedName'                                                => $this->is_sanctioned_name($data),
+            'isPEPName'                                                       => $this->is_pep_name($data),
+            'isCelebrityName'                                                 => $this->is_celebrity_name($data),
+            'isSillyName'                                                     => $this->is_silly_name($data),
+            'nameGender'                                                      => $this->name_gender($data),
+            'fullName'                                                        => $this->full_name($data),
+            'firstName'                                                       => $this->first_name($data),
+            'firstNameInitial'                                                => $this->first_name_initial($data),
+            'middleName'                                                      => $this->middle_name($data),
+            'middleNameInitial'                                               => $this->middle_name_initial($data),
+            'lastName'                                                        => $this->last_name($data),
+            'lastNameInitial'                                                 => $this->last_name_initial($data),
+            'profileGender'                                                   => $this->profile_gender($data),
+            'emailAddress'                                                    => $this->email_address($data),
+            'emailUsername'                                                   => $this->email_username($data),
+            'numOfCircles'                                                    => $this->num_circles($data),
+            'numOfSchoolFriends'                                              => $this->school_friends($data),
+            'numOfCoworkers'                                                  => $this->num_coworkers($data),
+            'avgActivitiesPerWeek'                                            => $this->avg_activities_week($data),
+            'avgRepliesPerWeek'                                               => $this->avg_replies_week($data),
+            'avgPlusonersPerWeek'                                             => $this->avg_plusoners_week($data),
+            'avgResharersPerWeek'                                             => $this->avg_resharers_week($data),
+            'profileAge'                                                      => $this->profile_age($data),
+            'currentCityName'                                                 => $this->current_city_name($data),
+            'currentRegionName'                                               => $this->current_region_name($data),
+            'currentCountryName'                                              => $this->current_country_name($data),
+            'firstMostRecentEducation'                                        => $this->first_most_recent_education($data),
+            'secondMostRecentEducation'                                       => $this->second_most_recent_education($data),
+            'thirdMostRecentEducation'                                        => $this->third_most_recent_education($data),
+            'firstMostRecentEducationCourse'                                  => $this->first_most_recent_education_course($data),
+            'secondMostRecentEducationCourse'                                 => $this->second_most_recent_education_course($data),
+            'thirdMostRecentEducationCourse'                                  => $this->third_most_recent_education_course($data),
+            'firstMostRecentEducationGraduationYear'                          => $this->first_most_recent_education_graduation_year($data),
+            'secondMostRecentEducationGraduationYear'                         => $this->second_most_recent_education_graduation_year($data),
+            'thirdMostRecentEducationGraduationYear'                          => $this->third_most_recent_education_graduation_year($data),
+            'isFirstMostRecentEducationGraduated'                             => $this->first_most_recent_education_graduated($data),
+            'isSecondMostRecentEducationGraduated'                            => $this->second_most_recent_education_graduated($data),
+            'isThirdMostRecentEducationGraduated'                             => $this->third_most_recent_education_graduated($data),
+            'numOfFriendsFromFirstMostRecentEducation'                        => $this->num_friends_first_most_recent_education($data),
+            'numOfFriendsFromSecondMostRecentEducation'                       => $this->num_friends_second_most_recent_education($data),
+            'numOfFriendsFromThirdMostRecentEducation'                        => $this->num_friends_third_most_recent_education($data),
+            'numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear'  => $this->num_friends_first_most_recent_education_same_graduation_year($data),
+            'numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear' => $this->num_friends_second_most_recent_education_same_graduation_year($data),
+            'numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear'  => $this->num_friends_third_most_recent_education_same_graduation_year($data),
+            'numOfFriendsWorkingAtFirstMostRecentEducation'                   => $this->num_friends_working_first_most_recent_education($data),
+            'numOfFriendsWorkingAtSecondMostRecentEducation'                  => $this->num_friends_working_second_most_recent_education($data),
+            'numOfFriendsWorkingAtThirdMostRecentEducation'                   => $this->num_friends_working_third_most_recent_education($data),
+            'numOfStudentFriends'                                             => $this->num_student_friends($data),
+            'isAStudent'                                                      => $this->is_student($data),
+            'firstMostRecentEmployer'                                         => $this->first_most_recent_employer($data),
+            'secondMostRecentEmployer'                                        => $this->second_most_recent_employer($data),
+            'thirdMostRecentEmployer'                                         => $this->third_most_recent_employer($data),
+            'fourthMostRecentEmployer'                                        => $this->fourth_most_recent_employer($data),
+            'fifthMostRecentEmployer'                                         => $this->fifth_most_recent_employer($data),
+            'firstMostRecentWorkPosition'                                     => $this->first_most_recent_work_position($data),
+            'secondMostRecentWorkPosition'                                    => $this->second_most_recent_work_position($data),
+            'thirdMostRecentWorkPosition'                                     => $this->third_most_recent_work_position($data),
+            'fourthMostRecentWorkPosition'                                    => $this->fourth_most_recent_work_position($data),
+            'fifthMostRecentWorkPosition'                                     => $this->fifth_most_recent_work_position($data),
+            'firstMostRecentWorkIsCurrent'                                    => $this->first_most_recent_work_is_current($data),
+            'secondMostRecentWorkIsCurrent'                                   => $this->second_most_recent_work_is_current($data),
+            'thirdMostRecentWorkIsCurrent'                                    => $this->third_most_recent_work_is_current($data),
+            'fourthMostRecentWorkIsCurrent'                                   => $this->fourth_most_recent_work_is_current($data),
+            'fifthMostRecentWorkIsCurrent'                                    => $this->fifth_most_recent_work_is_current($data),
+            'numGmailContacts'                                                => $this->num_gmail_contacts($data),
+            'numGmailMessages'                                                => $this->num_gmail_messages($data),
+            'numGmailInboxMessages'                                           => $this->num_gmail_inbox_messages($data),
+            'numGmailSentMessages'                                            => $this->num_gmail_sent_messages($data),
+            'numGmailLabels'                                                  => $this->num_gmail_labels($data)
+        ];
     }
 }

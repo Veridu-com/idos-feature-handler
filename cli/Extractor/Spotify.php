@@ -91,6 +91,14 @@ final class Spotify extends AbstractExtractor {
         return array_keys($count);
     }
 
+    private function profile_id(&$data) {
+        if (empty($data['profile']['user_id'])) {
+            return;
+        }
+
+        return $data['profile']['user_id'];
+    }
+
     private function num_playlists(&$data) {
         $playlists = $this->_playlists($data);
 
@@ -499,50 +507,50 @@ final class Spotify extends AbstractExtractor {
     }
 
     public function analyze(array $data) : array {
-        $facts                                         = [];
-        $facts['isActive']                             = ! empty($data);
-        $facts['isACommonName']                        = $this->is_common_name($data);
-        $facts['isListedName']                         = $this->is_listed_name($data);
-        $facts['isFantasyName']                        = $this->is_fantasy_name($data);
-        $facts['isSanctionedName']                     = $this->is_sanctioned_name($data);
-        $facts['isPEPName']                            = $this->is_pep_name($data);
-        $facts['isCelebrityName']                      = $this->is_celebrity_name($data);
-        $facts['isSillyName']                          = $this->is_silly_name($data);
-        $facts['nameGender']                           = $this->name_gender($data);
-        $facts['fullName']                             = $this->full_name($data);
-        $facts['firstName']                            = $this->first_name($data);
-        $facts['firstNameInitial']                     = $this->first_name_initial($data);
-        $facts['middleName']                           = $this->middle_name($data);
-        $facts['middleNameInitial']                    = $this->middle_name_initial($data);
-        $facts['lastName']                             = $this->last_name($data);
-        $facts['lastNameInitial']                      = $this->last_name_initial($data);
-        $facts['emailAddress']                         = $this->email_address($data);
-        $facts['emailUsername']                        = $this->email_username($data);
-        $facts['birthDay']                             = $this->birth($data, 2);
-        $facts['birthMonth']                           = $this->birth($data, 1);
-        $facts['birthYear']                            = $this->birth($data, 0);
-        $facts['countryName']                          = $this->current_country_name($data);
-        $facts['numPlaylists']                         = $this->num_playlists($data);
-        $facts['numOwnedPlaylists']                    = $this->num_owned_playlists($data);
-        $facts['numCollaborativePlaylists']            = $this->num_collaborative_playlists($data);
-        $facts['numPublicPlaylists']                   = $this->num_public_playlists($data);
-        $facts['numPrivatePlaylists']                  = $this->num_private_playlists($data);
-        $facts['numUniqueTracks']                      = $this->num_unique_tracks($data);
-        $facts['numPlaylistsTracks']                   = $this->num_playlists_tracks($data);
-        $facts['numTracksCollaborativePlaylists']      = $this->num_tracks_collaborative_playlists($data);
-        $facts['numTracksPublicPlaylists']             = $this->num_tracks_public_playlists($data);
-        $facts['numTracksPrivatePlaylists']            = $this->num_tracks_private_playlists($data);
-        $facts['numTracksCollaborativeOwnedPlaylists'] = $this->num_tracks_collaborative_owned_playlists($data);
-        $facts['numTracksPublicOwnedPlaylists']        = $this->num_tracks_public_owned_playlists($data);
-        $facts['numTracksPrivateOwnedPlaylists']       = $this->num_tracks_private_owned_playlists($data);
-        $facts['profileAge']                           = $this->profile_age($data);
-        $facts['isProfilePremium']                     = $this->is_profile_premium($data);
-        $facts['firstMostCommonArtist']                = $this->first_most_common_artist($data);
-        $facts['secondMostCommonArtist']               = $this->second_most_common_artist($data);
-        $facts['thirdMostCommonArtist']                = $this->third_most_common_artist($data);
-        $facts['fourthMostCommonArtist']               = $this->fourth_most_common_artist($data);
-        $facts['fifthMostCommonArtist']                = $this->fifth_most_common_artist($data);
-
-        return $facts;
+        return [
+            'isActive'                             => ! empty($data),
+            'profileId'                            => $this->profile_id($data),
+            'isACommonName'                        => $this->is_common_name($data),
+            'isListedName'                         => $this->is_listed_name($data),
+            'isFantasyName'                        => $this->is_fantasy_name($data),
+            'isSanctionedName'                     => $this->is_sanctioned_name($data),
+            'isPEPName'                            => $this->is_pep_name($data),
+            'isCelebrityName'                      => $this->is_celebrity_name($data),
+            'isSillyName'                          => $this->is_silly_name($data),
+            'nameGender'                           => $this->name_gender($data),
+            'fullName'                             => $this->full_name($data),
+            'firstName'                            => $this->first_name($data),
+            'firstNameInitial'                     => $this->first_name_initial($data),
+            'middleName'                           => $this->middle_name($data),
+            'middleNameInitial'                    => $this->middle_name_initial($data),
+            'lastName'                             => $this->last_name($data),
+            'lastNameInitial'                      => $this->last_name_initial($data),
+            'emailAddress'                         => $this->email_address($data),
+            'emailUsername'                        => $this->email_username($data),
+            'birthDay'                             => $this->birth($data, 2),
+            'birthMonth'                           => $this->birth($data, 1),
+            'birthYear'                            => $this->birth($data, 0),
+            'countryName'                          => $this->current_country_name($data),
+            'numPlaylists'                         => $this->num_playlists($data),
+            'numOwnedPlaylists'                    => $this->num_owned_playlists($data),
+            'numCollaborativePlaylists'            => $this->num_collaborative_playlists($data),
+            'numPublicPlaylists'                   => $this->num_public_playlists($data),
+            'numPrivatePlaylists'                  => $this->num_private_playlists($data),
+            'numUniqueTracks'                      => $this->num_unique_tracks($data),
+            'numPlaylistsTracks'                   => $this->num_playlists_tracks($data),
+            'numTracksCollaborativePlaylists'      => $this->num_tracks_collaborative_playlists($data),
+            'numTracksPublicPlaylists'             => $this->num_tracks_public_playlists($data),
+            'numTracksPrivatePlaylists'            => $this->num_tracks_private_playlists($data),
+            'numTracksCollaborativeOwnedPlaylists' => $this->num_tracks_collaborative_owned_playlists($data),
+            'numTracksPublicOwnedPlaylists'        => $this->num_tracks_public_owned_playlists($data),
+            'numTracksPrivateOwnedPlaylists'       => $this->num_tracks_private_owned_playlists($data),
+            'profileAge'                           => $this->profile_age($data),
+            'isProfilePremium'                     => $this->is_profile_premium($data),
+            'firstMostCommonArtist'                => $this->first_most_common_artist($data),
+            'secondMostCommonArtist'               => $this->second_most_common_artist($data),
+            'thirdMostCommonArtist'                => $this->third_most_common_artist($data),
+            'fourthMostCommonArtist'               => $this->fourth_most_common_artist($data),
+            'fifthMostCommonArtist'                => $this->fifth_most_common_artist($data)
+        ];
     }
 }

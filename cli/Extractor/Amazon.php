@@ -8,6 +8,14 @@ use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
 final class Amazon extends AbstractExtractor {
+    private function profile_id(&$data) {
+        if (empty($data['profile']['user_id'])) {
+            return;
+        }
+
+        return $data['profile']['user_id'];
+    }
+
     private function is_common_name(&$data) {
         $name = $this->first_name($data);
         if (is_null($name))
@@ -175,30 +183,30 @@ final class Amazon extends AbstractExtractor {
     }
 
     public function analyze(array $data) : array {
-        $facts                      = [];
-        $facts['isActive']          = ! empty($data);
-        $facts['isACommonName']     = $this->is_common_name($data);
-        $facts['isListedName']      = $this->is_listed_name($data);
-        $facts['isFantasyName']     = $this->is_fantasy_name($data);
-        $facts['isSanctionedName']  = $this->is_sanctioned_name($data);
-        $facts['isPEPName']         = $this->is_pep_name($data);
-        $facts['isCelebrityName']   = $this->is_celebrity_name($data);
-        $facts['isSillyName']       = $this->is_silly_name($data);
-        $facts['nameGender']        = $this->name_gender($data);
-        $facts['fullName']          = $this->full_name($data);
-        $facts['firstName']         = $this->first_name($data);
-        $facts['firstNameInitial']  = $this->first_name_initial($data);
-        $facts['middleName']        = $this->middle_name($data);
-        $facts['middleNameInitial'] = $this->middle_name_initial($data);
-        $facts['lastName']          = $this->last_name($data);
-        $facts['lastNameInitial']   = $this->last_name_initial($data);
-        $facts['emailAddress']      = $this->email_address($data);
-        $facts['emailUsername']     = $this->email_username($data);
-        $facts['cityName']          = $this->city_name($data);
-        $facts['regionName']        = $this->region_name($data);
-        $facts['countryName']       = $this->country_name($data);
-        $facts['postalCode']        = $this->postal_code($data);
-
-        return $facts;
+        return [
+            'isActive'          => ! empty($data),
+            'profileId'         => $this->profile_id($data),
+            'isACommonName'     => $this->is_common_name($data),
+            'isListedName'      => $this->is_listed_name($data),
+            'isFantasyName'     => $this->is_fantasy_name($data),
+            'isSanctionedName'  => $this->is_sanctioned_name($data),
+            'isPEPName'         => $this->is_pep_name($data),
+            'isCelebrityName'   => $this->is_celebrity_name($data),
+            'isSillyName'       => $this->is_silly_name($data),
+            'nameGender'        => $this->name_gender($data),
+            'fullName'          => $this->full_name($data),
+            'firstName'         => $this->first_name($data),
+            'firstNameInitial'  => $this->first_name_initial($data),
+            'middleName'        => $this->middle_name($data),
+            'middleNameInitial' => $this->middle_name_initial($data),
+            'lastName'          => $this->last_name($data),
+            'lastNameInitial'   => $this->last_name_initial($data),
+            'emailAddress'      => $this->email_address($data),
+            'emailUsername'     => $this->email_username($data),
+            'cityName'          => $this->city_name($data),
+            'regionName'        => $this->region_name($data),
+            'countryName'       => $this->country_name($data),
+            'postalCode'        => $this->postal_code($data)
+        ];
     }
 }

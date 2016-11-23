@@ -8,6 +8,14 @@ use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
 final class Paypal extends AbstractExtractor {
+    private function profile_id(&$data) {
+        if (empty($data['profile']['user_id'])) {
+            return;
+        }
+
+        return $data['profile']['user_id'];
+    }
+
     private function verified_profile(&$data) {
         if (empty($data['profile']['verified_account']))
             return false;
@@ -231,40 +239,40 @@ final class Paypal extends AbstractExtractor {
     }
 
     public function analyze(array $data) : array {
-        $facts                      = [];
-        $facts['isActive']          = ! empty($data);
-        $facts['verifiedProfile']   = $this->verified_profile($data);
-        $facts['isACommonName']     = $this->is_common_name($data);
-        $facts['isListedName']      = $this->is_listed_name($data);
-        $facts['isFantasyName']     = $this->is_fantasy_name($data);
-        $facts['isSanctionedName']  = $this->is_sanctioned_name($data);
-        $facts['isPEPName']         = $this->is_pep_name($data);
-        $facts['isCelebrityName']   = $this->is_celebrity_name($data);
-        $facts['isSillyName']       = $this->is_silly_name($data);
-        $facts['nameGender']        = $this->name_gender($data);
-        $facts['fullName']          = $this->full_name($data);
-        $facts['firstName']         = $this->first_name($data);
-        $facts['firstNameInitial']  = $this->first_name_initial($data);
-        $facts['middleName']        = $this->middle_name($data);
-        $facts['middleNameInitial'] = $this->middle_name_initial($data);
-        $facts['lastName']          = $this->last_name($data);
-        $facts['lastNameInitial']   = $this->last_name_initial($data);
-        $facts['emailAddress']      = $this->email_address($data);
-        $facts['emailUsername']     = $this->email_username($data);
-        $facts['phoneCountry']      = $this->phone($data, 'country');
-        $facts['phoneCountryCode']  = $this->phone($data, 'countrycode');
-        $facts['phoneNumber']       = $this->phone($data, 'number');
-        $facts['accountType']       = $this->account_type($data);
-        $facts['profileAge']        = $this->profile_age($data);
-        $facts['countryName']       = $this->country_name($data);
-        $facts['cityName']          = $this->city_name($data);
-        $facts['regionName']        = $this->region_name($data);
-        $facts['postalCode']        = $this->postal_code($data);
-        $facts['streetAddress']     = $this->street_address($data);
-        $facts['birthDay']          = $this->birth($data, 2);
-        $facts['birthMonth']        = $this->birth($data, 1);
-        $facts['birthYear']         = $this->birth($data, 0);
-
-        return $facts;
+        return [
+            'isActive'          => ! empty($data),
+            'profileId'         => $this->profile_id($data),
+            'verifiedProfile'   => $this->verified_profile($data),
+            'isACommonName'     => $this->is_common_name($data),
+            'isListedName'      => $this->is_listed_name($data),
+            'isFantasyName'     => $this->is_fantasy_name($data),
+            'isSanctionedName'  => $this->is_sanctioned_name($data),
+            'isPEPName'         => $this->is_pep_name($data),
+            'isCelebrityName'   => $this->is_celebrity_name($data),
+            'isSillyName'       => $this->is_silly_name($data),
+            'nameGender'        => $this->name_gender($data),
+            'fullName'          => $this->full_name($data),
+            'firstName'         => $this->first_name($data),
+            'firstNameInitial'  => $this->first_name_initial($data),
+            'middleName'        => $this->middle_name($data),
+            'middleNameInitial' => $this->middle_name_initial($data),
+            'lastName'          => $this->last_name($data),
+            'lastNameInitial'   => $this->last_name_initial($data),
+            'emailAddress'      => $this->email_address($data),
+            'emailUsername'     => $this->email_username($data),
+            'phoneCountry'      => $this->phone($data, 'country'),
+            'phoneCountryCode'  => $this->phone($data, 'countrycode'),
+            'phoneNumber'       => $this->phone($data, 'number'),
+            'accountType'       => $this->account_type($data),
+            'profileAge'        => $this->profile_age($data),
+            'countryName'       => $this->country_name($data),
+            'cityName'          => $this->city_name($data),
+            'regionName'        => $this->region_name($data),
+            'postalCode'        => $this->postal_code($data),
+            'streetAddress'     => $this->street_address($data),
+            'birthDay'          => $this->birth($data, 2),
+            'birthMonth'        => $this->birth($data, 1),
+            'birthYear'         => $this->birth($data, 0)
+        ];
     }
 }
