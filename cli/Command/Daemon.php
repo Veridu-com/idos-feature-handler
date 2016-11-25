@@ -35,10 +35,21 @@ class Daemon extends Command {
             ->setName('feature:daemon')
             ->setDescription('idOS Feature - Daemon')
             ->addOption(
+                'devMode',
+                'd',
+                InputOption::VALUE_NONE,
+                'Development mode'
+            )
+            ->addOption(
                 'logFile',
                 'l',
                 InputOption::VALUE_REQUIRED,
                 'Path to log file'
+            )
+            ->addArgument(
+                'functionName',
+                InputArgument::REQUIRED,
+                'Gearman Worker Function name'
             )
             ->addArgument(
                 'serverList',
@@ -63,6 +74,20 @@ class Daemon extends Command {
 
         $logger->debug('Initializing idOS Feature Handler Daemon');
 
+        // Development mode
+        $devMode = ! empty($input->getOption('devMode'));
+        if ($devMode) {
+            $logger->debug('Running in developer mode');
+            ini_set('display_errors', 'On');
+            error_reporting(-1);
+        }
+
+        // Gearman Worker function name setup
+        $functionName = $input->getArgument('functionName');
+        if ((empty($functionName)) || (! preg_match('/^[a-zA-Z0-9\._-]+$/', $functionName))) {
+            $functionName = 'idos-feature';
+        }
+
         // Server List setup
         $servers = $input->getArgument('serverList');
 
@@ -85,7 +110,7 @@ class Daemon extends Command {
         // 1 second I/O timeout
         $gearman->setTimeout(1000);
 
-        $logger->debug('Registering Worker Function "feature"');
+        $logger->debug('Registering Worker Function', ['function' => $functionName]);
 
         /*
          * Payload content:
@@ -96,29 +121,29 @@ class Daemon extends Command {
          *  - publicKey
          */
         $gearman->addFunction(
-            'feature',
+            $functionName,
             function (\GearmanJob $job) use ($logger) {
-                $time = microtime(true);
-
-                $logger->debug('Got a new job!');
+                $logger->info('Feature job added');
                 $jobData = json_decode($job->workload(), true);
                 if ($jobData === null) {
-                    $logger->debug('Invalid Job Workload!');
+                    $logger->warning('Invalid Job Workload!');
                     $job->sendComplete('invalid');
 
                     return;
                 }
 
-                $handlerClass = 'Cli\Extractor\\' . ucfirst($jobData['providerName']);
+                $init = microtime(true);
 
-                if (! class_exists($handlerClass)) {
+                $extractorClass = 'Cli\Extractor\\' . ucfirst($jobData['providerName']);
+
+                if (! class_exists($extractorClass)) {
                     $logger->debug('Invalid Job Provider Name!');
                     $job->sendComplete('invalid');
 
                     return;
                 }
 
-                $handler = new $handlerClass();
+                $extractor = new $extractorClass();
 
                 // idOS SDK
                 $auth = new CredentialToken(
@@ -164,7 +189,7 @@ class Daemon extends Command {
                     $rawBuffer[$item['collection']] = $item['data'];
                 }
 
-                $parsedBuffer = $handler->analyze($rawBuffer);
+                $parsedBuffer = $extractor->analyze($rawBuffer);
 
                 $featuresEndpoint = $sdk
                     ->Profile($jobData['userName'])
@@ -193,21 +218,8 @@ class Daemon extends Command {
                 //         ]
                 //     );
 
-                $time = microtime(true) - $time;
-                $logger->debug('Job done! (' . $time . ')');
+                $logger->info('Job completed', ['time' => microtime(true) - $init]);
                 $job->sendComplete('ok');
-            }
-        );
-
-        $logger->debug('Registering Ping Function "ping"');
-
-        // Register Thread's Ping Function
-        $gearman->addFunction(
-            'ping',
-            function (\GearmanJob $job) use ($logger) {
-                $logger->debug('Ping!');
-
-                return 'pong';
             }
         );
 
