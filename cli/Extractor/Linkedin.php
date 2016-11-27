@@ -31,7 +31,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;*/
     }
 
-    private function _connections(&$data) {
+    private function _connections(array &$data) {
         if (isset($data['_connections']))
             return $data['_connections'];
         $data['_connections'] = $this->linkedinConnections($data);
@@ -39,7 +39,7 @@ final class Linkedin extends AbstractExtractor {
         return $data['_connections'];
     }
 
-    private function _location_distribution(&$data) {
+    private function _location_distribution(array &$data) {
         if (isset($data['_location_distribution']))
             return $data['_location_distribution'];
 
@@ -87,7 +87,7 @@ final class Linkedin extends AbstractExtractor {
         return $location;
     }
 
-    private function _education(&$data) {
+    private function _education(array &$data) {
         if (isset($data['_education']))
             return $data['_education'];
 
@@ -152,7 +152,7 @@ final class Linkedin extends AbstractExtractor {
         }
     }
 
-    private function _work(&$data) {
+    private function _work(array &$data) {
         if (isset($data['_work']))
             return $data['_work'];
 
@@ -222,7 +222,7 @@ final class Linkedin extends AbstractExtractor {
         return $data['_work'];
     }
 
-    private function profile_id(&$data) {
+    private function profile_id(array &$data) {
         if (empty($data['profile']['id'])) {
             return;
         }
@@ -230,14 +230,14 @@ final class Linkedin extends AbstractExtractor {
         return $data['profile']['id'];
     }
 
-    private function profile_url(&$data) {
+    private function profile_url(array &$data) {
         if (empty($data['profile']['publicProfileUrl']))
             return;
 
         return $data['profile']['publicProfileUrl'];
     }
 
-    private function profile_picture(&$data) {
+    private function profile_picture(array &$data) {
         if (empty($data['profile']['pictureUrls']['values'][0])) {
             if (empty($data['profile']['pictureUrl']))
                 return;
@@ -248,7 +248,7 @@ final class Linkedin extends AbstractExtractor {
         return $data['profile']['pictureUrls']['values'][0];
     }
 
-    private function is_common_name(&$data) {
+    private function is_common_name(array &$data) {
         $name = $this->first_name($data);
         if (is_null($name))
             return false;
@@ -256,7 +256,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->isCommonName($name);
     }
 
-    private function is_listed_name(&$data) {
+    private function is_listed_name(array &$data) {
         $name = $this->full_name($data);
         if (is_null($name))
             return false;
@@ -264,7 +264,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->isListedName($name);
     }
 
-    private function is_fantasy_name(&$data) {
+    private function is_fantasy_name(array &$data) {
         $name = $this->full_name($data);
         if (is_null($name))
             return false;
@@ -272,7 +272,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->isFantasyName($name);
     }
 
-    private function is_sanctioned_name(&$data) {
+    private function is_sanctioned_name(array &$data) {
         $name = $this->full_name($data);
         if (is_null($name))
             return false;
@@ -280,7 +280,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->isSanctionedName($name);
     }
 
-    private function is_pep_name(&$data) {
+    private function is_pep_name(array &$data) {
         $name = $this->full_name($data);
         if (is_null($name))
             return false;
@@ -288,7 +288,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->isPEPName($name);
     }
 
-    private function is_celebrity_name(&$data) {
+    private function is_celebrity_name(array &$data) {
         $name = $this->full_name($data);
         if (is_null($name))
             return false;
@@ -296,7 +296,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->isCelebrityName($name);
     }
 
-    private function is_silly_name(&$data) {
+    private function is_silly_name(array &$data) {
         $name = $this->full_name($data);
         if (is_null($name))
             return false;
@@ -304,7 +304,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->isSillyName($name);
     }
 
-    private function name_gender(&$data) {
+    private function name_gender(array &$data) {
         $name = $this->first_name($data);
         if (is_null($name))
             return;
@@ -312,14 +312,14 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->nameGender($name);
     }
 
-    private function full_name(&$data) {
+    private function full_name(array &$data) {
         if ((empty($data['profile']['firstName'])) || (empty($data['profile']['lastName'])))
             return;
 
         return sprintf('%s %s', trim($data['profile']['firstName']), trim($data['profile']['lastName']));
     }
 
-    private function first_name(&$data) {
+    private function first_name(array &$data) {
         $name = $this->full_name($data);
         if (empty($name))
             return;
@@ -327,7 +327,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->firstName($name);
     }
 
-    private function first_name_initial(&$data) {
+    private function first_name_initial(array &$data) {
         $name = $this->full_name($data);
         if (empty($name))
             return;
@@ -335,7 +335,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->firstNameInitial($name);
     }
 
-    private function middle_name(&$data) {
+    private function middle_name(array &$data) {
         $name = $this->full_name($data);
         if (empty($name))
             return;
@@ -343,7 +343,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->middleName($name);
     }
 
-    private function middle_name_initial(&$data) {
+    private function middle_name_initial(array &$data) {
         $name = $this->full_name($data);
         if (empty($name))
             return;
@@ -351,7 +351,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->middleNameInitial($name);
     }
 
-    private function last_name(&$data) {
+    private function last_name(array &$data) {
         $name = $this->full_name($data);
         if (empty($name))
             return;
@@ -359,7 +359,7 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->lastName($name);
     }
 
-    private function last_name_initial(&$data) {
+    private function last_name_initial(array &$data) {
         $name = $this->full_name($data);
         if (empty($name))
             return;
@@ -367,14 +367,14 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->lastNameInitial($name);
     }
 
-    private function email_address(&$data) {
+    private function email_address(array &$data) {
         if ((empty($data['profile']['emailAddress'])) || (strpos($data['profile']['emailAddress'], '@') === false))
             return;
 
         return $data['profile']['emailAddress'];
     }
 
-    private function email_username(&$data) {
+    private function email_username(array &$data) {
         $email = $this->email_address($data);
         if (is_null($email))
             return;
@@ -414,7 +414,7 @@ final class Linkedin extends AbstractExtractor {
         }
     }
 
-    private function school_friends(&$data) {
+    private function school_friends(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -436,7 +436,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_coworkers(&$data) {
+    private function num_coworkers(array &$data) {
         if ((empty($data['profile']['positions']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -458,42 +458,42 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_connections(&$data) {
+    private function num_connections(array &$data) {
         if (empty($data['connections']))
             return 0;
 
         return count($data['connections']);
     }
 
-    private function num_companies(&$data) {
+    private function num_companies(array &$data) {
         if (empty($data['companies']))
             return 0;
 
         return count($data['companies']);
     }
 
-    private function network_reach(&$data) {
+    private function network_reach(array &$data) {
         if (empty($data['network'][1]))
             return 0;
 
         return $data['network'][1];
     }
 
-    private function num_positions(&$data) {
+    private function num_positions(array &$data) {
         if (empty($data['profile']['positions']['values']))
             return 0;
 
         return count($data['profile']['positions']['values']);
     }
 
-    private function twitter_accounts(&$data) {
+    private function twitter_accounts(array &$data) {
         if (empty($data['profile']['twitterAccounts']['values']))
             return 0;
 
         return count($data['profile']['twitterAccounts']['values']);
     }
 
-    private function recommendations_received(&$data) {
+    private function recommendations_received(array &$data) {
         if (empty($data['profile']['recommendationsReceived']['values']))
             return 0;
 
@@ -507,7 +507,7 @@ final class Linkedin extends AbstractExtractor {
         return intval($data['profile']['dateOfBirth'][$field]);
     }
 
-    private function current_city_name(&$data) {
+    private function current_city_name(array &$data) {
         if (empty($data['profile']['location']['name']))
             return;
         if (strpos($data['profile']['location']['name'], ',') === false)
@@ -517,7 +517,7 @@ final class Linkedin extends AbstractExtractor {
         return trim(str_replace('Area', '', $city[0]));
     }
 
-    private function current_region_name(&$data) {
+    private function current_region_name(array &$data) {
         $cityName = $this->current_city_name($data);
         if (empty($cityName))
             return;
@@ -525,14 +525,14 @@ final class Linkedin extends AbstractExtractor {
         return Utils::getInstance()->regionFromCity($cityName);
     }
 
-    private function current_country_name(&$data) {
+    private function current_country_name(array &$data) {
         if (empty($data['profile']['location']['country']['code']))
             return;
 
         return Utils::getInstance()->codeToCountry($data['profile']['location']['country']['code']);
     }
 
-    private function top1_connections_city(&$data) {
+    private function top1_connections_city(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -541,7 +541,7 @@ final class Linkedin extends AbstractExtractor {
         return $cities[0];
     }
 
-    private function top1_connections_country(&$data) {
+    private function top1_connections_country(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -550,7 +550,7 @@ final class Linkedin extends AbstractExtractor {
         return $countries[0];
     }
 
-    private function top2_connections_city(&$data) {
+    private function top2_connections_city(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -561,7 +561,7 @@ final class Linkedin extends AbstractExtractor {
         return $cities[1];
     }
 
-    private function top2_connections_country(&$data) {
+    private function top2_connections_country(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -572,7 +572,7 @@ final class Linkedin extends AbstractExtractor {
         return $countries[1];
     }
 
-    private function top3_connections_city(&$data) {
+    private function top3_connections_city(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -583,7 +583,7 @@ final class Linkedin extends AbstractExtractor {
         return $cities[2];
     }
 
-    private function top3_connections_country(&$data) {
+    private function top3_connections_country(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -594,7 +594,7 @@ final class Linkedin extends AbstractExtractor {
         return $countries[2];
     }
 
-    private function top4_connections_city(&$data) {
+    private function top4_connections_city(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -605,7 +605,7 @@ final class Linkedin extends AbstractExtractor {
         return $cities[3];
     }
 
-    private function top4_connections_country(&$data) {
+    private function top4_connections_country(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -616,7 +616,7 @@ final class Linkedin extends AbstractExtractor {
         return $countries[3];
     }
 
-    private function top5_connections_city(&$data) {
+    private function top5_connections_city(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['city']))
             return;
@@ -627,7 +627,7 @@ final class Linkedin extends AbstractExtractor {
         return $cities[4];
     }
 
-    private function top5_connections_country(&$data) {
+    private function top5_connections_country(array &$data) {
         $distribution = $this->_location_distribution($data);
         if (empty($distribution['country']))
             return;
@@ -638,7 +638,7 @@ final class Linkedin extends AbstractExtractor {
         return $countries[4];
     }
 
-    private function first_most_recent_education(&$data) {
+    private function first_most_recent_education(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -650,7 +650,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[0]['name'];
     }
 
-    private function second_most_recent_education(&$data) {
+    private function second_most_recent_education(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -662,7 +662,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[1]['name'];
     }
 
-    private function third_most_recent_education(&$data) {
+    private function third_most_recent_education(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -674,7 +674,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[2]['name'];
     }
 
-    private function first_most_recent_education_type(&$data) {
+    private function first_most_recent_education_type(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -686,7 +686,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[0]['type'];
     }
 
-    private function second_most_recent_education_type(&$data) {
+    private function second_most_recent_education_type(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -698,7 +698,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[1]['type'];
     }
 
-    private function third_most_recent_education_type(&$data) {
+    private function third_most_recent_education_type(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -710,7 +710,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[2]['type'];
     }
 
-    private function first_most_recent_education_course(&$data) {
+    private function first_most_recent_education_course(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -722,7 +722,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[0]['course'];
     }
 
-    private function second_most_recent_education_course(&$data) {
+    private function second_most_recent_education_course(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -734,7 +734,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[1]['course'];
     }
 
-    private function third_most_recent_education_course(&$data) {
+    private function third_most_recent_education_course(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -746,7 +746,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[2]['course'];
     }
 
-    private function first_most_recent_education_graduation_year(&$data) {
+    private function first_most_recent_education_graduation_year(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -758,7 +758,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[0]['end_year'];
     }
 
-    private function second_most_recent_education_graduation_year(&$data) {
+    private function second_most_recent_education_graduation_year(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -770,7 +770,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[1]['end_year'];
     }
 
-    private function third_most_recent_education_graduation_year(&$data) {
+    private function third_most_recent_education_graduation_year(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -782,7 +782,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[2]['end_year'];
     }
 
-    private function first_most_recent_education_graduated(&$data) {
+    private function first_most_recent_education_graduated(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -794,7 +794,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[0]['end_year'] < date('Y');
     }
 
-    private function second_most_recent_education_graduated(&$data) {
+    private function second_most_recent_education_graduated(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -806,7 +806,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[1]['end_year'] < date('Y');
     }
 
-    private function third_most_recent_education_graduated(&$data) {
+    private function third_most_recent_education_graduated(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -818,7 +818,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[2]['end_year'] < date('Y');
     }
 
-    private function num_friends_first_most_recent_education(&$data) {
+    private function num_friends_first_most_recent_education(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -844,7 +844,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_second_most_recent_education(&$data) {
+    private function num_friends_second_most_recent_education(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -870,7 +870,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_third_most_recent_education(&$data) {
+    private function num_friends_third_most_recent_education(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -896,7 +896,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_first_most_recent_education_same_graduation_year(&$data) {
+    private function num_friends_first_most_recent_education_same_graduation_year(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -925,7 +925,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_second_most_recent_education_same_graduation_year(&$data) {
+    private function num_friends_second_most_recent_education_same_graduation_year(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -954,7 +954,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_third_most_recent_education_same_graduation_year(&$data) {
+    private function num_friends_third_most_recent_education_same_graduation_year(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -983,7 +983,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_working_first_most_recent_education(&$data) {
+    private function num_friends_working_first_most_recent_education(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -1009,7 +1009,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_working_second_most_recent_education(&$data) {
+    private function num_friends_working_second_most_recent_education(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -1035,7 +1035,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_friends_working_third_most_recent_education(&$data) {
+    private function num_friends_working_third_most_recent_education(array &$data) {
         if ((empty($data['profile']['educations']['values'])) || (empty($data['connections'])))
             return 0;
 
@@ -1061,7 +1061,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function num_student_friends(&$data) {
+    private function num_student_friends(array &$data) {
         if (empty($data['connections']))
             return 0;
 
@@ -1080,7 +1080,7 @@ final class Linkedin extends AbstractExtractor {
         return $return;
     }
 
-    private function is_student(&$data) {
+    private function is_student(array &$data) {
         if (empty($data['profile']['educations']['values']))
             return;
 
@@ -1092,7 +1092,7 @@ final class Linkedin extends AbstractExtractor {
         return $educations[0]['end_year'] >= date('Y');
     }
 
-    private function is_student_age(&$data) {
+    private function is_student_age(array &$data) {
         $birthYear = $this->birth($data, 'year');
         if (empty($birthYear))
             return;
@@ -1104,7 +1104,7 @@ final class Linkedin extends AbstractExtractor {
         return ($age >= 10) && ($age <= 25);
     }
 
-    private function first_most_recent_employer(&$data) {
+    private function first_most_recent_employer(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1116,7 +1116,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[0]['employer'];
     }
 
-    private function second_most_recent_employer(&$data) {
+    private function second_most_recent_employer(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1128,7 +1128,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[1]['employer'];
     }
 
-    private function third_most_recent_employer(&$data) {
+    private function third_most_recent_employer(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1140,7 +1140,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[2]['employer'];
     }
 
-    private function fourth_most_recent_employer(&$data) {
+    private function fourth_most_recent_employer(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1152,7 +1152,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[3]['employer'];
     }
 
-    private function fifth_most_recent_employer(&$data) {
+    private function fifth_most_recent_employer(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1164,7 +1164,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[4]['employer'];
     }
 
-    private function first_most_recent_work_position(&$data) {
+    private function first_most_recent_work_position(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1176,7 +1176,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[0]['position'];
     }
 
-    private function second_most_recent_work_position(&$data) {
+    private function second_most_recent_work_position(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1188,7 +1188,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[1]['position'];
     }
 
-    private function third_most_recent_work_position(&$data) {
+    private function third_most_recent_work_position(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1200,7 +1200,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[2]['position'];
     }
 
-    private function fourth_most_recent_work_position(&$data) {
+    private function fourth_most_recent_work_position(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1212,7 +1212,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[3]['position'];
     }
 
-    private function fifth_most_recent_work_position(&$data) {
+    private function fifth_most_recent_work_position(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1224,7 +1224,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[4]['position'];
     }
 
-    private function first_most_recent_work_location(&$data) {
+    private function first_most_recent_work_location(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1236,7 +1236,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[0]['location'];
     }
 
-    private function second_most_recent_work_location(&$data) {
+    private function second_most_recent_work_location(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1248,7 +1248,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[1]['location'];
     }
 
-    private function third_most_recent_work_location(&$data) {
+    private function third_most_recent_work_location(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1260,7 +1260,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[2]['location'];
     }
 
-    private function fourth_most_recent_work_location(&$data) {
+    private function fourth_most_recent_work_location(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1272,7 +1272,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[3]['location'];
     }
 
-    private function fifth_most_recent_work_location(&$data) {
+    private function fifth_most_recent_work_location(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1284,7 +1284,7 @@ final class Linkedin extends AbstractExtractor {
         return $works[4]['location'];
     }
 
-    private function first_most_recent_work_is_current(&$data) {
+    private function first_most_recent_work_is_current(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1296,7 +1296,7 @@ final class Linkedin extends AbstractExtractor {
         return empty($works[0]['end_date']);
     }
 
-    private function second_most_recent_work_is_current(&$data) {
+    private function second_most_recent_work_is_current(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1308,7 +1308,7 @@ final class Linkedin extends AbstractExtractor {
         return empty($works[1]['end_date']);
     }
 
-    private function third_most_recent_work_is_current(&$data) {
+    private function third_most_recent_work_is_current(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1320,7 +1320,7 @@ final class Linkedin extends AbstractExtractor {
         return empty($works[2]['end_date']);
     }
 
-    private function fourth_most_recent_work_is_current(&$data) {
+    private function fourth_most_recent_work_is_current(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
@@ -1332,7 +1332,7 @@ final class Linkedin extends AbstractExtractor {
         return empty($works[3]['end_date']);
     }
 
-    private function fifth_most_recent_work_is_current(&$data) {
+    private function fifth_most_recent_work_is_current(array &$data) {
         if (empty($data['profile']['positions']))
             return;
 
