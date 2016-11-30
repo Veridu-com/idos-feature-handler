@@ -195,6 +195,12 @@ class Daemon extends Command {
                     ->Profile($jobData['userName'])
                     ->Features;
 
+                $featuresEndpoint->deleteAll(
+                    [
+                        'source' => $jobData['providerName']
+                    ]
+                );
+
                 $features = [];
                 foreach ($parsedBuffer as $name => $value) {
                     $features[] = [
@@ -246,6 +252,11 @@ class Daemon extends Command {
                 if ($gearman->returnCode() == \GEARMAN_TIMEOUT) {
                     // Job wait timeout, sleep before retry
                     sleep(1);
+                    if (! @$gearman->echo('ping')) {
+                        $logger->debug('Invalid server state, restart');
+                        exit;
+                    }
+
                     continue;
                 }
             }
