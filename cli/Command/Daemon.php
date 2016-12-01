@@ -47,6 +47,16 @@ class Daemon extends Command {
                 'Path to log file'
             )
             ->addArgument(
+                'handlerPublicKey',
+                InputArgument::REQUIRED,
+                'Handler public key'
+            )
+            ->addArgument(
+                'handlerPrivateKey',
+                InputArgument::REQUIRED,
+                'Handler private key'
+            )
+            ->addArgument(
                 'functionName',
                 InputArgument::REQUIRED,
                 'Gearman Worker Function name'
@@ -88,6 +98,9 @@ class Daemon extends Command {
             $functionName = 'idos-feature';
         }
 
+        $handlerPublicKey = $input->getArgument('handlerPublicKey');
+        $handlerPrivateKey = $input->getArgument('handlerPrivateKey');
+
         // Server List setup
         $servers = $input->getArgument('serverList');
 
@@ -122,7 +135,7 @@ class Daemon extends Command {
          */
         $gearman->addFunction(
             $functionName,
-            function (\GearmanJob $job) use ($logger) {
+            function (\GearmanJob $job) use ($logger, $handlerPublicKey, $handlerPrivateKey, $devMode) {
                 $logger->info('Feature job added');
                 $jobData = json_decode($job->workload(), true);
                 if ($jobData === null) {
@@ -148,13 +161,13 @@ class Daemon extends Command {
                 // idOS SDK
                 $auth = new CredentialToken(
                     $jobData['publicKey'],
-                    __HNDKEY__,
-                    __HNDSEC__
+                    $handlerPublicKey,
+                    $handlerPrivateKey
                 );
                 $sdk = SDK::create($auth);
 
                 // development mode: disable ssl check
-                if (__DEV__) {
+                if ($devMode) {
                     $sdk->setClient(
                         new Client(
                             [

@@ -14,9 +14,6 @@ if (is_file(__DIR__ . '/.env')) {
     $dotEnv->load();
 }
 
-// Load application settings
-$config = require_once __DIR__ . '/config/settings.php';
-
 date_default_timezone_set('UTC');
 setlocale(LC_ALL, 'en_US.UTF8');
 mb_http_output('UTF-8');
