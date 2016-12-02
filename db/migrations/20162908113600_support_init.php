@@ -11,6 +11,9 @@ use Phinx\Migration\AbstractMigration;
  */
 class SupportInit extends AbstractMigration {
     public function change() {
+        $this->execute('CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public');
+        $this->execute('CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public');
+        $this->execute('CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public');
 
         $cityList = $this->table('cities');
         $cityList
