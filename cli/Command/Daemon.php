@@ -173,13 +173,15 @@ class Daemon extends Command {
 
                 // development mode: disable ssl check
                 if ($devMode) {
-                    $sdk->setClient(
-                        new Client(
-                            [
-                                'verify' => false
-                            ]
-                        )
-                    );
+                    $sdk
+                        ->setBaseUrl(getenv('IDOS_API_URL') ?: 'https://api.idos.io/1.0/')
+                        ->setClient(
+                            new Client(
+                                [
+                                    'verify'   => false
+                                ]
+                            )
+                        );
                 }
 
                 // $sdk
