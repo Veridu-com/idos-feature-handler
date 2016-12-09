@@ -922,10 +922,12 @@ final class Facebook extends AbstractExtractor {
             }
 
             foreach ($data[$property] as $item) {
-                if (empty($item['created_time'])) {
-                    $ts = strtotime($item['updated_time']);
-                } else {
+                $ts = false;
+                if (! empty($item['created_time'])) {
                     $ts = strtotime($item['created_time']);
+                }
+                if (! empty($item['updated_time'])) {
+                    $ts = strtotime($item['updated_time']);
                 }
 
                 if ($ts === false) {
