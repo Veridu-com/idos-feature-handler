@@ -108,7 +108,7 @@ class Daemon extends Command {
             $functionName = 'idos-feature';
         }
 
-        $handlerPublicKey = $input->getArgument('handlerPublicKey');
+        $handlerPublicKey  = $input->getArgument('handlerPublicKey');
         $handlerPrivateKey = $input->getArgument('handlerPrivateKey');
 
         // Server List setup
