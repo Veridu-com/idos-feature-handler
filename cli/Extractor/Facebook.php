@@ -926,6 +926,7 @@ final class Facebook extends AbstractExtractor {
                 if (! empty($item['created_time'])) {
                     $ts = strtotime($item['created_time']);
                 }
+
                 if (! empty($item['updated_time'])) {
                     $ts = strtotime($item['updated_time']);
                 }
