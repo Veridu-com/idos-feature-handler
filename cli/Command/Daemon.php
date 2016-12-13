@@ -161,8 +161,7 @@ class Daemon extends Command {
                 }
 
                 $jobCount++;
-                $lastJob = time();
-                $init    = microtime(true);
+                $init = microtime(true);
 
                 $extractorClass = 'Cli\Extractor\\' . ucfirst($jobData['providerName']);
 
@@ -258,6 +257,7 @@ class Daemon extends Command {
 
                 $logger->info('Job completed', ['time' => microtime(true) - $init]);
                 $job->sendComplete('ok');
+                $lastJob = time();
             }
         );
 
