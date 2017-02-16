@@ -61,6 +61,14 @@ final class Matcher {
         );
     }
 
+    /**
+     * Compares two dates.
+     *
+     * @param mixed $a The first date
+     * @param mixed $b The second date
+     *
+     * @return mixed
+     */
     public static function compare_date($a, $b) {
         if ((empty($a)) || (empty($b))) {
             return 0.0;
@@ -105,6 +113,14 @@ final class Matcher {
         return round($score / max(count($da), count($db)), 2);
     }
 
+    /**
+     * Compares two strings.
+     *
+     * @param mixed $a The first string
+     * @param mixed $b The second string
+     *
+     * @return mixed
+     */
     public static function compare_string($a, $b, $strict = false) {
         if ((is_numeric($a)) || (is_numeric($b))) {
             return self::compare_number($a, $b);
@@ -186,6 +202,14 @@ final class Matcher {
         return round(($result / 4), 2);
     }
 
+    /**
+     * Compares two numbers.
+     *
+     * @param mixed $a The first number
+     * @param mixed $b The second number
+     *
+     * @return mixed
+     */
     public static function compare_number($a, $b) {
         if ((! is_numeric($a)) || (! is_numeric($b))) {
             return 0.0;
@@ -198,6 +222,14 @@ final class Matcher {
         return max(0.0, (1.0 - (abs(intval($a) - intval($b)) / 10)));
     }
 
+    /**
+     * Compares two country codes.
+     *
+     * @param mixed $a The first country code
+     * @param mixed $b The second country code
+     *
+     * @return mixed
+     */
     public static function compare_country_code($a, $b) {
         //removes + or 00 from country code begin
         if (substr_compare($a, '+', 0, 1) == 0) {
@@ -215,6 +247,14 @@ final class Matcher {
         return self::compare_string($a, $b, true);
     }
 
+    /**
+     * Compares two phone numbers.
+     *
+     * @param mixed $a The first phone number
+     * @param mixed $b The second phone number
+     *
+     * @return mixed
+     */
     public static function compare_phone_number($a, $b) {
         $parsedA = Utils::getInstance()->phoneNumber($a) ?: $a;
         $parsedB = Utils::getInstance()->phoneNumber($b) ?: $b;
@@ -237,6 +277,14 @@ final class Matcher {
         return max(0.0, (1.0 - ($pos / 10)));
     }
 
+    /**
+     * Compares two phones.
+     *
+     * @param mixed $a The first phone
+     * @param mixed $b The second phone
+     *
+     * @return mixed
+     */
     public static function compare_phone($a, $b) {
         if ((substr_compare($a, '+', 0, 1) == 0) || (substr_compare($a, '00', 0, 2) == 0)) {
             //$a begins with country code
@@ -354,6 +402,14 @@ final class Matcher {
         return self::compare_string($a, $b);
     }
 
+    /**
+     * Calculates the average.
+     *
+     * @param mixed $a
+     * @param mixed $b
+     *
+     * @return mixed
+     */
     public static function average($a, $b) {
         $matchScore = self::compare_string($a, $b) + self::best($a, $b);
 

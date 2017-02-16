@@ -52,12 +52,26 @@ class PhoneParser extends \Threaded {
         $this->parser = PhoneNumberUtil::getInstance();
     }
 
+    /**
+     * Extracts the phone country code.
+     *
+     * @param string $phone The full phone number
+     *
+     * @return mixed
+     */
     public function phoneCountryCode(string $phone, $countryCode = null) {
         $phone = $this->phoneParse($phone, $countryCode);
 
         return $phone->getCountryCode() ?: '';
     }
 
+    /**
+     * Extracts the phone number.
+     *
+     * @param string $phone The full phone number
+     *
+     * @return mixed
+     */
     public function phoneNumber(string $phone, $countryCode = null) {
         $phone = $this->phoneParse($phone, $countryCode);
 

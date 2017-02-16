@@ -6,6 +6,11 @@ namespace Cli\Extractor;
 
 use Cli\Utils\Utils;
 
+/**
+ * This class is responsible for extracting the features from the dropbox raw data that we got through the scraping process.
+ * Each method in this class extracts a single feature from the raw data and returns this feature. The method called 'analyze'
+ * will return an array with all the features that were extracted from the dropbox.
+ */
 final class Dropbox extends AbstractExtractor {
     private function is_common_name(&$data) {
         $name = $this->first_name($data);
