@@ -6,6 +6,11 @@ namespace Cli\Extractor;
 
 use Cli\Utils\Utils;
 
+/**
+ * This class is responsible for extracting the features from the google raw data that we got through the scraping process.
+ * Each method in this class extracts a single feature from the raw data and returns this feature. The method called 'analyze'
+ * will return an array with all the features that were extracted from the google.
+ */
 final class Google extends AbstractExtractor {
     private function googleCircles($data) {
         //@FIXME

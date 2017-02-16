@@ -7,6 +7,11 @@ namespace Cli\Extractor;
 use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
+/**
+ * This class is responsible for extracting the features from the paypal raw data that we got through the scraping process.
+ * Each method in this class extracts a single feature from the raw data and returns this feature. The method called 'analyze'
+ * will return an array with all the features that were extracted from the paypal.
+ */
 final class Paypal extends AbstractExtractor {
     private function profile_id(&$data) {
         if (empty($data['profile']['user_id'])) {

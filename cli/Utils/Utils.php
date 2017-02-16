@@ -103,6 +103,13 @@ final class Utils {
         return $return;
     }
 
+    /**
+     * Extracts the city name.
+     *
+     * @param mixed $fullAddress The full address
+     *
+     * @return mixed
+     */
     public function cityName($fullAddress) {
         $parsedAddress = $this->addressParse($fullAddress);
 
@@ -113,6 +120,13 @@ final class Utils {
         return;
     }
 
+    /**
+     * Extracts the country name.
+     *
+     * @param mixed $fullAddress The full address
+     *
+     * @return mixed
+     */
     public function countryName($fullAddress) {
         $parsedAddress = $this->addressParse($fullAddress);
 
@@ -123,6 +137,13 @@ final class Utils {
         return;
     }
 
+    /**
+     * Extracts the postal code.
+     *
+     * @param mixed $fullAddress The full address
+     *
+     * @return mixed
+     */
     public function postalCode($fullAddress) {
         $parsedAddress = $this->addressParse($fullAddress);
 
@@ -133,6 +154,13 @@ final class Utils {
         return;
     }
 
+    /**
+     * Extracts the region name.
+     *
+     * @param mixed $fullAddress The full address
+     *
+     * @return mixed
+     */
     public function regionName($fullAddress) {
         $parsedAddress = $this->addressParse($fullAddress);
 
@@ -143,6 +171,13 @@ final class Utils {
         return;
     }
 
+    /**
+     * Extracts the street address (line 1).
+     *
+     * @param mixed $fullAddress The full address
+     *
+     * @return mixed
+     */
     public function streetAddress1($fullAddress) {
         $parsedAddress = $this->addressParse($fullAddress);
 
@@ -153,6 +188,13 @@ final class Utils {
         return;
     }
 
+    /**
+     * Extracts the street address (line 2).
+     *
+     * @param mixed $fullAddress The full address
+     *
+     * @return mixed
+     */
     public function streetAddress2($fullAddress) {
         $parsedAddress = $this->addressParse($fullAddress);
 
@@ -177,6 +219,13 @@ final class Utils {
         return;
     }
 
+    /**
+     * Gets the country from the country code.
+     *
+     * @param mixed $code Country code
+     *
+     * @return mixed
+     */
     public function codeToCountry($code) {
         static $cache = [];
         try {
@@ -207,6 +256,13 @@ final class Utils {
         return;
     }
 
+    /**
+     * Gets the country from the city.
+     *
+     * @param mixed $city The city name
+     *
+     * @return mixed
+     */
     public function countryFromCity($city) {
         static $cache = [];
         try {
@@ -263,6 +319,13 @@ final class Utils {
         }
     }
 
+    /**
+     * Checks if it is a listed name.
+     *
+     * @param mixed $name The name
+     *
+     * @return mixed
+     */
     public function isListedName($name) {
 
         static $cache = [];
@@ -293,6 +356,13 @@ final class Utils {
         }
     }
 
+    /**
+     * Checks if it is a fantasy name.
+     *
+     * @param mixed $name The name
+     *
+     * @return mixed
+     */
     public function isFantasyName($name) {
         static $cache = [];
         if (isset($cache[$name])) {
@@ -304,6 +374,13 @@ final class Utils {
         return $cache[$name];
     }
 
+    /**
+     * Checks if it is a sanctioned name.
+     *
+     * @param mixed $name The name
+     *
+     * @return mixed
+     */
     public function isSanctionedName($name) {
         static $cache = [];
         if (isset($cache[$name])) {
@@ -315,6 +392,13 @@ final class Utils {
         return $cache[$name];
     }
 
+    /**
+     * Checks if it is a PEP name.
+     *
+     * @param mixed $name The name
+     *
+     * @return mixed
+     */
     public function isPEPName($name) {
         static $cache = [];
         if (isset($cache[$name])) {
@@ -326,6 +410,13 @@ final class Utils {
         return $cache[$name];
     }
 
+    /**
+     * Checks if it is a celebrity name.
+     *
+     * @param mixed $name The name
+     *
+     * @return mixed
+     */
     public function isCelebrityName($name) {
         static $cache = [];
         if (isset($cache[$name])) {
@@ -337,6 +428,13 @@ final class Utils {
         return $cache[$name];
     }
 
+    /**
+     * Checks if it is a silly name.
+     *
+     * @param mixed $name The name
+     *
+     * @return mixed
+     */
     public function isSillyName($name) {
         static $cache = [];
         if (isset($cache[$name])) {
@@ -348,6 +446,13 @@ final class Utils {
         return $cache[$name];
     }
 
+    /**
+     * Checks if it is a common name.
+     *
+     * @param mixed $name The name
+     *
+     * @return mixed
+     */
     public function isCommonName($name) {
         static $cache = [];
         try {
