@@ -109,6 +109,14 @@ final class Twitter extends AbstractExtractor {
         return Utils::getInstance()->nameGender($name);
     }
 
+    private function email_address(&$data) {
+        if (empty($data['profile']['email'])) {
+            return false;
+        }
+
+        return $data['profile']['email'];
+    }
+
     private function full_name(&$data) {
         if (empty($data['profile']['name'])) {
             return;
@@ -494,6 +502,7 @@ final class Twitter extends AbstractExtractor {
             'isCelebrityName'        => $this->is_celebrity_name($data),
             'isSillyName'            => $this->is_silly_name($data),
             'nameGender'             => $this->name_gender($data),
+            'emailAddress'           => $this->email_address($data),
             'fullName'               => $this->full_name($data),
             'firstName'              => $this->first_name($data),
             'firstNameInitial'       => $this->first_name_initial($data),
