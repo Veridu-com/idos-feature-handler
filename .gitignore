@@ -2,6 +2,8 @@
 *.log
 *.sublime-*
 .php_cs
+build/
+docs/
 composer.lock
 phinx.yml
 phpunit.xml
