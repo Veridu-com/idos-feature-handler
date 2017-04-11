@@ -43,6 +43,12 @@ class Daemon extends Command {
                 'Development mode'
             )
             ->addOption(
+                'healthCheck',
+                'h',
+                InputOption::VALUE_NONE,
+                'Enable queue health check'
+            )
+            ->addOption(
                 'logFile',
                 'l',
                 InputOption::VALUE_REQUIRED,
@@ -102,6 +108,12 @@ class Daemon extends Command {
             );
             ini_set('display_errors', 'On');
             error_reporting(-1);
+        }
+
+        // Health check
+        $healthCheck = ! empty($input->getOption('healthCheck'));
+        if ($healthCheck) {
+            $logger->debug('Enabling health check');
         }
 
         // Gearman Worker function name setup
@@ -289,12 +301,12 @@ class Daemon extends Command {
                         exit;
                     }
 
-                    if (((time() - $bootTime) > 10) && ((time() - $lastJob) > 10)) {
+                    if (($healthCheck) && ((time() - $bootTime) > 10) && ((time() - $lastJob) > 10)) {
                         $logger->info(
                             'Inactivity detected, restarting',
                             [
                                 'runtime' => time() - $bootTime,
-                                'jobs' => $jobCount
+                                'jobs'    => $jobCount
                             ]
                         );
                         exit;
