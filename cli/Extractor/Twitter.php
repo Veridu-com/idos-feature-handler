@@ -7,6 +7,11 @@ namespace Cli\Extractor;
 use Cli\Utils\Profile;
 use Cli\Utils\Utils;
 
+/**
+ * This class is responsible for extracting the features from the twitter raw data that we got through the scraping process.
+ * Each method in this class extracts a single feature from the raw data and returns this feature. The method called 'analyze'
+ * will return an array with all the features that were extracted from the twitter.
+ */
 final class Twitter extends AbstractExtractor {
     private function profile_id(&$data) {
         if (empty($data['profile']['id_str'])) {
@@ -102,6 +107,14 @@ final class Twitter extends AbstractExtractor {
         }
 
         return Utils::getInstance()->nameGender($name);
+    }
+
+    private function email_address(&$data) {
+        if (empty($data['profile']['email'])) {
+            return false;
+        }
+
+        return $data['profile']['email'];
     }
 
     private function full_name(&$data) {
@@ -489,6 +502,7 @@ final class Twitter extends AbstractExtractor {
             'isCelebrityName'        => $this->is_celebrity_name($data),
             'isSillyName'            => $this->is_silly_name($data),
             'nameGender'             => $this->name_gender($data),
+            'emailAddress'           => $this->email_address($data),
             'fullName'               => $this->full_name($data),
             'firstName'              => $this->first_name($data),
             'firstNameInitial'       => $this->first_name_initial($data),
