@@ -65,11 +65,11 @@ final class Dropbox extends AbstractExtractor {
     }
 
     private function profile_id(&$data) {
-        if (empty($data['profile']['uid'])) {
+        if (empty($data['profile']['account_id'])) {
             return;
         }
 
-        return $data['profile']['uid'];
+        return $data['profile']['account_id'];
     }
 
     private function num_files(&$data) {
@@ -110,14 +110,14 @@ final class Dropbox extends AbstractExtractor {
     }
 
     private function belongs_team(&$data) {
-        return isset($data['profile']['team']['team_id']);
+        return isset($data['profile']['team_member_id']);
     }
 
     private function profile_quota(&$data) {
-        if(! isset($data['profile']['quota_info']['quota']))
+        if(! isset($data['space']['allocation']['allocated']))
             return -1;
 
-        return $data['profile']['quota_info']['quota'];
+        return $data['space']['allocation']['allocated'];
     }
 
     private function is_listed_name(&$data) {
@@ -177,10 +177,14 @@ final class Dropbox extends AbstractExtractor {
     }
 
     private function full_name(&$data) {
-        if (empty($data['profile']['display_name']))
+        if ((empty($data['profile']['name']['given_name'])) && (empty($data['profile']['name']['surname'])))
             return;
 
-        return $data['profile']['display_name'];
+        return sprintf(
+            '%s %s',
+            $data['profile']['name']['given_name'],
+            $data['profile']['name']['surname'],
+        );
     }
 
     private function first_name(&$data) {
@@ -248,7 +252,7 @@ final class Dropbox extends AbstractExtractor {
     }
 
     private function is_email_verified(&$data) {
-        return isset($data['profile']['email_veirified']) ? $data['profile']['email_verified'] : false;
+        return isset($data['profile']['email_verified']) ? $data['profile']['email_verified'] : false;
     }
 
     private function current_country_name(&$data) {

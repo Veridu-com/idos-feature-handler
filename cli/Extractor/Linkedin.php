@@ -464,10 +464,15 @@ final class Linkedin extends AbstractExtractor {
     }
 
     private function num_connections(array &$data) {
-        if (empty($data['connections']))
-            return 0;
+        if (empty($data['profile']['numConnections'])) {
+            if (empty($data['connections'])) {
+                return 0;
+            }
 
-        return count($data['connections']);
+            return count($data['connections']);
+        }
+
+        return $data['profile']['numConnections'];
     }
 
     private function num_companies(array &$data) {
@@ -1353,7 +1358,7 @@ final class Linkedin extends AbstractExtractor {
         return [
             'isActive'                                                        => ! empty($data),
             'profileId'                                                       => $this->profile_id($data),
-            'profileURL'                                                      => $this->profile_url($data),
+            'profileUrl'                                                      => $this->profile_url($data),
             'profilePicture'                                                  => $this->profile_picture($data),
             'isACommonName'                                                   => $this->is_common_name($data),
             'isListedName'                                                    => $this->is_listed_name($data),
