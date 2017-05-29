@@ -233,8 +233,6 @@ final class Utils {
                 return $cache[$code];
             }
 
-            $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
-
             $result = $this->dbConnection->table('countries')
                 ->where('code', '=', strtoupper($code))
                 ->get(['name'])
@@ -244,9 +242,9 @@ final class Utils {
                 return $code;
             }
 
-            $cache[$code] = $result['name'];
+            $cache[$code] = $result->name;
 
-            return $result['name'];
+            return $result->name;
         } catch (\Exception $exception) {
             return;
         }
@@ -270,8 +268,6 @@ final class Utils {
                 return $cache[$city];
             }
 
-            $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
-
             $result = $this->dbConnection->table('cities')
                 ->join('countries', 'countries.code', '=', 'cities.country')
                 ->where('cities.name', 'ILIKE', $city)
@@ -283,9 +279,9 @@ final class Utils {
             }
 
             $res          = $result->first();
-            $cache[$city] = $res['name'];
+            $cache[$city] = $res->name;
 
-            return $res['name'];
+            return $res->name;
         } catch (\Exception $exception) {
             return;
         }
@@ -503,7 +499,6 @@ final class Utils {
         //             $cache[$name] = 'male';
         //             break;
         //         default:
-        //             $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
 
         //             $result = $this->dbConnection->table('names')
         //                 ->whereRaw('LOWER("name") = ?', [$name])
@@ -515,9 +510,9 @@ final class Utils {
 
         //             if (count($result) > 0) {
         //                 $res = $result->first();
-        //                 if ($res['gender'] === 'm') {
+        //                 if ($res->gender === 'm') {
         //                     $cache[$name] = 'male';
-        //                 } elseif ($res['gender'] === 'f') {
+        //                 } elseif ($res->gender === 'f') {
         //                     $cache[$name] = 'female';
         //                 }
 
@@ -543,9 +538,9 @@ final class Utils {
         //             }
 
         //             $res = $result->first();
-        //             if ($res['gender'] === 'm') {
+        //             if ($res->gender === 'm') {
         //                 $cache[$name] = 'male';
-        //             } elseif ($res['gender'] === 'f') {
+        //             } elseif ($res->gender === 'f') {
         //                 $cache[$name] = 'female';
         //             } else {
         //                 return;
@@ -565,8 +560,6 @@ final class Utils {
             if (isset($cache[$name])) {
                 return $cache[$name];
             }
-
-            $this->dbConnection->setFetchMode(\PDO::FETCH_ASSOC);
 
             $result = $this->dbConnection->table('names')
                 ->where(
@@ -589,9 +582,9 @@ final class Utils {
             }
 
             $res          = $result->first();
-            $cache[$name] = $res['country'];
+            $cache[$name] = $res->country;
 
-            return $res['country'];
+            return $res->country;
         } catch (\Exception $exception) {
             return;
         }
