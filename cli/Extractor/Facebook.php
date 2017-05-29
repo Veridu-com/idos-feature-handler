@@ -271,7 +271,7 @@ final class Facebook extends AbstractExtractor {
         return $data['profile']['picture']['data']['url'];
     }
 
-    private function profileURL(array &$data) {
+    private function profileUrl(array &$data) {
         if (empty($data['profile']['id'])) {
             return;
         }
@@ -3502,7 +3502,7 @@ final class Facebook extends AbstractExtractor {
             'isActive'                                                        => ! empty($data),
             'profileId'                                                       => $this->profileId($data),
             'profilePicture'                                                  => $this->profilePicture($data),
-            'profileURL'                                                      => $this->profileURL($data),
+            'profileUrl'                                                      => $this->profileUrl($data),
             'verifiedProfile'                                                 => $this->verifiedProfile($data),
             'isACommonName'                                                   => $this->isACommonName($data),
             'isListedName'                                                    => $this->isListedName($data),

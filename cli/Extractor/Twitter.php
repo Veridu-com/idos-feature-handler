@@ -493,7 +493,7 @@ final class Twitter extends AbstractExtractor {
             'isActive'               => ! empty($data),
             'profileId'              => $this->profile_id($data),
             'profilePicture'         => $this->profile_picture($data),
-            'profileURL'             => $this->profile_url($data),
+            'profileUrl'             => $this->profile_url($data),
             'isACommonName'          => $this->is_common_name($data),
             'isListedName'           => $this->is_listed_name($data),
             'isFantasyName'          => $this->is_fantasy_name($data),
