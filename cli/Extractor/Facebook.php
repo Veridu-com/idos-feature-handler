@@ -927,28 +927,28 @@ final class Facebook extends AbstractExtractor {
             }
 
             foreach ($data[$property] as $item) {
-                $ts = false;
+                $timestamp = false;
                 if (! empty($item['created_time'])) {
-                    $ts = strtotime($item['created_time']);
+                    $timestamp = strtotime($item['created_time']);
                 }
 
                 if (! empty($item['updated_time'])) {
-                    $ts = strtotime($item['updated_time']);
+                    $timestamp = strtotime($item['updated_time']);
                 }
 
-                if ($ts === false) {
+                if ($timestamp === false) {
                     continue;
                 }
 
-                if (! isset($posts[date('Y', $ts)])) {
-                    $posts[date('Y', $ts)] = [];
+                if (! isset($posts[date('Y', $timestamp)])) {
+                    $posts[date('Y', $timestamp)] = [];
                 }
 
-                if (! isset($posts[date('Y', $ts)][date('n', $ts)])) {
-                    $posts[date('Y', $ts)][date('n', $ts)] = 0;
+                if (! isset($posts[date('Y', $timestamp)][date('n', $timestamp)])) {
+                    $posts[date('Y', $timestamp)][date('n', $timestamp)] = 0;
                 }
 
-                $posts[date('Y', $ts)][date('n', $ts)]++;
+                $posts[date('Y', $timestamp)][date('n', $timestamp)]++;
             }
         }
 
@@ -989,25 +989,28 @@ final class Facebook extends AbstractExtractor {
                     continue;
                 }
 
-                if (empty($item['created_time'])) {
-                    $ts = strtotime($item['updated_time']);
-                } else {
-                    $ts = strtotime($item['created_time']);
+                $timestamp = false;
+                if (! empty($item['created_time'])) {
+                    $timestamp = strtotime($item['created_time']);
                 }
 
-                if ($ts === false) {
+                if (! empty($item['updated_time'])) {
+                    $timestamp = strtotime($item['updated_time']);
+                }
+
+                if ($timestamp === false) {
                     continue;
                 }
 
-                if (! isset($comments[date('Y', $ts)])) {
-                    $comments[date('Y', $ts)] = [];
+                if (! isset($comments[date('Y', $timestamp)])) {
+                    $comments[date('Y', $timestamp)] = [];
                 }
 
-                if (! isset($comments[date('Y', $ts)][date('n', $ts)])) {
-                    $comments[date('Y', $ts)][date('n', $ts)] = 0;
+                if (! isset($comments[date('Y', $timestamp)][date('n', $timestamp)])) {
+                    $comments[date('Y', $timestamp)][date('n', $timestamp)] = 0;
                 }
 
-                $comments[date('Y', $ts)][date('n', $ts)] += count($item['comments']['data']);
+                $comments[date('Y', $timestamp)][date('n', $timestamp)] += count($item['comments']['data']);
             }
         }
 
@@ -1048,25 +1051,28 @@ final class Facebook extends AbstractExtractor {
                     continue;
                 }
 
-                if (empty($item['created_time'])) {
-                    $ts = strtotime($item['updated_time']);
-                } else {
-                    $ts = strtotime($item['created_time']);
+                $timestamp = false;
+                if (! empty($item['created_time'])) {
+                    $timestamp = strtotime($item['created_time']);
                 }
 
-                if ($ts === false) {
+                if (! empty($item['updated_time'])) {
+                    $timestamp = strtotime($item['updated_time']);
+                }
+
+                if ($timestamp === false) {
                     continue;
                 }
 
-                if (! isset($likes[date('Y', $ts)])) {
-                    $likes[date('Y', $ts)] = [];
+                if (! isset($likes[date('Y', $timestamp)])) {
+                    $likes[date('Y', $timestamp)] = [];
                 }
 
-                if (! isset($likes[date('Y', $ts)][date('n', $ts)])) {
-                    $likes[date('Y', $ts)][date('n', $ts)] = 0;
+                if (! isset($likes[date('Y', $timestamp)][date('n', $timestamp)])) {
+                    $likes[date('Y', $timestamp)][date('n', $timestamp)] = 0;
                 }
 
-                $likes[date('Y', $ts)][date('n', $ts)] += count($item['likes']['data']);
+                $likes[date('Y', $timestamp)][date('n', $timestamp)] += count($item['likes']['data']);
             }
         }
 
@@ -1713,9 +1719,12 @@ final class Facebook extends AbstractExtractor {
             }
 
             foreach ($data[$property] as $item) {
-                if (empty($item['created_time'])) {
+                $timestamp = false;
+                if (! empty($item['updated_time'])) {
                     $timestamp = strtotime($item['updated_time']);
-                } else {
+                }
+
+                if (! empty($item['created_time'])) {
                     $timestamp = strtotime($item['created_time']);
                 }
 
