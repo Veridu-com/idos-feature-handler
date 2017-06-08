@@ -86,7 +86,7 @@ class Runner extends Command {
             __HNDKEY__,
             __HNDSEC__
         );
-        $sdk = SDK::create($auth);
+        $sdk = SDK::create($auth, true);
 
         // development mode: disable ssl check
         if (__DEV__) {
