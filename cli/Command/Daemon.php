@@ -193,7 +193,7 @@ class Daemon extends Command {
                     $handlerPublicKey,
                     $handlerPrivateKey
                 );
-                $sdk = SDK::create($auth);
+                $sdk = SDK::create($auth, true);
 
                 // development mode: disable ssl check
                 if ($devMode) {
